@@ -4,12 +4,12 @@
 
 EAPI=6
 
-DESCRIPTION="Erlang build tool that makes it easy to compile and test Erlang applications and releases."
+DESCRIPTION="Erlang build tool that makes it easy to compile and test Erlang applications"
 HOMEPAGE="http://rebar3.org/"
 SRC_URI="https://github.com/erlang/rebar3/archive/${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="Apache-2.0"
-SLOT="0"
+SLOT="3"
 KEYWORDS="~amd64"
 RESTRICT="mirror"
 
@@ -22,6 +22,7 @@ src_compile() {
 	./bootstrap
 }
 src_install() {
+	exeinto /usr/bin
 	doexe rebar3
 	dodoc README.md
 }
