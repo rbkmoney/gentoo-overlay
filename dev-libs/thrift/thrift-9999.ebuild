@@ -13,7 +13,7 @@ EGIT_REPO_URI="https://github.com/rbkmoney/${PN}"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~amd64"
+KEYWORDS=""
 IUSE="+compiler libraries examples test"
 
 DEPEND="libraries? ( dev-libs/boost )"
