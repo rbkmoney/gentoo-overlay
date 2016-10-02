@@ -1,0 +1,110 @@
+#!/sbin/openrc-run
+# Copyright 1999-2016 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+# TODO: verify this init script and refactor it if nedeed;
+extra_started_commands="reload"
+
+depend() {
+    need net
+}
+
+start() {
+    ebegin "Start ${SVCNAME}"
+
+    # Create pid dir.
+    local pid_dir=$(dirname "${RIAK_PIDFILE}")
+    checkpath -d -m 0750 -o ${RIAK_USER} $pid_dir
+
+    # Warn on low ulimit.
+    local ulimit="$(grep 'Max open files' /proc/self/limits | tr -s ' ' | cut -d' ' -f4)"
+    if [ "$ulimit" -lt "4096" ]; then
+	ewarn "Current ulimit -n is $ulimit. 4096 is the recommended minimum."
+    fi
+
+    start-stop-daemon --background --start --user "${RIAK_USER}" \
+		      --pidfile "${RIAK_PIDFILE}" \
+		      --exec "${RIAK_EXEC}" -- start
+
+    # Wait for riak to start before creating pidfile.
+    while [ "${RIAK_STARTUP_TIMEOUT}" -ge "0" ]; do
+	# Ping riak, on pong it has fully started up.
+	local res=$("${RIAK_EXEC}" ping 2>/dev/null)
+	case $res in
+	    *pong*)
+		while [ "${RIAK_STARTUP_TIMEOUT}" -ge "0" ]; do
+		    # Get the beam's pid
+		    local beam=$(pidof "${RIAK_ERTS_PATH}/bin/beam.smp")
+		    # Retry if multiple pids are returned
+		    if [ $(echo "$beam" | wc -w) -ne 1 ]; then
+			# Let pidfile creation time out
+			RIAK_STARTUP_TIMEOUT=$(expr "${RIAK_STARTUP_TIMEOUT}" - 1)
+			sleep 1
+		    else
+			# Create pidfile and be done.
+			[ "$beam" ] && echo -n $beam > "${RIAK_PIDFILE}"
+			break
+		    fi
+		done
+		# Break the outer while loop.
+		break
+		;;
+	    *)
+		# Let pidfile creation time out.
+		RIAK_STARTUP_TIMEOUT=$(expr "${RIAK_STARTUP_TIMEOUT}" - 1)
+		sleep 1
+		;;
+	esac
+    done
+    
+    [ -f "${RIAK_PIDFILE}" ] || ewarn "Riak is too slow to start, no pidfile was created."
+    eend $?
+}
+
+stop() {
+    ebegin "Stopping ${SVCNAME}"
+    local beam="${RIAK_ERTS_PATH}/bin/beam.smp"
+    # If riak stop fails then we will use more force.
+    if [ $("${RIAK_EXEC}" stop 2>&1 > /dev/null) ]; then
+	start-stop-daemon \
+	    --stop --quiet --retry=TERM/30/KILL/5 \
+	    --user ${RIAK_USER} --exec $beam
+	[ -f "${RIAK_PIDFILE}" ] && unlink "${RIAK_PIDFILE}"
+    else
+	[ -f "${RIAK_PIDFILE}" ] && unlink "${RIAK_PIDFILE}"
+    fi
+    eend $?
+
+    # TODO: verify if this is necessary with global epmd
+    local epmd=$(pidof "${RIAK_ERTS_PATH}"/bin/epmd)
+    if [ $epmd ]; then
+	einfo "Killing epmd"
+	kill $epmd
+    fi
+}
+
+reload() {
+    ebegin "Reloading ${SVCNAME}"
+    "${RIAK_EXEC}" restart 2>&1 > /dev/null
+    eend $?
+}
+
+status() {
+    local res=$("${RIAK_EXEC}" ping 2>/dev/null)
+    local epmd=$(pidof ${RIAK_ERTS_PATH}/bin/epmd)
+    case $res in
+	*pong*)
+	    einfo "status: started"
+	    ;;
+	*)
+	    if [ -f "${RIAK_PIDFILE}" ]; then
+		eerror "status: crashed"
+	    else
+		# cleanup
+		[ "$epmd" ] && kill "$epmd"
+		einfo "status: stopped"
+	    fi
+	    ;;
+    esac
+}
