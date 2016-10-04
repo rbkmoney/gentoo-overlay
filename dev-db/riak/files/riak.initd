@@ -66,7 +66,7 @@ stop() {
     ebegin "Stopping ${SVCNAME}"
     local beam="${RIAK_ERTS_PATH}/bin/beam.smp"
     # If riak stop fails then we will use more force.
-    if [ $("${RIAK_EXEC}" stop 2>&1 > /dev/null) ]; then
+    if [ "$("${RIAK_EXEC}" stop 2> /dev/null)" != "ok" ]; then
 	start-stop-daemon \
 	    --stop --quiet --retry=TERM/30/KILL/5 \
 	    --user ${RIAK_USER} --exec $beam

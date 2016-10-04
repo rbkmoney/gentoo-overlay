@@ -67,7 +67,7 @@ DEPEND="
 
 pkg_setup() {
 	ebegin "Creating riak user and group"
-	local riak_home="/var/$(get_libdir)/riak"
+	local riak_home="/var/lib/riak"
 	enewgroup riak
 	enewuser riak -1 -1 $riak_home riak
 	eend $?
