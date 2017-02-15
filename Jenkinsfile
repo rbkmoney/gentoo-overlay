@@ -5,4 +5,7 @@ build('gentoo-overlay', 'gentoo') {
   runStage('RepoMan scours the neighborhood') {
     sh 'repoman -v'
   }
+  runStage('Overlint') {
+    sh 'overlint-cli .'
+  }
 }
