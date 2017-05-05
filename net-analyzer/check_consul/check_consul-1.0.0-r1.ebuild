@@ -24,6 +24,6 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 src_install() {
 	dodoc README.org
-	insinto /usr/lib/nagios/plugins
-	doins check_consul
+	exeinto /usr/lib/nagios/plugins
+	doexe check_consul
 }
