@@ -12,7 +12,7 @@ SLOT="3"
 KEYWORDS="~amd64"
 RESTRICT="mirror"
 
-DEPEND="<dev-lang/erlang-20"
+DEPEND="<dev-lang/erlang-21"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/rebar3-${PV}"
