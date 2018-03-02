@@ -1,6 +1,5 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI=6
 
@@ -61,8 +60,8 @@ RDEPEND="
 	sys-libs/ncurses:0
 	sys-libs/zlib
 "
-DEPEND="
-	${RDEPEND}
+DEPEND="${RDEPEND}
+	dev-vcs/git
 "
 
 pkg_setup() {
