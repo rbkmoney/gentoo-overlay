@@ -80,7 +80,7 @@ src_prepare() {
 	# ln -s "${S}"/deps/lager "${S}"/deps/riaknostic/deps || die
 	# ln -s "${S}"/deps/meck "${S}"/deps/riaknostic/deps || die
 	# ln -s "${S}"/deps/getopt "${S}"/deps/riaknostic/deps || die
-	# epatch "${FILESDIR}/${PV}-fix-directories.patch"
+	epatch "${FILESDIR}/${PV}-fix-directories.patch"
 	eapply_user
 }
 
