@@ -8,17 +8,16 @@ inherit autotools elisp-common eutils java-pkg-opt-2 multilib systemd versionato
 
 # NOTE: If you need symlinks for binaries please tell maintainers or
 # open up a bug to let it be created.
-MY_PV="R16B02"
+
 DESCRIPTION="Erlang programming language, runtime environment and libraries (OTP)"
 HOMEPAGE="http://www.erlang.org/"
-SRC_URI="http://s3.amazonaws.com/downloads.basho.com/erlang/otp_src_${MY_PV}-basho10.tar.gz
-	http://erlang.org/download/otp_doc_man_${MY_PV}.tar.gz
-	doc? ( http://erlang.org/download/otp_doc_html_${MY_PV}.tar.gz )"
-RESTRICT="mirror"
+SRC_URI="http://www.erlang.org/download/otp_src_${PV}.tar.gz
+	http://erlang.org/download/otp_doc_man_${PV}.tar.gz
+	doc? ( http://erlang.org/download/otp_doc_html_${PV}.tar.gz )"
 
 LICENSE="ErlPL-1.1"
 SLOT="0"
-KEYWORDS="amd64"
+KEYWORDS="alpha amd64 ~arm ~ia64 ppc ppc64 sparc x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~x64-solaris"
 IUSE="compat-ethread doc emacs halfword hipe java kpoll odbc smp sctp ssl systemd tk wxwidgets"
 
 RDEPEND=">=dev-lang/perl-5.6.1
@@ -31,7 +30,7 @@ DEPEND="${RDEPEND}
 	sctp? ( net-misc/lksctp-tools )
 	tk? ( dev-lang/tk )"
 
-S="${WORKDIR}/OTP_${MY_PV}_basho10"
+S="${WORKDIR}/otp_src_${PV}"
 
 SITEFILE=50${PN}-gentoo.el
 
@@ -42,29 +41,27 @@ pkg_setup() {
 }
 
 src_prepare() {
-	use odbc || sed -i 's: odbc : :' lib/Makefile
+	use odbc || sed -i 's: odbc : :' lib/Makefile || die
 
 	# bug 263129, don't ignore LDFLAGS, reported upstream
-	sed -e 's:LDFLAGS = \$(DED_LDFLAGS):LDFLAGS += \$(DED_LDFLAGS):' -i "${S}"/lib/megaco/src/flex/Makefile.in
+	sed -e 's:LDFLAGS = \$(DED_LDFLAGS):LDFLAGS += \$(DED_LDFLAGS):' \
+		-i "${S}"/lib/megaco/src/flex/Makefile.in || die
 
 	# don't ignore LDFLAGS, reported upstream
-	sed -e 's:LDFLAGS =  \$(ODBC_LIB) \$(EI_LDFLAGS):LDFLAGS += \$(ODBC_LIB) \$(EI_LDFLAGS):' -i "${S}"/lib/odbc/c_src/Makefile.in
+	sed -e 's:LDFLAGS =  \$(ODBC_LIB) \$(EI_LDFLAGS):LDFLAGS += \$(ODBC_LIB) \$(EI_LDFLAGS):' \
+		-i "${S}"/lib/odbc/c_src/Makefile.in || die
 
 	if ! use wxwidgets; then
-		touch lib/wx/SKIP
-		touch lib/observer/SKIP
-		sed -ie 's/dialyzer_gui_wx.hrl//g' lib/dialyzer/src/Makefile || die "Removal of wx target has failed"
-		for dir in lib/{debugger,dialyzer,observer,reltool,et}/src lib/{et,reltool}/test; do
-			sed -ie '/_wx/ d' "${dir}/Makefile" || die "Removal of wx target has failed"
-		done
+		sed -i 's: wx : :' lib/Makefile || die
+		rm -rf lib/wx  || die
 	fi
-	./otp_build autoconf
 
 	# Nasty workaround, reported upstream
-	cp "${S}"/lib/configure.in.src "${S}"/lib/configure.in
+	cp "${S}"/lib/configure.in.src "${S}"/lib/configure.in || die
 
 	# bug 383697
-	sed -i '1i#define OF(x) x' erts/emulator/drivers/common/gzio.c
+	sed -i '1i#define OF(x) x' erts/emulator/drivers/common/gzio.c || die
+	cd erts && eautoreconf
 }
 
 src_configure() {
@@ -117,18 +114,19 @@ src_install() {
 	use smp && dosym "${ERL_LIBDIR}/erts-${ERL_ERTS_VER}/bin/beam.smp" /usr/bin/beam.smp
 
 	## Remove ${D} from the following files
-	sed -e "s:${D}::g" -i "${ED}${ERL_LIBDIR}/bin/erl" || die "sed failed"
-	sed -e "s:${D}::g" -i "${ED}${ERL_LIBDIR}/bin/start" || die "sed failed"
+	sed -e "s:${D}::g" -i "${ED}${ERL_LIBDIR}/bin/erl" || die
+	sed -e "s:${D}::g" -i "${ED}${ERL_LIBDIR}/bin/start" || die
+	grep -rle "${D}" "${ED}/${ERL_LIBDIR}/erts-${ERL_ERTS_VER}" | xargs sed -i -e "s:${D}::g" || die
 
 	## Clean up the no longer needed files
-	rm "${ED}/${ERL_LIBDIR}/Install" || die "sed failed"
+	rm "${ED}/${ERL_LIBDIR}/Install"
 
 	for i in "${WORKDIR}"/man/man* ; do
 		dodir "${ERL_LIBDIR}/${i##${WORKDIR}}"
 	done
 	for file in "${WORKDIR}"/man/man*/*.[1-9]; do
 		# doman sucks so we can't use it
-		cp ${file} "${ED}/${ERL_LIBDIR}"/man/man${file##*.}/  || die "cp failed"
+		cp ${file} "${ED}/${ERL_LIBDIR}"/man/man${file##*.}/ || die
 	done
 	# extend MANPATH, so the normal man command can find it
 	# see bug 189639
@@ -144,7 +142,7 @@ src_install() {
 		pushd "${S}"
 		elisp-install erlang lib/tools/emacs/*.{el,elc}
 		sed -e "s:/usr/share:${EPREFIX}/usr/share:g" \
-			"${FILESDIR}"/${SITEFILE} > "${T}"/${SITEFILE} || die "sed failed"
+			"${FILESDIR}"/${SITEFILE} > "${T}"/${SITEFILE} || die
 		elisp-site-file-install "${T}"/${SITEFILE}
 		popd
 	fi
