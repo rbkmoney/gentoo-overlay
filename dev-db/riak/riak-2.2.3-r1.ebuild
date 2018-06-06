@@ -111,6 +111,8 @@ src_install() {
 	find "usr/${lib_dir}/riak/lib/" -type f -path */priv/bin/* | xargs fperms 0755
 	cd "${S}"
 
+	sed -ie 's|"`cd \`dirname $0\` && /bin/pwd`/../lib/env.sh"|/usr/lib64/riak/lib/env.sh|g' \
+		rel/riak/bin/* || die
 	dobin rel/riak/bin/*
 	insinto /etc/riak
 	doins rel/riak/etc/*
@@ -125,6 +127,6 @@ src_install() {
 	use doc && dodoc doc/*.txt
 
 	newinitd "${FILESDIR}/${PN}.initd" riak
-	newconfd "${FILESDIR}/${PN}.confd" riak
+	newconfd "${FILESDIR}/${P}.confd" riak
 	# TODO: Logrotate.
 }

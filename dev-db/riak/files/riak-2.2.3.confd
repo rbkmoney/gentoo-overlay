@@ -1,0 +1,7 @@
+# -*- mode: shell-script -*-
+RIAK_USER="riak"
+RIAK_ERTS_PATH="/usr/lib/riak/erts-5.10.3"
+RIAK_EXEC="/usr/bin/riak"
+RIAK_PIDFILE="/run/riak/riak.pid"
+# Timeout to wait for the beam to start and riak to answer to ping requests.
+RIAK_STARTUP_TIMEOUT=10
