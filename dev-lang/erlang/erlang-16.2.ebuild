@@ -18,7 +18,7 @@ RESTRICT="mirror"
 
 LICENSE="ErlPL-1.1"
 SLOT="0"
-KEYWORDS="amd64"
+KEYWORDS="amd64 x86"
 IUSE="compat-ethread doc emacs halfword hipe java kpoll odbc smp sctp ssl systemd tk wxwidgets"
 
 RDEPEND=">=dev-lang/perl-5.6.1

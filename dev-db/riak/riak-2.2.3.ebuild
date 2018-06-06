@@ -8,7 +8,7 @@ inherit versionator eutils user multilib toolchain-funcs
 # build time dependency
 # fork of the google project with riak specific changes
 # is used to build the eleveldb lib and gets removed before install
-LEVELDB_PV="2.0.29"
+LEVELDB_PV="2.0.34"
 LEVELDB_URI="https://github.com/basho/leveldb/archive/${LEVELDB_PV}.tar.gz"
 LEVELDB_P="leveldb-${LEVELDB_PV}.tar.gz"
 LEVELDB_WD="${WORKDIR}/leveldb-${LEVELDB_PV}"
@@ -55,7 +55,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE="doc"
 RESTRICT="mirror"
 RDEPEND="
-	<dev-lang/erlang-18[smp,kpoll]
+	=dev-lang/erlang-16.2[smp,kpoll]
 	dev-libs/openssl:0
 	sys-libs/ncurses:0
 	sys-libs/zlib
@@ -73,17 +73,19 @@ pkg_setup() {
 }
 
 src_prepare() {
-#	# Avoid fetching deps via git that are already available
-#	ln -s ${LEVELDB_WD} ${LEVELDB_TARGET_LOCATION} || die
-#	mkdir -p "${S}"/deps/riaknostic/deps || die
-#	ln -s "${S}"/deps/lager "${S}"/deps/riaknostic/deps || die
-#	ln -s "${S}"/deps/meck "${S}"/deps/riaknostic/deps || die
-#	ln -s "${S}"/deps/getopt "${S}"/deps/riaknostic/deps || die
-	epatch "${FILESDIR}/${PV}-fix-directories.patch"
+	# Avoid fetching deps via git that are already available
+	# mkdir -p ${LEVELDB_TARGET_LOCATION} || die
+	# ln -s ${LEVELDB_WD} ${LEVELDB_TARGET_LOCATION} || die
+	# mkdir -p "${S}"/deps/riaknostic/deps || die
+	# ln -s "${S}"/deps/lager "${S}"/deps/riaknostic/deps || die
+	# ln -s "${S}"/deps/meck "${S}"/deps/riaknostic/deps || die
+	# ln -s "${S}"/deps/getopt "${S}"/deps/riaknostic/deps || die
+	# epatch "${FILESDIR}/${PV}-fix-directories.patch"
 	eapply_user
 }
 
 src_compile() {
+	emake locked-deps
 	# Upstream makefile fails at -j > 1.
 	emake -j1 \
 		CC=$(tc-getCC) \
