@@ -111,8 +111,6 @@ src_install() {
 	find "usr/${lib_dir}/riak/lib/" -type f -path */priv/bin/* | xargs fperms 0755
 	cd "${S}"
 
-	sed -ie 's|\..*/lib/env.sh"|'". /usr/${lib_dir}/riak/lib/env.sh|g" \
-		rel/riak/bin/* || die
 	dobin rel/riak/bin/*
 	insinto /etc/riak
 	doins rel/riak/etc/*
