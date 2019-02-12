@@ -1,0 +1,13 @@
+diff --git a/salt/modules/gpg.py b/salt/modules/gpg.py
+index bf66af09d2..53252d31d9 100644
+--- a/salt/modules/gpg.py
++++ b/salt/modules/gpg.py
+@@ -924,7 +924,7 @@ def trust_key(keyid=None,
+ 
+     if user == 'salt':
+         homeDir = os.path.join(__salt__['config.get']('config_dir'), 'gpgkeys')
+-        cmd.extend([' --homedir', homeDir])
++        cmd.extend(['--homedir', homeDir])
+         _user = 'root'
+     res = __salt__['cmd.run_all'](cmd,
+                                   stdin=stdin,
