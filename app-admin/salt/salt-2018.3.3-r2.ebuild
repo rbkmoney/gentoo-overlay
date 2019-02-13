@@ -102,6 +102,7 @@ PATCHES=(
 	"${FILESDIR}/${PN}-2018.3.3-states-gpg.patch"
 	"${FILESDIR}/${PN}-2018.3.3-modules-gpg.patch"
 	"${FILESDIR}/${PN}-2018.3.3-saltclass.patch"
+	"${FILESDIR}/${PN}-2018.3.3-saltclass-follow-links.patch"
 )
 
 python_prepare() {
