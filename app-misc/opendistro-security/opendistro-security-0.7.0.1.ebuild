@@ -45,7 +45,7 @@ mvn_install_dep() {
   eend
 }
 
-src_prepare() {
+src_install() {
   # Prepare temp maven repo
   mkdir -p "${WORKDIR}"/.m2/repository
   # Load and install deps
@@ -57,9 +57,6 @@ src_prepare() {
   mvn_install_dep ${SECURITY_ADVANCED_REPO} ${SECURITY_ADVANCED_COMMIT}
   # Package security and security-advanced as plugin
   mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true -P advanced || die
-}
-
-src_install() {
   insinto ${INSTALL_PATH}
 	doins target/releases/opendistro_security-${PV}.zip
 }
