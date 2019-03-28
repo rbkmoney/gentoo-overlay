@@ -41,18 +41,18 @@ mvn_install_dep() {
 }
 
 src_install() {
-  # Prepare temp maven repo
-  mkdir -p "${WORKDIR}"/.m2/repository
-  # Load and install deps
-  mvn_install_dep ${SECURITY_PARENT_REPO} ${SECURITY_PARENT_COMMIT}
-  mvn_install_dep ${SECURITY_SSL_REPO} ${SECURITY_SSL_COMMIT}
-  # Install security (required by security-advanced)
-  mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true || die
-  # Build security-advanced
-  mvn_install_dep ${SECURITY_ADVANCED_REPO} ${SECURITY_ADVANCED_COMMIT}
-  # Package security and security-advanced as plugin
-  mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true -P advanced || die
-  insinto ${INSTALL_PATH}
+	# Prepare temp maven repo
+	mkdir -p "${WORKDIR}"/.m2/repository
+	# Load and install deps
+	mvn_install_dep ${SECURITY_PARENT_REPO} ${SECURITY_PARENT_COMMIT}
+	mvn_install_dep ${SECURITY_SSL_REPO} ${SECURITY_SSL_COMMIT}
+	# Install security (required by security-advanced)
+	mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true || die
+	# Build security-advanced
+	mvn_install_dep ${SECURITY_ADVANCED_REPO} ${SECURITY_ADVANCED_COMMIT}
+	# Package security and security-advanced as plugin
+	mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true -P advanced || die
+	insinto ${INSTALL_PATH}
 	doins target/releases/opendistro_security-${PV}.zip
 }
 
