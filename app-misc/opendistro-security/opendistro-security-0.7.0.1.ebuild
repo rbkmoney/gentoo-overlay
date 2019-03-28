@@ -26,7 +26,7 @@ SLOT="0"
 KEYWORDS="~amd64"
 
 RDEPEND="dev-libs/openssl:0
-	>=virtual/jdk-1.8"
+	>=virtual/jdk-1.8:*"
 DEPEND="${RDEPEND}
 	dev-java/maven-bin"
 
