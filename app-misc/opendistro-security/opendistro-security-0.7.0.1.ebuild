@@ -25,24 +25,19 @@ LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64"
 
-COMMON_DEPS=""
-DEPEND="
-  dev-libs/openssl:0
-  >=virtual/jdk-1.8
-	dev-java/maven-bin
-	${COMMON_DEPS}"
-RDEPEND="
-	${COMMON_DEPS}"
+RDEPEND="dev-libs/openssl:0
+	>=virtual/jdk-1.8:*"
+DEPEND="${RDEPEND}
+	dev-java/maven-bin"
 
 mvn_install_dep() {
-  ebegin "Installing $1"
-    git clone $1 "${WORKDIR}/dep"
-    cd "${WORKDIR}/dep"
-    git checkout $2
-    mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true || die
-    cd -
-    rm -rf "${WORKDIR}/dep"
-  eend
+	ebegin "Installing $1"
+	git clone $1 "${WORKDIR}/dep" || die
+	cd "${WORKDIR}/dep" || die
+	git checkout $2 || die
+	mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true || die
+	cd - || die
+	eend
 }
 
 src_install() {
@@ -62,8 +57,6 @@ src_install() {
 }
 
 pkg_postinst() {
-	elog
 	elog "You may install plugin by executing command:"
 	elog "/usr/share/elasticsearch/bin/elasticsearch-plugin install -b file://${INSTALL_PATH}opendistro_security-${PV}.zip"
-  elog
 }
