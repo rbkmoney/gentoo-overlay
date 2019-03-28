@@ -1,33 +1,42 @@
 # Copyright 2019 RBK.money
 
-EAPI=5x
+EAPI=5
 
 inherit git-r3
 DESCRIPTION="Open Distro for Elasticsearch Security"
-HOMEPAGE="https://opendistro.github.io/for-elasticsearch/"
+HOMEPAGE="https://github.com/opendistro-for-elasticsearch/"
 
-EGIT_REPO_URI="https://github.com/opendistro-for-elasticsearch/security.git"
-EGIT_COMMIT="75af4ce47f8e50031db0cbfa234dda458b295858"
+EGIT_REPO_URI="https://github.com/rbkmoney/opendistro-security.git"
+EGIT_COMMIT="a31d1300897ab3f1939186bd7ea165fa21572241"
 
-SECURITY_PARENT_REPO="https://github.com/opendistro-for-elasticsearch/security-parent.git"
-SECURITY_PARENT_COMMIT="545e63e006cd7321412042fba9700198f7c7dc5b"
+SECURITY_PARENT_REPO="https://github.com/rbkmoney/opendistro-security-parent.git"
+SECURITY_PARENT_COMMIT="6b2407200ae8e5fc65635ccdc2774467751ea795"
 
-SECURITY_SSL_REPO="https://github.com/opendistro-for-elasticsearch/security-ssl"
-SECURITY_SSL_COMMIT="54c2f094c9b40d2396c6d62b84dbdadf2a482265"
+SECURITY_SSL_REPO="https://github.com/rbkmoney/opendistro-security-ssl"
+SECURITY_SSL_COMMIT="a2a014ae5355eecd494ddadb18b338802d2570a9"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64"
+KEYWORDS="~amd64"
 
 COMMON_DEPS=""
 DEPEND="
-	>=virtual/jdk-1.8.0-r3
-	dev-java/maven-bin:*
+  dev-libs/openssl
+	~virtual/jdk-1.8.0
+	dev-java/maven-bin
   dev-java/netty-tcnative
+  dev-java/netty-transport
+  app-arch/zip
 	${COMMON_DEPS}"
 RDEPEND="
-  dev-java/netty-tcnative
 	${COMMON_DEPS}"
+
+copy_mvn_deps() {
+  mvn dependency:copy-dependencies -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DincludeScope=provided
+  mvn dependency:copy-dependencies -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DincludeScope=runtime
+  mvn dependency:copy-dependencies -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DincludeScope=compile
+  mvn dependency:copy-dependencies -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DincludeScope=system
+}
 
 src_prepare() {
   # Prepare temp maven repo
@@ -43,16 +52,17 @@ src_prepare() {
   cd "${WORKDIR}/security-ssl"
   git checkout ${SECURITY_SSL_COMMIT}
   mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true || die
-  mvn dependency:copy-dependencies -Dmaven.repo.local="${WORKDIR}"/.m2/repository
+  copy_mvn_deps
   cd -
   mvn package -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true || die
   mvn dependency:copy-dependencies -Dmaven.repo.local="${WORKDIR}"/.m2/repository
+  copy_mvn_deps
 }
 
 src_install() {
   zip -r opendistro-security.zip plugin-descriptor.properties plugin-security.policy \
     tools securityconfig
-  zip -j opendistro-security.zip target/opendistro_security-${PV}.jar target/dependency/* \
-    "${WORKDIR}"/security-ssl/target/dependency/*
+  zip -j opendistro-security.zip target/opendistro_security-${PV}.jar target/dependency/*
+  zip -j opendistro-security.zip "${WORKDIR}"/security-ssl/target/dependency/*
   /usr/share/elasticsearch/bin/elasticsearch-plugin install -b file://${PWD}/opendistro-security.zip || die
 }
