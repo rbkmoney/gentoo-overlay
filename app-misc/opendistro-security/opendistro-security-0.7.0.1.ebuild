@@ -25,48 +25,44 @@ LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64"
 
-COMMON_DEPS=""
-DEPEND="
-  dev-libs/openssl:0
-  >=virtual/jdk-1.8
-	dev-java/maven-bin
-	${COMMON_DEPS}"
-RDEPEND="
-	${COMMON_DEPS}"
+RDEPEND="dev-libs/openssl:0
+	>=virtual/jdk-1.8"
+DEPEND="${RDEPEND}
+	dev-java/maven-bin"
 
 mvn_install_dep() {
-  ebegin "Installing $1"
-    git clone $1 "${WORKDIR}/dep"
-    cd "${WORKDIR}/dep"
-    git checkout $2
-    mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true || die
-    cd -
-    rm -rf "${WORKDIR}/dep"
-  eend
+	ebegin "Installing $1"
+	git clone $1 "${WORKDIR}/dep" || die
+	cd "${WORKDIR}/dep" || die
+	git checkout $2 || die
+	mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true || die
+	cd - || die
+	eend
 }
 
 src_prepare() {
-  # Prepare temp maven repo
-  mkdir -p "${WORKDIR}"/.m2/repository
-  # Load and install deps
-  mvn_install_dep ${SECURITY_PARENT_REPO} ${SECURITY_PARENT_COMMIT}
-  mvn_install_dep ${SECURITY_SSL_REPO} ${SECURITY_SSL_COMMIT}
-  # Install security (required by security-advanced)
-  mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true || die
-  # Build security-advanced
-  mvn_install_dep ${SECURITY_ADVANCED_REPO} ${SECURITY_ADVANCED_COMMIT}
-  # Package security and security-advanced as plugin
-  mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true -P advanced || die
+	# Prepare temp maven repo
+	mkdir -p "${WORKDIR}"/.m2/repository || die
+}
+
+src_compile() {
+	# Load and install deps
+	mvn_install_dep ${SECURITY_PARENT_REPO} ${SECURITY_PARENT_COMMIT}
+	mvn_install_dep ${SECURITY_SSL_REPO} ${SECURITY_SSL_COMMIT}
+	# Install security (required by security-advanced)
+	mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true || die
+	# Build security-advanced
+	mvn_install_dep ${SECURITY_ADVANCED_REPO} ${SECURITY_ADVANCED_COMMIT}
+	# Package security and security-advanced as plugin
+	mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true -P advanced || die
 }
 
 src_install() {
-  insinto ${INSTALL_PATH}
+	insinto ${INSTALL_PATH}
 	doins target/releases/opendistro_security-${PV}.zip
 }
 
 pkg_postinst() {
-	elog
 	elog "You may install plugin by executing command:"
 	elog "/usr/share/elasticsearch/bin/elasticsearch-plugin install -b file://${INSTALL_PATH}opendistro_security-${PV}.zip"
-  elog
 }
