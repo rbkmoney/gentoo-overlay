@@ -37,6 +37,7 @@ mvn_install_dep() {
 	git checkout $2 || die
 	mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true || die
 	cd - || die
+	rm -rf "${WORKDIR}/dep"
 	eend
 }
 
