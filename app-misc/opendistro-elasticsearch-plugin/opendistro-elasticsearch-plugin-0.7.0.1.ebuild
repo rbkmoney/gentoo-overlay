@@ -8,16 +8,16 @@ DESCRIPTION="Open Distro for Elasticsearch Security"
 HOMEPAGE="https://github.com/opendistro-for-elasticsearch/"
 
 EGIT_REPO_URI="https://github.com/rbkmoney/opendistro-security"
-EGIT_COMMIT="a31d1300897ab3f1939186bd7ea165fa21572241"
+EGIT_COMMIT="dcab69a0d5e32723ac1b182e3924fb0abc512130"
 
 SECURITY_PARENT_REPO="https://github.com/rbkmoney/opendistro-security-parent"
-SECURITY_PARENT_COMMIT="6b2407200ae8e5fc65635ccdc2774467751ea795"
+SECURITY_PARENT_COMMIT="b3ddd5c012904f00c8765194790fb4558ca8da36"
 
 SECURITY_SSL_REPO="https://github.com/rbkmoney/opendistro-security-ssl"
-SECURITY_SSL_COMMIT="a2a014ae5355eecd494ddadb18b338802d2570a9"
+SECURITY_SSL_COMMIT="e684e6004d96f5a611b0ca176d87039d03220ddd"
 
 SECURITY_ADVANCED_REPO="https://github.com/rbkmoney/opendistro-security-advanced-modules"
-SECURITY_ADVANCED_COMMIT="292599f1a37abccd7191e0e6d722db50dcce2b7c"
+SECURITY_ADVANCED_COMMIT="35d2daf52b9f71c193092bab53af600b7f4c9bf7"
 
 INSTALL_PATH="/usr/share/elasticsearch/plugins_archive/"
 
@@ -54,10 +54,10 @@ src_install() {
 	# Package security and security-advanced as plugin
 	mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true -P advanced || die
 	insinto ${INSTALL_PATH}
-	doins target/releases/opendistro_security-${PV}.zip
+	doins target/releases/opendistro_security-${PV}-rbkmoney.zip
 }
 
 pkg_postinst() {
 	elog "You may install plugin by executing command:"
-	elog "/usr/share/elasticsearch/bin/elasticsearch-plugin install -b file://${INSTALL_PATH}opendistro_security-${PV}.zip"
+	elog "/usr/share/elasticsearch/bin/elasticsearch-plugin install -b file://${INSTALL_PATH}opendistro_security-${PV}-rbkmoney.zip"
 }
