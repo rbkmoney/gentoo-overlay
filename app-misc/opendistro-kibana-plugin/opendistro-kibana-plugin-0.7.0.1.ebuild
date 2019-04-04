@@ -8,7 +8,7 @@ DESCRIPTION="Open Distro for Elasticsearch Security"
 HOMEPAGE="https://github.com/opendistro-for-elasticsearch/"
 
 EGIT_REPO_URI="https://github.com/rbkmoney/opendistro-security-kibana-plugin"
-EGIT_COMMIT="8cd6706af63c4959bba4ea6631d889488daded06"
+EGIT_COMMIT="b102040d0c4442cbd9bf96a8b5fe709f64e057d2"
 
 SECURITY_PARENT_REPO="https://github.com/rbkmoney/opendistro-security-parent"
 SECURITY_PARENT_COMMIT="b3ddd5c012904f00c8765194790fb4558ca8da36"
