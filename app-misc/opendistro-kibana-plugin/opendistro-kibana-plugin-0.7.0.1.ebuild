@@ -1,20 +1,23 @@
 # Copyright 2019 RBK.money
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=7
 
 inherit git-r3
 DESCRIPTION="Open Distro for Elasticsearch Security"
 HOMEPAGE="https://github.com/opendistro-for-elasticsearch/"
 
-EGIT_REPO_URI="https://github.com/rbkmoney/opendistro-security-kibana-plugin"
-EGIT_COMMIT="b102040d0c4442cbd9bf96a8b5fe709f64e057d2"
-
-SECURITY_PARENT_REPO="https://github.com/rbkmoney/opendistro-security-parent"
-SECURITY_PARENT_COMMIT="b3ddd5c012904f00c8765194790fb4558ca8da36"
-
-PLUGIN_NAME="opendistro_security_kibana_plugin-${PV}-rbkmoney"
+declare -A my_dep_repo=(
+	[security_kibana_plugin]="https://github.com/rbkmoney/opendistro-security-kibana-plugin"
+	[security_parent]="https://github.com/rbkmoney/opendistro-security-parent"
+)
+declare -A my_dep_ref=(
+	[security_kibana_plugin]="b102040d0c4442cbd9bf96a8b5fe709f64e057d2"
+	[security_parent]="b3ddd5c012904f00c8765194790fb4558ca8da36"
+)
+S="${WORKDIR}/security_kibana_plugin"
 INSTALL_PATH="/usr/share/elasticsearch/plugins_archive/"
+PLUGIN_NAME="opendistro_security_kibana_plugin-${PV}-rbkmoney"
 
 LICENSE="MIT"
 SLOT="0"
@@ -22,29 +25,34 @@ KEYWORDS="~amd64"
 
 RDEPEND=""
 DEPEND=">=virtual/jdk-1.8:*
-	=net-libs/nodejs-10.15.2
+	>=net-libs/nodejs-8.15.1
 	dev-java/maven-bin"
 
-mvn_install_dep() {
-	ebegin "Installing $1"
-	git clone $1 "${WORKDIR}/dep" || die
-	cd "${WORKDIR}/dep" || die
-	git checkout $2 || die
-	mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true || die
-	cd - || die
-	rm -rf "${WORKDIR}/dep"
-	eend
+my_fetch_dep() {
+	local name="${1}"
+	local repo="${my_dep_repo[${name}]}" ref="${my_dep_ref[${name}]}"
+	git-r3_fetch "${repo}" "${ref}"
+	git-r3_checkout "${repo}" "${WORKDIR}/${name}"
 }
-
-src_install() {
-	# Prepare temp maven repo
+my_compile_dep() {
+	local name="${1}"
+	einfo "Compiling ${name}"
+	cd "${WORKDIR}/${name}" || die
+	mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true || die
+	cd "${S}" || die
+}
+src_unpack() {
+	for name in security_kibana_plugin security_parent; do
+		my_fetch_dep "${name}"
+	done
+}
+src_prepare() {
 	mkdir -p "${WORKDIR}"/.m2/repository
-	# Load and install deps
-	mvn_install_dep ${SECURITY_PARENT_REPO} ${SECURITY_PARENT_COMMIT}
-	./clean.sh
-	# Install node modules
-	cd ${S}
-	npm install || die
+	eapply_user
+}
+src_compile() {
+	my_compile_dep security_parent
+	npm install --prefix="${D}" || die
 	PLUGIN_DEST="build/kibana/${PLUGIN_NAME}"
 	mkdir -p "${PLUGIN_DEST}"
 	cp -a "index.js" "${PLUGIN_DEST}"
@@ -52,8 +60,10 @@ src_install() {
 	cp -a "lib" "${PLUGIN_DEST}"
 	cp -a "node_modules" "${PLUGIN_DEST}"
 	cp -a "public" "${PLUGIN_DEST}"
-	# Package plugin
-	mvn clean install -Dmaven.repo.local="${WORKDIR}"/.m2/repository || die
+	my_compile_dep security_kibana_plugin
+}
+
+src_install() {
 	insinto ${INSTALL_PATH}
 	doins target/releases/${PLUGIN_NAME}.zip
 }
