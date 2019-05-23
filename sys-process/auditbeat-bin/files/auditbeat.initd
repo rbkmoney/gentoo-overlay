@@ -1,0 +1,43 @@
+#!/sbin/openrc-run
+# Copyright 1999-2017 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+
+AUDITBEAT_USER="${AUDITBEAT_USER:-root}"
+AUDITBEAT_GROUP="${AUDITBEAT_GROUP:-root}"
+AUDITBEAT_CONFIG="${AUDITBEAT_CONFIG:-/etc/auditbeat/auditbeat.yml}"
+AUDITBEAT_DATADIR="${AUDITBEAT_DATADIR:-/var/lib/auditbeat}"
+AUDITBEAT_LOGDIR="${AUDITBEAT_LOGDIR:-/var/log/auditbeat}"
+AUDITBEAT_OPTS="${AUDITBEAT_OPTS:-}"
+
+command="/usr/bin/auditbeat"
+command_args="-c ${AUDITBEAT_CONFIG} ${AUDITBEAT_OPTS} -path.config $(dirname $AUDITBEAT_CONFIG) \
+	-path.data ${AUDITBEAT_DATADIR} -path.home ${AUDITBEAT_DATADIR} -path.logs ${AUDITBEAT_LOGDIR}"
+command_background="true"
+command_user="${AUDITBEAT_USER}:${AUDITBEAT_GROUP}"
+extra_commands="checkconfig"
+pidfile="/run/auditbeat.pid"
+retry="TERM/5/KILL/5"
+start_stop_daemon_args="--chdir ${AUDITBEAT_DATADIR}"
+
+depend() {
+	use net
+	after elasticsearch
+}
+
+checkconfig() {
+	if [ ! -e ${AUDITBEAT_CONFIG} ]; then
+		eend "Please create a configuration file at ${AUDITBEAT_CONFIG}"
+		return 1
+	fi
+
+	ebegin "Checking your configuration"
+	${command} ${command_args} test config
+	eend $? "Configuration error. Please fix your configuration files."
+}
+
+start_pre() {
+	checkconfig || return 1
+
+	checkpath -d -o "${AUDITBEAT_USER}":"${AUDITBEAT_GROUP}" -m750 "${AUDITBEAT_DATADIR}"
+	checkpath -d -o "${AUDITBEAT_USER}":"${AUDITBEAT_GROUP}" -m750 "${AUDITBEAT_LOGDIR}"
+}
