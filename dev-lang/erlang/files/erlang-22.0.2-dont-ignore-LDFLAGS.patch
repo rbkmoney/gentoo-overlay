@@ -1,0 +1,26 @@
+diff --git a/lib/megaco/src/flex/Makefile.in b/lib/megaco/src/flex/Makefile.in
+index 26d2ddd44c..620b03b43d 100644
+--- a/lib/megaco/src/flex/Makefile.in
++++ b/lib/megaco/src/flex/Makefile.in
+@@ -47,7 +47,7 @@ endif
+ CC      = @DED_CC@
+ CFLAGS_MT = $(CFLAGS) @DED_THR_DEFS@
+ LD      = @DED_LD@
+-LDFLAGS = @DED_LDFLAGS@
++LDFLAGS += @DED_LDFLAGS@
+ LEX     = @LEX@
+ LEXLIB  = @LEXLIB@
+ PERL    = @PERL@
+diff --git a/lib/odbc/c_src/Makefile.in b/lib/odbc/c_src/Makefile.in
+index 294d832797..eaca11c47e 100644
+--- a/lib/odbc/c_src/Makefile.in
++++ b/lib/odbc/c_src/Makefile.in
+@@ -82,7 +82,7 @@ CC =  @CC@
+ CFLAGS = $(TYPEFLAGS) @CFLAGS@ @THR_DEFS@ @DEFS@
+ EI_LDFLAGS = -L$(EI_ROOT)/obj$(TYPEMARKER)/$(TARGET)
+ LD = @LD@
+-LDFLAGS =  $(ODBC_LIB) $(EI_LDFLAGS)
++LDFLAGS +=  $(ODBC_LIB) $(EI_LDFLAGS)
+ LIBS = @LIBS@ @THR_LIBS@ $(EI_LIB)
+ INCLUDES = -I. $(ODBC_INCLUDE) $(EI_INCLUDE)
+ TARGET_FLAGS =  @TARGET_FLAGS@
