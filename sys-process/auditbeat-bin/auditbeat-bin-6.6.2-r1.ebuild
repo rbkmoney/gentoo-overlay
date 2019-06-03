@@ -7,6 +7,8 @@ MY_PN="auditbeat"
 
 inherit systemd
 
+IUSE+="selinux"
+
 DESCRIPTION="Lightweight Shipper for Audit Data"
 HOMEPAGE="https://www.elastic.co/products/beats/auditbeat"
 SRC_URI="https://artifacts.elastic.co/downloads/beats/${MY_PN}/${MY_PN}-${PV}-linux-x86_64.tar.gz"
@@ -16,7 +18,7 @@ SLOT="0"
 KEYWORDS="amd64"
 
 DEPEND=""
-RDEPEND=""
+RDEPEND="selinux? ( sec-policy/selinux-auditbeat )"
 
 S="${WORKDIR}/${MY_PN}-${PV}-linux-x86_64"
 
