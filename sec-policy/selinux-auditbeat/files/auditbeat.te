@@ -1,0 +1,93 @@
+policy_module(auditbeat, 1.0.0)
+
+########################################
+#
+# Declarations
+#
+
+## <desc>
+##      <p>
+##      Determine whether auditbeat can
+##      read all files with integrity module.
+## </p>
+## </desc>
+gen_tunable(auditbeat_enable_integrity_module, false)
+
+## <desc>
+##      <p>
+##      Determine whether auditbeat can
+##      read system state with system host module.
+## </p>
+## </desc>
+gen_tunable(auditbeat_enable_system_module, false)
+
+type auditbeat_t;
+type auditbeat_exec_t;
+init_daemon_domain(auditbeat_t, auditbeat_exec_t)
+
+type auditbeat_log_t;
+logging_log_file(auditbeat_log_t)
+
+type auditbeat_etc_t;
+files_type(auditbeat_etc_t)
+
+type auditbeat_var_lib_t;
+files_type(auditbeat_var_lib_t)
+
+########################################
+#
+# auditbeat local policy
+#
+allow auditbeat_t self:fifo_file read;
+allow auditbeat_t self:capability audit_control;
+allow auditbeat_t self:netlink_audit_socket { bind create getattr nlmsg_read nlmsg_write read write nlmsg_readpriv};
+allow auditbeat_t self:process getsched;
+
+# Temporary rule
+corenet_tcp_connect_all_unreserved_ports(auditbeat_t)
+
+manage_dirs_pattern(auditbeat_t, auditbeat_log_t, auditbeat_log_t)
+manage_files_pattern(auditbeat_t, auditbeat_log_t, auditbeat_log_t)
+manage_lnk_files_pattern(auditbeat_t, auditbeat_log_t, auditbeat_log_t)
+logging_log_filetrans(auditbeat_t, auditbeat_log_t, { dir file lnk_file })
+
+allow auditbeat_t auditbeat_var_lib_t:file map;
+manage_dirs_pattern(auditbeat_t, auditbeat_var_lib_t, auditbeat_var_lib_t)
+manage_files_pattern(auditbeat_t, auditbeat_var_lib_t, auditbeat_var_lib_t)
+manage_lnk_files_pattern(auditbeat_t, auditbeat_var_lib_t, auditbeat_var_lib_t)
+files_var_lib_filetrans(auditbeat_t, auditbeat_var_lib_t, { dir file lnk_file })
+
+list_dirs_pattern(auditbeat_t, auditbeat_etc_t, auditbeat_etc_t)
+read_files_pattern(auditbeat_t, auditbeat_etc_t, auditbeat_etc_t)
+read_lnk_files_pattern(auditbeat_t, auditbeat_etc_t, auditbeat_etc_t)
+
+kernel_read_kernel_sysctl(auditbeat_t)
+
+domain_use_interactive_fds(auditbeat_t)
+
+miscfiles_read_generic_certs(auditbeat_t)
+
+miscfiles_read_localization(auditbeat_t)
+
+sysnet_dns_name_resolve(auditbeat_t)
+
+init_dontaudit_read_state(auditbeat_t)
+
+tunable_policy(`auditbeat_enable_system_module',`
+        kernel_read_system_state(auditbeat_t)
+        kernel_read_fs_sysctls(auditbeat_t)
+        kernel_read_sysctl(auditbeat_t)
+
+        files_read_etc_files(auditbeat_t)
+')
+
+tunable_policy(`auditbeat_enable_integrity_module',`
+	files_list_all(auditbeat_t)
+	files_read_all_symlinks(auditbeat_t)
+	#files_read_all_files(auditbeat_t)
+	files_getattr_all_files(auditbeat_t)
+	files_list_non_security(auditbeat_t)
+	files_read_non_auth_files(auditbeat_t)
+	#
+	corecmd_read_all_executables(auditbeat_t)
+')

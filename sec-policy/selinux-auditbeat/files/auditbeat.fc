@@ -1,0 +1,7 @@
+/etc/auditbeat(/.*)?			gen_context(system_u:object_r:auditbeat_etc_t,s0)
+
+/usr/bin/auditbeat		--	gen_context(system_u:object_r:auditbeat_exec_t,s0)
+
+/var/lib/auditbeat(/.*)?		gen_context(system_u:object_r:auditbeat_var_lib_t,s0)
+
+/var/log/auditbeat(/.*)?		gen_context(system_u:object_r:auditbeat_log_t,s0)
