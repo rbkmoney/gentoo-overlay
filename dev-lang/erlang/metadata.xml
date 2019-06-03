@@ -9,8 +9,11 @@
     <flag name="hipe">HIgh Performance Erlang extension</flag>
     <flag name="halfword">Enable halfword emulator</flag>
     <flag name="kpoll">Enable kernel polling support</flag>
-    <flag name="compat-ethread">Enable compatibility with pre-pentium 4 CPUs in the ethread library.</flag>
-  </use>
+    <flag name="compat-ethread">Enable compatibility with pre-pentium 4 CPUs in the ethread library</flag>
+    <flag name="pgo">Enable PGO</flag>
+    <flag name="lcnt">Add lock counters to ErlangVM</flag>
+    <flag name="systemtap">Add dynamic probes and systemtap support</flag>
+</use>
 <longdescription>
 Erlang is a programming language designed at the Ericsson 
 Computer Science Laboratory. Open-source Erlang is being 
