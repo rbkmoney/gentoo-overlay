@@ -1,0 +1,7 @@
+/etc/filebeat(/.*)?		gen_context(system_u:object_r:filebeat_etc_t,s0)
+
+/usr/bin/filebeat		--	gen_context(system_u:object_r:filebeat_exec_t,s0)
+
+/var/lib/filebeat(/.*)?		gen_context(system_u:object_r:filebeat_var_lib_t,s0)
+
+/var/log/filebeat(/.*)?		gen_context(system_u:object_r:filebeat_log_t,s0)

@@ -1,0 +1,54 @@
+policy_module(filebeat, 1.0.0)
+
+########################################
+#
+# Declarations
+#
+
+type filebeat_t;
+type filebeat_exec_t;
+init_daemon_domain(filebeat_t, filebeat_exec_t)
+
+type filebeat_etc_t;
+files_config_file(filebeat_etc_t)
+
+type filebeat_log_t;
+logging_log_file(filebeat_log_t)
+
+type filebeat_var_lib_t;
+files_type(filebeat_var_lib_t)
+
+########################################
+#
+# filebeat local policy
+#
+# Temporary rule
+corenet_tcp_connect_all_unreserved_ports(filebeat_t)
+
+list_dirs_pattern(filebeat_t, filebeat_etc_t, filebeat_etc_t)
+read_files_pattern(filebeat_t, filebeat_etc_t, filebeat_etc_t)
+read_lnk_files_pattern(filebeat_t, filebeat_etc_t, filebeat_etc_t)
+
+manage_dirs_pattern(filebeat_t, filebeat_log_t, filebeat_log_t)
+manage_files_pattern(filebeat_t, filebeat_log_t, filebeat_log_t)
+manage_lnk_files_pattern(filebeat_t, filebeat_log_t, filebeat_log_t)
+logging_log_filetrans(filebeat_t, filebeat_log_t, { dir file lnk_file })
+
+manage_dirs_pattern(filebeat_t, filebeat_var_lib_t, filebeat_var_lib_t)
+manage_files_pattern(filebeat_t, filebeat_var_lib_t, filebeat_var_lib_t)
+manage_lnk_files_pattern(filebeat_t, filebeat_var_lib_t, filebeat_var_lib_t)
+files_var_lib_filetrans(filebeat_t, filebeat_var_lib_t, { dir file lnk_file })
+
+domain_use_interactive_fds(filebeat_t)
+
+files_read_etc_files(filebeat_t)
+
+kernel_read_system_state(filebeat_t)
+
+logging_read_all_logs(filebeat_t)
+
+miscfiles_read_generic_certs(filebeat_t)
+
+miscfiles_read_localization(filebeat_t)
+
+sysnet_dns_name_resolve(filebeat_t)
