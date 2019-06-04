@@ -29,7 +29,7 @@ type auditbeat_log_t;
 logging_log_file(auditbeat_log_t)
 
 type auditbeat_etc_t;
-files_type(auditbeat_etc_t)
+files_config_file(auditbeat_etc_t)
 
 type auditbeat_var_lib_t;
 files_type(auditbeat_var_lib_t)
