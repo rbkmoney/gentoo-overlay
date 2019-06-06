@@ -1,0 +1,24 @@
+#!/sbin/openrc-run
+# Copyright 1999-2018 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+
+INSTANCE="${SVCNAME#*.}"
+if [ -n ${INSTANCE} ]; then
+    name="pmtud.${INSTANCE}"
+    pidfile=/run/pmtud/pmtud.${INSTANCE}.pid
+else
+    name="pmtud"
+    pidfile=/run/pmtud/pmtud.pid
+fi
+command=/usr/sbin/pmtud
+retry="TERM/10/KILL/5"
+command_args="${PMTUD_OPTS}"
+start_stop_daemon_args="--background --make-pidfile"
+
+depend() {
+        use net
+}
+
+start_pre() {
+        checkpath --directory /run/pmtud -o pmtud -m 0700
+}

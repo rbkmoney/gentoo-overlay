@@ -1,0 +1,42 @@
+CC ?= gcc
+BUILD ?= release
+LDOPTS += -Wl,-z,now -Wl,-z,relro -pie
+COPTSWARN = -Wall -Wextra -Wno-unused-parameter -Wpointer-arith
+COPTSSEC = -D_FORTIFY_SOURCE=2
+
+ifeq ($(CC), clang)
+	COPTSSEC+=-fstack-protector-strong
+else
+	COPTSSEC+=-fstack-protector
+endif
+
+COPTSDEBUG=-g -ggdb -O0
+ifeq ($(BUILD), debugaddress)
+	COPTSDEBUG=-g -ggdb -O0 -fsanitize=address -fsanitize=undefined
+endif
+ifeq ($(BUILD), release)
+	MARCH=-march=corei7
+	COPTSDEBUG=-g -ggdb -O3 $(MARCH)
+endif
+
+COPTS+=$(CFLAGS) $(COPTSDEBUG) $(COPTSWARN) $(COPTSSEC) -fPIE \
+	-Ideps/libpcap -I deps/libnfnetlink/include -Ideps/libnetfilter_log/include
+
+all: pmtud
+
+pmtud: src/*.c src/*.h Makefile
+	$(CC) $(COPTS) \
+		src/main.c src/utils.c src/net.c src/uevent.c \
+		src/hashlimit.c src/csiphash.c src/sched.c \
+		src/bitmap.c src/nflog.c \
+		-lnetfilter_log -lpcap \
+		$(LDOPTS) \
+		-o pmtud
+clean:
+	rm -rf pmtud pmtud_*.deb
+
+distclean: clean
+	rm -f lib*.a
+	-(cd deps/libpcap && make clean && make distclean)
+	-(cd deps/libnfnetlink && make clean && make distclean)
+	-(cd deps/libnetfilter_log && make clean && make distclean)
