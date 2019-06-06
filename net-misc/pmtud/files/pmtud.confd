@@ -1,0 +1,4 @@
+# Example config file for /etc/init.d/pmtud
+
+# Run `pmtud --help` for valid cmdline options
+#PMTUD_OPTS=""
