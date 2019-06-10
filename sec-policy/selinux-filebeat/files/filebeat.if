@@ -262,10 +262,6 @@ interface(`filebeat_admin',`
 	allow $1 filebeat_t:process { signal_perms };
 	ps_process_pattern($1, filebeat_t)
 
-    tunable_policy(`deny_ptrace',`',`
-        allow $1 filebeat_t:process ptrace;
-    ')
-
 	files_search_etc($1)
 	admin_pattern($1, filebeat_etc_t)
 

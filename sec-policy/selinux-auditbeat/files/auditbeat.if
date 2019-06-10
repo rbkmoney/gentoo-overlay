@@ -201,10 +201,6 @@ interface(`auditbeat_admin',`
 	allow $1 auditbeat_t:process { signal_perms };
 	ps_process_pattern($1, auditbeat_t)
 
-    tunable_policy(`deny_ptrace',`',`
-        allow $1 auditbeat_t:process ptrace;
-    ')
-
 	logging_search_logs($1)
 	admin_pattern($1, auditbeat_log_t)
 
