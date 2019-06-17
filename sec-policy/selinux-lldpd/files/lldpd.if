@@ -3,25 +3,6 @@
 
 ########################################
 ## <summary>
-##	Execute lldpd_exec_t in the lldpd domain.
-## </summary>
-## <param name="domain">
-## <summary>
-##	Domain allowed to transition.
-## </summary>
-## </param>
-#
-interface(`lldpd_domtrans',`
-	gen_require(`
-		type lldpd_t, lldpd_exec_t;
-	')
-
-	corecmd_search_bin($1)
-	domtrans_pattern($1, lldpd_exec_t, lldpd_t)
-')
-
-########################################
-## <summary>
 ##      Execute a domain transition to run lldpcli.
 ## </summary>
 ## <param name="domain">
@@ -30,13 +11,12 @@ interface(`lldpd_domtrans',`
 ##      </summary>
 ## </param>
 #
-interface(`lldp_cli_domtrans',`
+interface(`lldp_domtrans_cli',`
         gen_require(`
                 type lldp_cli_t, lldp_cli_exec_t;
         ')
 
         corecmd_search_bin($1)
-        can_exec($1, lldp_cli_exec_t)
         domtrans_pattern($1, lldp_cli_exec_t, lldp_cli_t)
 ')
 
@@ -62,108 +42,9 @@ interface(`lldp_cli_run',`
                 type lldp_cli_t;
         ')
 
-        lldp_cli_domtrans($1)
+        lldp_domtrans_cli($1)
         role $2 types lldp_cli_t;
 ')
-
-######################################
-## <summary>
-##	Execute lldpd in the caller domain.
-## </summary>
-## <param name="domain">
-##	<summary>
-##	Domain allowed access.
-##	</summary>
-## </param>
-#
-interface(`lldpd_exec',`
-	gen_require(`
-		type lldpd_exec_t;
-	')
-
-	corecmd_search_bin($1)
-	can_exec($1, lldpd_exec_t)
-')
-
-########################################
-## <summary>
-##	Search lldpd conf directories.
-## </summary>
-## <param name="domain">
-##	<summary>
-##	Domain allowed access.
-##	</summary>
-## </param>
-#
-interface(`lldpd_search_conf',`
-	gen_require(`
-		type lldpd_etc_t;
-	')
-
-	allow $1 lldpd_etc_t:dir search_dir_perms;
-	files_search_etc($1)
-')
-
-########################################
-## <summary>
-##	Read lldpd conf files.
-## </summary>
-## <param name="domain">
-##	<summary>
-##	Domain allowed access.
-##	</summary>
-## </param>
-#
-interface(`lldpd_read_conf_files',`
-	gen_require(`
-		type lldpd_etc_t;
-	')
-
-	allow $1 lldpd_etc_t:dir list_dir_perms;
-	read_files_pattern($1, lldpd_etc_t, lldpd_etc_t)
-	files_search_etc($1)
-')
-
-########################################
-## <summary>
-##	Manage lldpd conf files.
-## </summary>
-## <param name="domain">
-##	<summary>
-##	Domain allowed access.
-##	</summary>
-## </param>
-#
-interface(`lldpd_manage_conf_files',`
-	gen_require(`
-		type lldpd_etc_t;
-	')
-
-	manage_files_pattern($1, lldpd_etc_t, lldpd_etc_t)
-	files_search_etc($1)
-')
-
-########################################
-## <summary>
-##	Create, read, write, and delete
-##      lldpd PID files.
-## </summary>
-## <param name="domain">
-##	<summary>
-##	Domain allowed access.
-##	</summary>
-## </param>
-#
-interface(`lldpd_manage_pid_files',`
-	gen_require(`
-		type lldpd_var_run_t;
-	')
-
-	files_search_pids($1)
-	manage_files_pattern($1, lldpd_var_run_t, lldpd_var_run_t)
-	manage_dirs_pattern($1, lldpd_var_run_t, lldpd_var_run_t)
-')
-
 
 ########################################
 ## <summary>
@@ -185,22 +66,18 @@ interface(`lldpd_manage_pid_files',`
 interface(`lldp_admin',`
 	gen_require(`
 		type lldpd_t;
-		type lldpd_etc_t;
-		type lldpd_var_run_t;
+		type lldpd_conf_t;
+		type lldpd_runtime_t;
 	')
 
 	allow $1 lldpd_t:process { signal_perms };
 	ps_process_pattern($1, lldpd_t)
 
-    tunable_policy(`allow_ptrace',`
-        allow $1 lldpd_t:process ptrace;
-    ')
-
 	files_search_etc($1)
-	admin_pattern($1, lldpd_etc_t)
+	admin_pattern($1, lldpd_conf_t)
 
 	files_search_pids($1)
-	admin_pattern($1, lldpd_var_run_t)
+	admin_pattern($1, lldpd_runtime_t)
 
 	lldp_cli_run($1, $2)
 ')
