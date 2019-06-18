@@ -14,37 +14,35 @@ type lldp_cli_exec_t;
 init_system_domain(lldp_cli_t, lldp_cli_exec_t)
 application_domain(lldp_cli_t, lldp_cli_exec_t)
 
-type lldpd_etc_t;
-files_config_file(lldpd_etc_t)
+type lldpd_conf_t;
+files_config_file(lldpd_conf_t)
 
-type lldpd_var_run_t;
-files_pid_file(lldpd_var_run_t)
-init_daemon_pid_file(lldpd_var_run_t, dir, "lldpd")
-typealias lldpd_var_run_t alias lldp_sock_t;
+type lldpd_runtime_t;
+files_pid_file(lldpd_runtime_t)
+init_daemon_pid_file(lldpd_runtime_t, dir, "lldpd")
 
 ########################################
 #
 # lldpd local policy
 #
-allow lldpd_t self:capability { chown dac_override fowner fsetid kill net_admin net_raw setgid setuid sys_chroot };
+allow lldpd_t self:capability { chown dac_read_search dac_override fowner fsetid kill net_admin net_raw setgid setuid sys_chroot };
 allow lldpd_t self:process { fork signal_perms };
 allow lldpd_t self:fifo_file rw_fifo_file_perms;
-allow lldpd_t self:unix_stream_socket { accept listen };
-allow lldpd_t lldp_sock_t:sock_file { create_sock_file_perms delete_sock_file_perms setattr };
+allow lldpd_t self:unix_stream_socket create_stream_socket_perms;
 allow lldpd_t self:packet_socket create_socket_perms;
 
-lldp_cli_domtrans(lldpd_t)
+lldp_domtrans_cli(lldpd_t)
 
 kernel_read_net_sysctls(lldpd_t)
 
-lldpd_read_conf_files(lldpd_t)
+list_dirs_pattern(lldpd_t, lldpd_conf_t, lldpd_conf_t)
+read_files_pattern(lldpd_t, lldpd_conf_t, lldpd_conf_t)
 
-lldpd_manage_pid_files(lldpd_t)
-manage_sock_files_pattern(lldpd_t, lldpd_var_run_t, lldpd_var_run_t)
-manage_lnk_files_pattern(lldpd_t, lldpd_var_run_t, lldpd_var_run_t)
-files_pid_filetrans(lldpd_t, lldpd_var_run_t, {file dir sock_file})
-
-domain_use_interactive_fds(lldpd_t)
+manage_dirs_pattern(lldpd_t, lldpd_runtime_t, lldpd_runtime_t)
+manage_files_pattern(lldpd_t, lldpd_runtime_t, lldpd_runtime_t)
+manage_sock_files_pattern(lldpd_t, lldpd_runtime_t, lldpd_runtime_t)
+manage_lnk_files_pattern(lldpd_t, lldpd_runtime_t, lldpd_runtime_t)
+files_pid_filetrans(lldpd_t, lldpd_runtime_t, {file dir sock_file})
 
 files_read_etc_files(lldpd_t)
 
@@ -63,10 +61,14 @@ allow lldp_cli_t self:unix_dgram_socket { connect create };
 allow lldp_cli_t self:unix_stream_socket { connect create read write };
 allow lldp_cli_t self:process signal;
 
-allow lldp_cli_t lldpd_t:unix_stream_socket connectto;
-allow lldp_cli_t lldpd_var_run_t:sock_file { read write };
+allow lldp_cli_t lldpd_runtime_t:sock_file read_sock_file_perms;
+stream_connect_pattern(lldp_cli_t, lldpd_runtime_t, lldpd_runtime_t, lldpd_t)
 
-lldpd_read_conf_files(lldp_cli_t)
+domain_use_interactive_fds(lldp_cli_t)
+
+files_search_etc(lldp_cli_t)
+list_dirs_pattern(lldp_cli_t, lldpd_conf_t, lldpd_conf_t)
+read_files_pattern(lldp_cli_t, lldpd_conf_t, lldpd_conf_t)
 
 logging_send_syslog_msg(lldp_cli_t)
 
@@ -74,15 +76,12 @@ files_dontaudit_read_etc_files(lldp_cli_t)
 
 miscfiles_read_localization(lldp_cli_t)
 
-domain_use_interactive_fds(lldp_cli_t)
 userdom_use_user_ptys(lldp_cli_t)
-
-init_dontaudit_use_script_ptys(lldp_cli_t)
 
 optional_policy(`
         gen_require(`
                 type sysadm_t;
-		role sysadm_r;
+                role sysadm_r;
         ')
-	lldp_admin(sysadm_t, sysadm_r)
+        lldp_admin(sysadm_t, sysadm_r)
 ')
