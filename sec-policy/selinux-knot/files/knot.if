@@ -1,0 +1,198 @@
+
+## <summary>policy for knotc</summary>
+
+########################################
+## <summary>
+##	Execute knotd_exec_t in the knotd domain.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`knotd_domtrans',`
+	gen_require(`
+		type knotd_t, knotd_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	domtrans_pattern($1, knotd_exec_t, knotd_t)
+')
+
+######################################
+## <summary>
+##	Execute knotd in the caller domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`knotd_exec',`
+	gen_require(`
+		type knotd_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	can_exec($1, knotd_exec_t)
+')
+
+########################################
+## <summary>
+##      Knotd /run files transitions.
+## </summary>
+## <param name="domain">
+##      <summary>
+##      Domain allowed access.
+##      </summary>
+## </param>
+#
+interface(`knot_var_run_trans',`
+        gen_require(`
+		type knot_var_run_t;
+                type var_run_t;
+                type tmpfiles_t;
+        ')
+
+        manage_dirs_pattern($1, knot_var_run_t, knot_var_run_t)
+        manage_files_pattern($1, knot_var_run_t, knot_var_run_t)
+        manage_lnk_files_pattern($1, knot_var_run_t, knot_var_run_t)
+	manage_sock_files_pattern($1, knot_var_run_t, knot_var_run_t)
+	search_dirs_pattern($1, knot_var_run_t, knot_var_run_t)
+	files_pid_filetrans($1, knot_var_run_t, { file dir sock_file})
+        filetrans_pattern(tmpfiles_t, var_run_t, knot_var_run_t, dir, "knot")
+')
+
+########################################
+## <summary>
+##      Knot /var/lib files mamange.
+## </summary>
+## <param name="domain">
+##      <summary>
+##      Domain allowed access.
+##      </summary>
+## </param>
+#
+interface(`knot_var_lib_manage',`
+        gen_require(`
+                type knot_var_lib_t;
+        ')
+
+        manage_dirs_pattern($1, knot_var_lib_t, knot_var_lib_t)
+        manage_files_pattern($1, knot_var_lib_t, knot_var_lib_t)
+        manage_lnk_files_pattern($1, knot_var_lib_t, knot_var_lib_t)
+        allow $1 knot_var_lib_t:file map;
+        files_var_lib_filetrans($1, knot_var_lib_t, { file dir })
+')
+
+########################################
+## <summary>
+##      Knotd /var/lib files transitions.
+## </summary>
+## <param name="domain">
+##      <summary>
+##      Domain allowed access.
+##      </summary>
+## </param>
+#
+interface(`knot_var_lib_trans',`
+        gen_require(`
+		type knot_var_lib_t;
+                type var_lib_t;
+                type tmpfiles_t;
+        ')
+
+	knot_var_lib_manage($1)
+        filetrans_pattern(tmpfiles_t, var_lib_t, knot_var_lib_t, dir, "knot")
+')
+
+########################################
+## <summary>
+##      Knot /etc/knot files read.
+## </summary>
+## <param name="domain">
+##      <summary>
+##      Domain allowed access.
+##      </summary>
+## </param>
+#
+interface(`knot_etc_t_read',`
+        gen_require(`
+                type knot_etc_t;
+                type initrc_t;
+        ')
+
+        mmap_read_files_pattern($1, knot_etc_t, knot_etc_t)
+	read_files_pattern(initrc_t, knot_etc_t, knot_etc_t)
+')
+
+########################################
+## <summary>
+##      Knot /tmp files transitions.
+## </summary>
+## <param name="domain">
+##      <summary>
+##      Domain allowed access.
+##      </summary>
+## </param>
+#
+interface(`knot_tmp_trans',`
+        gen_require(`
+                type knot_tmp_t;
+        ')
+
+	files_tmp_filetrans($1, knot_tmp_t, { file dir })
+	allow $1 knot_tmp_t:file map;
+	allow $1 knot_tmp_t:file manage_file_perms;
+	allow $1 knot_tmp_t:dir manage_dir_perms;
+')
+
+########################################
+## <summary>
+##      Execute knotc_exec_t in the knotc domain.
+## </summary>
+## <param name="domain">
+## <summary>
+##      Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`knotc_domtrans',`
+        gen_require(`
+                type knotc_t, knotc_exec_t;
+        ')
+
+        corecmd_search_bin($1)
+        domtrans_pattern($1, knotc_exec_t, knotc_t)
+')
+
+########################################
+## <summary>
+##      Role access for knotc
+## </summary>
+## <param name="role">
+##      <summary>
+##      Role allowed access
+##      </summary>
+## </param>
+## <param name="domain">
+##      <summary>
+##      User domain for the role
+##      </summary>
+## </param>
+#
+interface(`knotc_role',`
+        gen_require(`
+                type knotc_t;
+                attribute_role knotc_roles;
+        ')
+
+        roleattribute $1 knotc_roles;
+
+        knotc_domtrans($2)
+
+        ps_process_pattern($2, knotc_t)
+        allow $2 knotc_t:process { signull signal sigkill };
+')
