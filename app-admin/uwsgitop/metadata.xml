@@ -2,7 +2,7 @@
 <!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
   <maintainer>
-    <email>ki@bakka.su</email>
-    <description>In baka-bakka overlay.</description>
+    <email>devops@rbkmoney.com</email>
+    <description>In rbkmoney overlay.</description>
   </maintainer>
 </pkgmetadata>
