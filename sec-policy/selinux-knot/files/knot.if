@@ -41,7 +41,7 @@ interface(`knotd_exec',`
 
 ########################################
 ## <summary>
-##      Knotd /run files transitions.
+##      Manage knot runtime files.
 ## </summary>
 ## <param name="domain">
 ##      <summary>
@@ -49,20 +49,20 @@ interface(`knotd_exec',`
 ##      </summary>
 ## </param>
 #
-interface(`knot_var_run_trans',`
+interface(`knot_manage_runtime_files',`
         gen_require(`
-		type knot_var_run_t;
+		type knot_runtime_t;
                 type var_run_t;
                 type tmpfiles_t;
         ')
 
-        manage_dirs_pattern($1, knot_var_run_t, knot_var_run_t)
-        manage_files_pattern($1, knot_var_run_t, knot_var_run_t)
-        manage_lnk_files_pattern($1, knot_var_run_t, knot_var_run_t)
-	manage_sock_files_pattern($1, knot_var_run_t, knot_var_run_t)
-	search_dirs_pattern($1, knot_var_run_t, knot_var_run_t)
-	files_pid_filetrans($1, knot_var_run_t, { file dir sock_file})
-        filetrans_pattern(tmpfiles_t, var_run_t, knot_var_run_t, dir, "knot")
+        manage_dirs_pattern($1, knot_runtime_t, knot_runtime_t)
+        manage_files_pattern($1, knot_runtime_t, knot_runtime_t)
+        manage_lnk_files_pattern($1, knot_runtime_t, knot_runtime_t)
+	manage_sock_files_pattern($1, knot_runtime_t, knot_runtime_t)
+	search_dirs_pattern($1, knot_runtime_t, knot_runtime_t)
+	files_pid_filetrans($1, knot_runtime_t, { file dir sock_file})
+        filetrans_pattern(tmpfiles_t, var_run_t, knot_runtime_t, dir, "knot")
 ')
 
 ########################################
@@ -75,7 +75,7 @@ interface(`knot_var_run_trans',`
 ##      </summary>
 ## </param>
 #
-interface(`knot_var_lib_manage',`
+interface(`knot_manage_var_lib_files',`
         gen_require(`
                 type knot_var_lib_t;
         ')
@@ -104,7 +104,7 @@ interface(`knot_var_lib_trans',`
                 type tmpfiles_t;
         ')
 
-	knot_var_lib_manage($1)
+	knot_manage_var_lib_files($1)
         filetrans_pattern(tmpfiles_t, var_lib_t, knot_var_lib_t, dir, "knot")
 ')
 
@@ -118,19 +118,19 @@ interface(`knot_var_lib_trans',`
 ##      </summary>
 ## </param>
 #
-interface(`knot_etc_t_read',`
+interface(`knot_read_conf',`
         gen_require(`
-                type knot_etc_t;
+                type knot_conf_t;
                 type initrc_t;
         ')
 
-        mmap_read_files_pattern($1, knot_etc_t, knot_etc_t)
-	read_files_pattern(initrc_t, knot_etc_t, knot_etc_t)
+        mmap_read_files_pattern($1, knot_conf_t, knot_conf_t)
+	read_files_pattern(initrc_t, knot_conf_t, knot_conf_t)
 ')
 
 ########################################
 ## <summary>
-##      Knot /tmp files transitions.
+##      Manage knot temporary files.
 ## </summary>
 ## <param name="domain">
 ##      <summary>
@@ -138,7 +138,7 @@ interface(`knot_etc_t_read',`
 ##      </summary>
 ## </param>
 #
-interface(`knot_tmp_trans',`
+interface(`knot_manage_tmpfs_files',`
         gen_require(`
                 type knot_tmp_t;
         ')

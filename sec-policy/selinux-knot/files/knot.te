@@ -18,11 +18,11 @@ role knotc_roles types knotc_t;
 attribute_role knotc_roles;
 roleattribute system_r knotc_roles;
 
-type knot_etc_t;
-files_type(knot_etc_t)
+type knot_conf_t;
+files_type(knot_conf_t)
 
-type knot_var_run_t;
-files_pid_file(knot_var_run_t)
+type knot_runtime_t;
+files_pid_file(knot_runtime_t)
 
 type knot_var_lib_t;
 files_type(knot_var_lib_t)
@@ -38,26 +38,26 @@ allow knotd_t self:capability { setgid setuid dac_read_search };
 allow knotd_t self:process { fork signal_perms getcap getsched setsched };
 allow knotd_t self:tcp_socket create_stream_socket_perms;
 allow knotd_t self:udp_socket create_stream_socket_perms;
-allow knotd_t self:unix_stream_socket { listen accept };
+allow knotd_t self:unix_stream_socket create_stream_socket_perms;
 
 corenet_tcp_bind_generic_node(knotd_t)
 corenet_udp_bind_generic_node(knotd_t)
 corenet_tcp_bind_dns_port(knotd_t)
 corenet_udp_bind_dns_port(knotd_t)
 
-knot_etc_t_read(knotd_t)
-knot_var_run_trans(knotd_t)
-knot_var_lib_trans(knotd_t)
-knot_tmp_trans(knotd_t)
-
 kernel_read_kernel_sysctls(knotd_t)
 
-fs_getattr_xattr_fs(knotd_t)
+knot_read_conf(knotd_t)
+knot_manage_runtime_files(knotd_t)
+knot_var_lib_trans(knotd_t)
+knot_manage_tmpfs_files(knotd_t)
+
+#fs_getattr_xattr_fs(knotd_t)
 fs_dontaudit_getattr_tmpfs(knotd_t)
 
 files_read_etc_files(knotd_t)
 
-auth_use_nsswitch(knotd_t)
+#auth_use_nsswitch(knotd_t)
 
 logging_send_syslog_msg(knotd_t)
 
@@ -69,21 +69,21 @@ miscfiles_read_localization(knotd_t)
 #
 
 allow knotc_t self:capability { dac_override dac_read_search };
-allow knotc_t knotd_t:unix_stream_socket connectto;
-allow knotc_t knot_var_run_t:dir search;
-allow knotc_t knot_var_run_t:sock_file write_sock_file_perms;
 
-knot_etc_t_read(knotc_t)
-knot_tmp_trans(knotc_t)
-knot_var_lib_manage(knotc_t)
+stream_connect_pattern(knotc_t, knot_runtime_t, knot_runtime_t, knotd_t)
+
+knot_read_conf(knotc_t)
+knot_manage_tmpfs_files(knotc_t)
+knot_manage_var_lib_files(knotc_t)
+
+domain_use_interactive_fds(knotc_t)
+
+miscfiles_read_localization(knotc_t)
+
+userdom_use_user_ptys(knotc_t)
 
 fs_dontaudit_getattr_tmpfs(knotc_t)
 files_dontaudit_search_var_lib(knotc_t)
-
-domain_use_interactive_fds(knotc_t)
-userdom_use_user_ptys(knotc_t)
-
-miscfiles_read_localization(knotc_t)
 
 optional_policy(`
         gen_require(`
