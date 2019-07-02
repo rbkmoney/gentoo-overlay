@@ -56,15 +56,14 @@ knot_manage_runtime_files(knotd_t)
 knot_var_lib_trans(knotd_t)
 knot_manage_tmpfs_files(knotd_t)
 
-#fs_getattr_xattr_fs(knotd_t)
-fs_dontaudit_getattr_tmpfs(knotd_t)
-
 # Read /etc/passwd
 files_read_etc_files(knotd_t)
 # Read /etc/{resolv.conf,hosts}
 sysnet_read_config(knotd_t)
 
-#auth_use_nsswitch(knotd_t)
+fs_dontaudit_getattr_xattr_fs(knotd_t)
+
+fs_dontaudit_getattr_tmpfs(knotd_t)
 
 logging_send_syslog_msg(knotd_t)
 
@@ -83,14 +82,15 @@ knot_read_conf(knotc_t)
 knot_manage_tmpfs_files(knotc_t)
 knot_manage_var_lib_files(knotc_t)
 
+files_dontaudit_search_var_lib(knotc_t)
+
+fs_dontaudit_getattr_tmpfs(knotc_t)
+
 domain_use_interactive_fds(knotc_t)
 
 miscfiles_read_localization(knotc_t)
 
 userdom_use_user_ptys(knotc_t)
-
-fs_dontaudit_getattr_tmpfs(knotc_t)
-files_dontaudit_search_var_lib(knotc_t)
 
 optional_policy(`
         gen_require(`
