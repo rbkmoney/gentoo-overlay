@@ -43,11 +43,11 @@ allow knotd_t self:unix_stream_socket create_stream_socket_perms;
 corenet_tcp_bind_generic_node(knotd_t)
 corenet_udp_bind_generic_node(knotd_t)
 
-corenet_sendrecv_dns_server_packets(nsd_t)
+corenet_sendrecv_dns_server_packets(knotd_t)
 corenet_tcp_bind_dns_port(knotd_t)
 corenet_udp_bind_dns_port(knotd_t)
 # Slave replication
-#corenet_tcp_connect_dns_port(knotd_t)
+corenet_tcp_connect_dns_port(knotd_t)
 
 kernel_read_kernel_sysctls(knotd_t)
 
