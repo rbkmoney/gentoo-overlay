@@ -39,3 +39,12 @@ allow portage_t portage_ebuild_t:file map;
 allow portage_t cert_t:file map;
 kernel_mounton_proc(portage_t)
 kernel_mount_proc(portage_t)
+
+
+optional_policy(`
+	gen_require(`
+		type salt_minion_t;
+	')
+
+	corenet_udp_bind_generic_node(salt_minion_t)
+')
