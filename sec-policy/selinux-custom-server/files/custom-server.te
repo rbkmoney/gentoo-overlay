@@ -37,3 +37,5 @@ gen_require(`
 allow portage_t portage_ebuild_t:file map;
 # type=AVC msg=audit(1563493740.990:255278): avc:  denied  { map } for  pid=25705 comm="trust" path="/etc/ssl/certs/ca-certificates.crt" dev="xvda" ino=65306702 scontext=system_u:system_r:portage_t:s0-s0:c0.c1023 tcontext=system_u:object_r:cert_t:s0 tclass=file permissive=0
 allow portage_t cert_t:file map;
+kernel_mounton_proc(portage_t)
+kernel_mount_proc(portage_t)
