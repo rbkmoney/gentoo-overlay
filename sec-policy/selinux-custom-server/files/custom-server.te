@@ -46,5 +46,6 @@ optional_policy(`
 		type salt_minion_t;
 	')
 
+	# dnspython support
 	corenet_udp_bind_generic_node(salt_minion_t)
 ')
