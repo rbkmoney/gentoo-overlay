@@ -31,7 +31,7 @@ optional_policy(`
 # Allow users to manage Postges DB and config files optional policy
 optional_policy(`
 	gen_require(`
-		type user_t;
+		type user_t, postgresql_db_t, postgresql_etc_t;
 	')
 
 	gen_tunable(allow_user_manage_postgresql_files, false)
