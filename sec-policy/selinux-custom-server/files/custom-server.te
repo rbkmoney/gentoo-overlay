@@ -17,16 +17,24 @@ gen_tunable(nginx_can_read_ebuild, false)
 
 # NGINX optional policy
 optional_policy(`
-  gen_require(`
-    type nginx_t;
-  ')
+	gen_require(`
+		type nginx_t;
+	')
 
-  allow nginx_t self:capability { dac_override dac_read_search };
+	allow nginx_t self:capability { dac_override dac_read_search };
 
-  tunable_policy(`nginx_can_read_ebuild',`
-    portage_read_ebuild(nginx_t)
-  ')
+	tunable_policy(`nginx_can_read_ebuild',`
+		portage_read_ebuild(nginx_t)
+	')
+')
 
+# Postges home dir (/var/lib/postgresql) optional tuning
+optional_policy(`
+	gen_require(`
+		type sshd_t;
+	')
+
+	postgresql_search_db(sshd_t)
 ')
 
 gen_require(`
