@@ -51,6 +51,7 @@ PATCHES=(
 	"${FILESDIR}/${PN}-custom-autoconf.patch"
 	"${FILESDIR}/${PN}-21.3-lto.patch"
 	"${FILESDIR}/${PN}-21.3-pgo-loop.patch"
+	"${FILESDIR}/${PN}-logger-fd-leak.patch"
 )
 
 SITEFILE=50"${PN}"-gentoo.el
