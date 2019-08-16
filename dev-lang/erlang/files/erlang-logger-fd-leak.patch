@@ -1,0 +1,28 @@
+From d63712d2e59c6a861822fe1a2d1cd2abb9a4ff63 Mon Sep 17 00:00:00 2001
+From: Sergey Yelin <elinsn@gmail.com>
+Date: Tue, 23 Jul 2019 14:35:44 +0300
+Subject: [PATCH] Close log files in case of inode change properly
+
+---
+ lib/kernel/src/logger_std_h.erl | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/kernel/src/logger_std_h.erl b/lib/kernel/src/logger_std_h.erl
+index c8f1acfca4f..0e46257f996 100644
+--- a/lib/kernel/src/logger_std_h.erl
++++ b/lib/kernel/src/logger_std_h.erl
+@@ -455,12 +455,12 @@ maybe_ensure_file(State) ->
+ %% In order to play well with tools like logrotate, we need to be able
+ %% to re-create the file if it has disappeared (e.g. if rotated by
+ %% logrotate)
+-ensure_file(#{fd:=Fd0,inode:=INode0,file_name:=FileName,modes:=Modes}=State) ->
++ensure_file(#{inode:=INode0,file_name:=FileName,modes:=Modes}=State) ->
+     case file:read_file_info(FileName,[raw]) of
+         {ok,#file_info{inode=INode0}} ->
+             State#{last_check=>timestamp()};
+         _ ->
+-            close_log_file(Fd0),
++            close_log_file(State),
+             case file:open(FileName,Modes) of
+                 {ok,Fd} ->
+                     {ok,#file_info{inode=INode}} =
