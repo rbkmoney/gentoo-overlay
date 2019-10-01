@@ -6,7 +6,6 @@ EAPI=7
 inherit git-r3
 DESCRIPTION="Open Distro for Elasticsearch Security"
 HOMEPAGE="https://github.com/opendistro-for-elasticsearch/"
-EGIT_BRANCH_OPENDISTRO_FOR_ELASTICSEARCH_SECURITY_KIBANA_PLUGIN="opendistro-1.2"
 
 declare -A my_dep_repo=(
 	[security_kibana_plugin]="https://github.com/opendistro-for-elasticsearch/security-kibana-plugin"
