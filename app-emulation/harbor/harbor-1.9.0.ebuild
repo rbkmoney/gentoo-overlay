@@ -18,12 +18,15 @@ LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="amd64 ~x86"
 IUSE="+core jobservice portal registryctl"
+REQUIRED_USE="|| ( core jobservice portal registryctl )"
 
 DEPEND="dev-lang/go
 		net-libs/nodejs
 		<dev-python/pyyaml-4"
 RDEPEND="portal? ( virtual/httpd-php )"
 BDEPEND=""
+
+WEBAPP_MANUAL_SLOT="yes"
 
 pkg_setup() {
 
