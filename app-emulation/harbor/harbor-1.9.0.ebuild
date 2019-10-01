@@ -53,15 +53,15 @@ src_install() {
 
 		if use portal; then
 
-        	webapp_src_preinst
+			webapp_src_preinst
 
-        	insinto "${MY_HTDOCSDIR}"
+			insinto "${MY_HTDOCSDIR}"
 			doins -r ${S}/src/portal/dist/*
-	        doins ${S}/docs/swagger.yaml
-    	    doins ${S}/src/portal/swagger.json
-        	doins ${S}/src/portal/lib/LICENSE
+			doins ${S}/docs/swagger.yaml
+			doins ${S}/src/portal/swagger.json
+			doins ${S}/src/portal/lib/LICENSE
 
-        	webapp_src_install
+			webapp_src_install
 
 		fi
 }
