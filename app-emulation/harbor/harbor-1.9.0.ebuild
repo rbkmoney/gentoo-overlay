@@ -50,7 +50,7 @@ src_compile() {
 }
 
 src_install() {
-		use core && newbin ${GOBIN}/core ${PN}-core
+		use core && newbin ${GOBIN}/core ${PN}-core && doinitd ${FILESDIR}/harbor-core.init.d
 		use jobservice && newbin ${GOBIN}/jobservice ${PN}-jobservice
 		use registryctl && newbin ${GOBIN}/registryctl ${PN}-registryctl
 
