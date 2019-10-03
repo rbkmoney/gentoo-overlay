@@ -62,5 +62,6 @@ src_compile() {
 	mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true -P advanced || die
 }
 src_install() {
+	dodir "/usr/share/elasticsearch/plugins/${PN}"
 	unzip "target/releases/opendistro_security-${PV}.zip" -d "${D}/usr/share/elasticsearch/plugins/${PN}" || die
 }
