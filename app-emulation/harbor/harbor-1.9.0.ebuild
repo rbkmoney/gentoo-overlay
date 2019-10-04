@@ -9,6 +9,8 @@ GOLANG_PKG_HAVE_TEST=1
 GOLANG_PKG_BUILDPATH="/src/core /src/jobservice /src/registryctl"
 GOLANG_PKG_HAVE_TEST=1
 
+WEBAPP_OPTIONAL="yes"
+
 inherit user golang-single webapp
 
 DESCRIPTION="An open source trusted cloud native registry project that stores, signs, and scans content."
@@ -23,7 +25,7 @@ REQUIRED_USE="|| ( core jobservice portal registryctl )"
 DEPEND="dev-lang/go
 		net-libs/nodejs
 		<dev-python/pyyaml-4"
-RDEPEND="portal? ( virtual/httpd-php )"
+RDEPEND="portal? ( app-admin/webapp-config )"
 BDEPEND=""
 
 WEBAPP_MANUAL_SLOT="yes"
@@ -50,7 +52,7 @@ src_compile() {
 }
 
 src_install() {
-		use core && newbin ${GOBIN}/core ${PN}-core && doinitd ${FILESDIR}/harbor-core.init.d
+		use core && newbin ${GOBIN}/core ${PN}-core && newinitd ${FILESDIR}/harbor-core.initd harbor-core
 		use jobservice && newbin ${GOBIN}/jobservice ${PN}-jobservice
 		use registryctl && newbin ${GOBIN}/registryctl ${PN}-registryctl
 
