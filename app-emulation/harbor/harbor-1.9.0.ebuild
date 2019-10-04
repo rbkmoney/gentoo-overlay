@@ -23,8 +23,8 @@ IUSE="+core jobservice portal registryctl"
 REQUIRED_USE="|| ( core jobservice portal registryctl )"
 
 DEPEND="dev-lang/go
-		net-libs/nodejs
-		<dev-python/pyyaml-4"
+		portal? ( net-libs/nodejs
+		<dev-python/pyyaml-4 )"
 RDEPEND="portal? ( app-admin/webapp-config )"
 BDEPEND=""
 
@@ -41,7 +41,10 @@ pkg_setup() {
 }
 
 src_compile() {
+	if use core || use jobservice || use registryctl; then
 		golang-single_src_compile
+	fi
+	if use portal; then
 		cd ${S}/src/portal
 		python2 -c 'import sys, yaml, json; y=yaml.load(sys.stdin.read()); print json.dumps(y)' < ../../docs/swagger.yaml > swagger.json
 		npm config set prefix "${PWD}/usr"
@@ -49,24 +52,25 @@ src_compile() {
 		npm run build_lib
 		npm run link_lib
 		node --max_old_space_size=8192 'node_modules/@angular/cli/bin/ng' build --prod
+	fi
 }
 
 src_install() {
-		use core && newbin ${GOBIN}/core ${PN}-core && newinitd ${FILESDIR}/harbor-core.initd harbor-core
-		use jobservice && newbin ${GOBIN}/jobservice ${PN}-jobservice
-		use registryctl && newbin ${GOBIN}/registryctl ${PN}-registryctl
+	use core && newbin ${GOBIN}/core ${PN}-core && newinitd ${FILESDIR}/harbor-core.initd harbor-core
+	use jobservice && newbin ${GOBIN}/jobservice ${PN}-jobservice
+	use registryctl && newbin ${GOBIN}/registryctl ${PN}-registryctl
 
-		if use portal; then
+	if use portal; then
 
-			webapp_src_preinst
+		webapp_src_preinst
 
-			insinto "${MY_HTDOCSDIR}"
-			doins -r ${S}/src/portal/dist/*
-			doins ${S}/docs/swagger.yaml
-			doins ${S}/src/portal/swagger.json
-			doins ${S}/src/portal/lib/LICENSE
+		insinto "${MY_HTDOCSDIR}"
+		doins -r ${S}/src/portal/dist/*
+		doins ${S}/docs/swagger.yaml
+		doins ${S}/src/portal/swagger.json
+		doins ${S}/src/portal/lib/LICENSE
 
-			webapp_src_install
+		webapp_src_install
 
-		fi
+	fi
 }
