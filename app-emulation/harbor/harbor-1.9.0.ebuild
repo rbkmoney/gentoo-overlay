@@ -56,10 +56,14 @@ src_compile() {
 }
 
 src_install() {
-	use core && newbin ${GOBIN}/core ${PN}-core \
-		&& newinitd ${FILESDIR}/harbor-core.initd harbor-core \
-		&& insinto /etc/harbor/core \
-		&& newins ${FILESDIR}/core.env env
+	if use core; then
+		newbin ${GOBIN}/core ${PN}-core
+		newinitd ${FILESDIR}/harbor-core.initd harbor-core
+		insinto /etc/harbor/core
+		newins ${FILESDIR}/core.env env
+		insinto /usr/share/${PN}/
+		doins -r ${S}/make/migrations
+	fi
 	use jobservice && newbin ${GOBIN}/jobservice ${PN}-jobservice
 	use registryctl && newbin ${GOBIN}/registryctl ${PN}-registryctl
 
