@@ -1,4 +1,4 @@
-# Copyright 2019 RBK.money
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -18,7 +18,8 @@ declare -A my_dep_ref=(
 	[security_advanced]="refs/tags/v${PV}"
 )
 S="${WORKDIR}/security"
-INSTALL_PATH="/usr/share/elasticsearch/plugins_archive/"
+PLUGIN_NAME="opendistro_security-${PV}"
+INSTALL_PATH="/usr/share/elasticsearch/plugins/${PLUGIN_NAME}"
 
 LICENSE="MIT"
 SLOT="0"
@@ -27,7 +28,7 @@ KEYWORDS="~amd64"
 COMMON_DEPS="dev-libs/openssl:0
 	virtual/jdk:11"
 RDEPEND="${COMMON_DEPS}
-	=app-misc/elasticsearch-7.2.0"
+	~app-misc/elasticsearch-7.2.0"
 DEPEND="${COMMON_DEPS}
 	dev-java/maven-bin
 	app-arch/unzip"
@@ -62,6 +63,6 @@ src_compile() {
 	mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true -P advanced || die
 }
 src_install() {
-	dodir "/usr/share/elasticsearch/plugins/${PN}"
-	unzip "target/releases/opendistro_security-${PV}.zip" -d "${D}/usr/share/elasticsearch/plugins/${PN}" || die
+	dodir "${INSTALL_PATH}"
+	unzip "target/releases/${PLUGIN_NAME}.zip" -d "${D}${INSTALL_PATH}" || die
 }

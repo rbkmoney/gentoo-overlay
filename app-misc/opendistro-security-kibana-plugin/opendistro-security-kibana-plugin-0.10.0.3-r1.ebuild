@@ -1,32 +1,34 @@
-# Copyright 2019 RBK.money
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
 inherit git-r3
-DESCRIPTION="Open Distro for Elasticsearch Security"
+DESCRIPTION="Open Distro security Kibana plugin"
 HOMEPAGE="https://github.com/opendistro-for-elasticsearch/"
 
 declare -A my_dep_repo=(
-	[security_kibana_plugin]="https://github.com/rbkmoney/opendistro-security-kibana-plugin"
-	[security_parent]="https://github.com/rbkmoney/opendistro-security-parent"
+	[security_kibana_plugin]="https://github.com/opendistro-for-elasticsearch/security-kibana-plugin"
+	[security_parent]="https://github.com/opendistro-for-elasticsearch/security-parent"
 )
 declare -A my_dep_ref=(
-	[security_kibana_plugin]="b102040d0c4442cbd9bf96a8b5fe709f64e057d2"
-	[security_parent]="b3ddd5c012904f00c8765194790fb4558ca8da36"
+	[security_kibana_plugin]="refs/tags/v${PV}"
+	[security_parent]="refs/tags/v0.10.0.1"
 )
 S="${WORKDIR}/security_kibana_plugin"
-INSTALL_PATH="/usr/share/elasticsearch/plugins_archive/"
-PLUGIN_NAME="opendistro_security_kibana_plugin-${PV}-rbkmoney"
+PLUGIN_NAME="opendistro_security_kibana_plugin-${PV}"
+INSTALL_PATH="/var/lib/kibana/plugins/${PLUGIN_NAME}"
 
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64"
 
-RDEPEND=""
-DEPEND=">=virtual/jdk-1.8:*
-	>=net-libs/nodejs-8.15.1
-	dev-java/maven-bin"
+RDEPEND=">=net-libs/nodejs-10.16
+	~www-apps/kibana-bin-6.8.1"
+DEPEND="${RDEPEND}
+	virtual/jdk:11
+	dev-java/maven-bin
+	app-arch/unzip"
 
 my_fetch_dep() {
 	local name="${1}"
@@ -64,11 +66,6 @@ src_compile() {
 }
 
 src_install() {
-	insinto ${INSTALL_PATH}
-	doins target/releases/${PLUGIN_NAME}.zip
-}
-
-pkg_postinst() {
-	elog "You may install plugin by executing command:"
-	elog "/usr/share/elasticsearch/bin/elasticsearch-plugin install -b file://${INSTALL_PATH}${PLUGIN_NAME}.zip"
+	dodir "${INSTALL_PATH}"
+	unzip "target/releases/${PLUGIN_NAME}.zip" -d "${D}${INSTALL_PATH}" || die
 }

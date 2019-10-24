@@ -1,4 +1,4 @@
-# Copyright 2019 RBK.money
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -10,24 +10,31 @@ HOMEPAGE="https://github.com/opendistro-for-elasticsearch/"
 declare -A my_dep_repo=(
 	[security]="https://github.com/opendistro-for-elasticsearch/security"
 	[security_parent]="https://github.com/opendistro-for-elasticsearch/security-parent"
+	[security_ssl]="https://github.com/opendistro-for-elasticsearch/security-ssl"
 	[security_advanced]="https://github.com/opendistro-for-elasticsearch/security-advanced-modules"
 )
 declare -A my_dep_ref=(
 	[security]="refs/tags/v${PV}"
 	[security_parent]="refs/tags/v${PV}"
 	[security_advanced]="refs/tags/v${PV}"
+	[security_ssl]="refs/tags/v${PV}"
 )
 S="${WORKDIR}/security"
-INSTALL_PATH="/usr/share/elasticsearch/plugins_archive/"
+PLUGIN_NAME="opendistro_security-${PV}"
+INSTALL_PATH="/usr/share/elasticsearch/plugins/${PLUGIN_NAME}"
 
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64"
+RESTRICT="mirror"
 
-RDEPEND="dev-libs/openssl:0
+COMMON_DEPS="dev-libs/openssl:0
 	virtual/jdk:11"
-DEPEND="${RDEPEND}
-	dev-java/maven-bin"
+RDEPEND="${COMMON_DEPS}
+	~app-misc/elasticsearch-6.8.1"
+DEPEND="${COMMON_DEPS}
+	dev-java/maven-bin
+	app-arch/unzip"
 
 my_fetch_dep() {
 	local name="${1}"
@@ -43,7 +50,7 @@ my_compile_dep() {
 	cd "${S}" || die
 }
 src_unpack() {
-	for name in security security_parent security_advanced; do
+	for name in security security_parent security_ssl security_advanced; do
 		my_fetch_dep "${name}"
 	done
 }
@@ -52,18 +59,13 @@ src_prepare() {
 	eapply_user
 }
 src_compile() {
-	for name in security_parent security security_advanced; do
+	for name in security_parent security_ssl security security_advanced; do
 		my_compile_dep "${name}"
 	done
 	# Package security and security-advanced as plugin
 	mvn install -Dmaven.repo.local="${WORKDIR}"/.m2/repository -DskipTests=true -P advanced || die
 }
 src_install() {
-	insinto ${INSTALL_PATH}
-	doins target/releases/opendistro_security-${PV}.zip
-}
-
-pkg_postinst() {
-	elog "You may install plugin by executing command:"
-	elog "/usr/share/elasticsearch/bin/elasticsearch-plugin install -b file://${INSTALL_PATH}opendistro_security-${PV}-rbkmoney.zip"
+	dodir "${INSTALL_PATH}"
+	unzip "target/releases/${PLUGIN_NAME}.zip" -d "${D}${INSTALL_PATH}" || die
 }

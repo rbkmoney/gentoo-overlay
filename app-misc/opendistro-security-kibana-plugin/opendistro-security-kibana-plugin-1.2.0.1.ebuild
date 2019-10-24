@@ -1,10 +1,10 @@
-# Copyright 2019 RBK.money
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
 inherit git-r3
-DESCRIPTION="Open Distro for Elasticsearch Security"
+DESCRIPTION="Open Distro security Kibana plugin"
 HOMEPAGE="https://github.com/opendistro-for-elasticsearch/"
 
 declare -A my_dep_repo=(
@@ -16,8 +16,8 @@ declare -A my_dep_ref=(
 	[security_parent]="refs/tags/v1.2.0.0"
 )
 S="${WORKDIR}/security_kibana_plugin"
-INSTALL_PATH="/usr/share/elasticsearch/plugins_archive/"
 PLUGIN_NAME="opendistro_security_kibana_plugin-${PV}"
+INSTALL_PATH="/var/lib/kibana/plugins/${PLUGIN_NAME}"
 
 LICENSE="MIT"
 SLOT="0"
@@ -26,7 +26,8 @@ KEYWORDS="~amd64"
 RDEPEND=""
 DEPEND="virtual/jdk:11
 	>=net-libs/nodejs-10.16
-	dev-java/maven-bin"
+	dev-java/maven-bin
+	app-arch/unzip"
 
 my_fetch_dep() {
 	local name="${1}"
@@ -64,11 +65,6 @@ src_compile() {
 }
 
 src_install() {
-	insinto ${INSTALL_PATH}
-	doins target/releases/${PLUGIN_NAME}.zip
-}
-
-pkg_postinst() {
-	elog "You may install plugin by executing command:"
-	elog "/usr/share/elasticsearch/bin/elasticsearch-plugin install -b file://${INSTALL_PATH}${PLUGIN_NAME}.zip"
+	dodir "${INSTALL_PATH}"
+	unzip "target/releases/${PLUGIN_NAME}.zip" -d "${D}${INSTALL_PATH}" || die
 }
