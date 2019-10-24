@@ -53,15 +53,12 @@ src_prepare() {
 	eapply_user
 }
 src_compile() {
+	local PLUGIN_DEST="build/kibana/${PLUGIN_NAME}"
 	my_compile_dep security_parent
-	npm install --prefix="${D}" || die
-	PLUGIN_DEST="build/kibana/${PLUGIN_NAME}"
-	mkdir -p "${PLUGIN_DEST}"
-	cp -a "index.js" "${PLUGIN_DEST}"
-	cp -a "package.json" "${PLUGIN_DEST}"
-	cp -a "lib" "${PLUGIN_DEST}"
-	cp -a "node_modules" "${PLUGIN_DEST}"
-	cp -a "public" "${PLUGIN_DEST}"
+	npm install || die
+	mkdir -p "${PLUGIN_DEST}" || die
+	cp -a "index.js" "package.json" "node_modules" "lib" "public" \
+	   "${PLUGIN_DEST}" || die
 	my_compile_dep security_kibana_plugin
 }
 
