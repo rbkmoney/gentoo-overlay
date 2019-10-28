@@ -1,0 +1,16 @@
+#!/sbin/openrc-run
+# Copyright 1999-2019 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+
+: ${COBBLERD_USER:=cobbler}
+: ${COBBLERD_GROUP:=cobbler}
+: ${COBBLERD_EXTRA_ARGS:=}
+
+
+command="/usr/bin/cobblerd"
+command_args="-F ${COBBLERD_EXTRA_ARGS}"
+command_user="${COBBLERD_USER}:${COBBLERD_GROUP}"
+
+depend() {
+    use net logger
+}
