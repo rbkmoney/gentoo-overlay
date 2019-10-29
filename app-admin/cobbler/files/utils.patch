@@ -1,0 +1,11 @@
+--- a/cobbler/utils.py    2019-09-04 14:23:53.000000000 +0300
++++ b/cobbler/utils.py    2019-10-29 13:42:59.906075022 +0300
+@@ -922,6 +922,8 @@
+             make = "unknown"
+         return make, float(distro_version)
+
++    return family, float(distro_version)
++
+
+ def is_safe_to_hardlink(src, dst, api):
+     (dev1, path1) = get_file_device_path(src)

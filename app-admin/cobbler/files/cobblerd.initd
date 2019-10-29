@@ -5,11 +5,13 @@
 : ${COBBLERD_USER:=cobbler}
 : ${COBBLERD_GROUP:=cobbler}
 : ${COBBLERD_EXTRA_ARGS:=}
-
+: ${COBBLERD_PIDFILE:=/run/cobblerd.pid}
 
 command="/usr/bin/cobblerd"
 command_args="-F ${COBBLERD_EXTRA_ARGS}"
 command_user="${COBBLERD_USER}:${COBBLERD_GROUP}"
+command_background="true"
+pidfile="${COBBLERD_PIDFILE}"
 
 depend() {
     use net logger

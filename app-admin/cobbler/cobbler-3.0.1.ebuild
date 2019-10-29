@@ -18,6 +18,7 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 RDEPEND="${PYTHON_DEPS}
 	dev-python/future[${PYTHON_USEDEP}]
+	dev-python/coverage[${PYTHON_USEDEP}]
 	dev-python/netaddr[${PYTHON_USEDEP}]
 	dev-python/distro[${PYTHON_USEDEP}]
 	dev-python/django[${PYTHON_USEDEP}]
@@ -30,7 +31,6 @@ RDEPEND="${PYTHON_DEPS}
 DEPEND="${RDEPEND}"
 
 src_prepare() {
-	default
 	# Disablie installation of some files and all chown calls
 	sed -i \
 		-e '/"%s" % webconfig,/d' -e 's|self.change_owner(path, http_user)|pass|g' \
@@ -38,6 +38,10 @@ src_prepare() {
 		-e 's|"build/config/apache/cobbler_web.conf",||g' \
 		-e 's|"build/config/service/cobblerd.service",||g' \
 		setup.py || die
+	eapply "${FILESDIR}/utils.patch"
+	eapply "${FILESDIR}/cobblerd.patch"
+	eapply "${FILESDIR}/modules-managers-import-signatures-3.0.1.patch"
+	default
 }
 src_compile() {
 	"${PYTHON}" setup.py build -f || die
@@ -48,6 +52,10 @@ src_install() {
 
 	# insinto /etc/${PN}
 	# doins conf/*
+	dodoc config/apache/*
+	dodoc "${FILESDIR}/cobbler.nginx.conf"
+	dodoc "${FILESDIR}/cobbler-web.uwsgi.ini"
+	dodoc "${FILESDIR}/cobbler-svc.uwsgi.ini"
 
 	keepdir /var/{lib,log,www}/${PN}
 	fowners ${PN}:${PN} /var/{lib,log}/${PN}

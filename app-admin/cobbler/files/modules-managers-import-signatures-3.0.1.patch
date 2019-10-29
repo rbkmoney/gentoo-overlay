@@ -1,0 +1,11 @@
+--- a/cobbler/modules/managers/import_signatures.py 2019-10-29 14:36:39.614826753 +0300
++++ b/cobbler/modules/managers/import_signatures.py 2019-09-04 14:23:53.000000000 +0300
+@@ -39,6 +39,6 @@
+ from cobbler.items import profile, distro
+ from cobbler.cexceptions import CX
+
+-import items.repo as item_repo
++import cobbler.items.repo as item_repo
+ import cobbler.templar as templar
+ import cobbler.utils as utils
+
