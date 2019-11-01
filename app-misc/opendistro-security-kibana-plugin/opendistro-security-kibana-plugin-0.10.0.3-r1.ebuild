@@ -65,4 +65,6 @@ src_compile() {
 src_install() {
 	dodir "${INSTALL_PATH}"
 	unzip "target/releases/${PLUGIN_NAME}.zip" -d "${D}${INSTALL_PATH}" || die
+	mv "${INSTALL_PATH}/kibana/${PLUGIN_NAME}/*" "${INSTALL_PATH}/" || die
+	rm -r "${INSTALL_PATH}/kibana" || die
 }
