@@ -17,7 +17,7 @@ declare -A my_dep_ref=(
 )
 S="${WORKDIR}/security_kibana_plugin"
 PLUGIN_NAME="opendistro_security_kibana_plugin-${PV}"
-INSTALL_PATH="/var/lib/kibana/plugins/${PLUGIN_NAME}"
+INSTALL_PATH="/opt/kibana/plugins/${PLUGIN_NAME}"
 
 LICENSE="MIT"
 SLOT="0"
