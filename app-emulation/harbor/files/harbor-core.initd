@@ -2,7 +2,7 @@
 # Copyright 2019 RBK.MONEY
 # Distributed under the terms of the GNU General Public License v2
 
-envfile=${HARBOR_CORE_ENV_FILE:-/etc/harbor/core/env}
+envfile=${HARBOR_CORE_ENV_FILE:-/etc/core/env}
 
 envkeys="$(grep -v ^# ${envfile} |cut -f1 -d=)"
 pidfile=${pidfile:-/run/harbor-core.pid}
