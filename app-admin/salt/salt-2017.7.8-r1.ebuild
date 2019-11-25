@@ -93,6 +93,7 @@ PATCHES=(
 	"${FILESDIR}/${PN}-2017.7.8-tests.patch"
 	"${FILESDIR}/${PN}-2017.7.8-jid-log.patch"
 	"${FILESDIR}/${PN}-2017.7.8-json-logging.patch"
+	"${FILESDIR}/0001-file.get_selinux_context-fix-directory-path-behaviou.patch"
 )
 
 python_prepare() {
