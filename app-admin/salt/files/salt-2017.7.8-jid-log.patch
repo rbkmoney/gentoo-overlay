@@ -147,7 +147,7 @@ index 7d1801c..0047eaf 100644
          sdata = {'pid': os.getpid()}
          sdata.update(data)
 -        log.info('Starting a new job with PID {0}'.format(sdata['pid']))
-+        log.info('Starting a new job "{0}" with jid {1}. PID {3}'.format(sdata['fun'],sdata['jid'],sdata['pid']))
++        log.info('Starting a new job "{fun}" with jid {jid}. PID {pid}'.format(**sdata))
          with salt.utils.fopen(fn_, 'w+b') as fp_:
              fp_.write(minion_instance.serial.dumps(sdata))
          ret = {'success': False}
