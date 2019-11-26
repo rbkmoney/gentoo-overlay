@@ -40,6 +40,9 @@ src_prepare() {
 		setup.py || die
 	eapply "${FILESDIR}/utils.patch"
 	eapply "${FILESDIR}/cobblerd.patch"
+	eapply "${FILESDIR}/api.patch"
+	eapply "${FILESDIR}/tftpgen.patch"
+	eapply "${FILESDIR}/utils.patch"
 	eapply "${FILESDIR}/modules-managers-import-signatures-3.0.1.patch"
 	default
 }

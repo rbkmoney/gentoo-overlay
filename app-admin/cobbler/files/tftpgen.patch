@@ -1,0 +1,11 @@
+--- a/cobbler/tftpgen.py	2019-09-04 14:23:53.000000000 +0300
++++ b/cobbler/tftpgen.py	2019-11-21 23:03:49.300006056 +0300
+@@ -610,6 +610,8 @@
+             elif distro.breed == "powerkvm":
+                 append_line += " kssendmac"
+                 append_line = "%s kvmp.inst.auto=%s" % (append_line, autoinstall_path)
++            else:
++                append_line = "%s autoinstall=%s" % (append_line, autoinstall_path)
+ 
+         if distro is not None and (distro.breed in ["debian", "ubuntu"]):
+             # Hostname is required as a parameter, the one in the preseed is
