@@ -91,9 +91,9 @@ RESTRICT="x86? ( test )"
 PATCHES=(
 	"${FILESDIR}/${PN}-2017.7.0-dont-realpath-tmpdir.patch"
 	"${FILESDIR}/${PN}-2017.7.8-tests.patch"
-	"${FILESDIR}/${PN}-2017.7.8-jid-log.patch"
-	"${FILESDIR}/${PN}-2017.7.8-json-logging.patch"
-	"${FILESDIR}/0001-file.get_selinux_context-fix-directory-path-behaviou.patch"
+	"${FILESDIR}"/0001-JSON-format-logging-handler-added.patch
+	"${FILESDIR}"/0002-JID-logging-enabled-for-json_file-handler.patch
+	"${FILESDIR}"/0003-file.get_selinux_context-fix-directory-path-behaviou.patch
 )
 
 python_prepare() {

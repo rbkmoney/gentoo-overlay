@@ -1,0 +1,222 @@
+From 269f2fa341800b58297e97fbe3c4ae328a01f29f Mon Sep 17 00:00:00 2001
+From: Ivan Panteleev <ispanteleev@gmail.com>
+Date: Tue, 26 Nov 2019 12:05:38 +0300
+Subject: [PATCH 2/3] JID logging enabled for json_file handler
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Alexander Miroshnichenko <a.miroshnichenko@rbk.money>
+---
+ salt/log/setup.py | 16 +++++++++++++++
+ salt/master.py    | 12 ++++++++++-
+ salt/minion.py    | 18 ++++++++++------
+ salt/utils/ctx.py | 52 +++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 91 insertions(+), 7 deletions(-)
+ create mode 100644 salt/utils/ctx.py
+
+diff --git a/salt/log/setup.py b/salt/log/setup.py
+index cd85ed599554..c9b17e944964 100644
+--- a/salt/log/setup.py
++++ b/salt/log/setup.py
+@@ -29,6 +29,7 @@ import multiprocessing
+ # Import 3rd-party libs
+ import salt.ext.six as six
+ from salt.ext.six.moves.urllib.parse import urlparse  # pylint: disable=import-error,no-name-in-module
++from salt.utils.ctx import RequestContext
+ 
+ # Let's define these custom logging levels before importing the salt.log.mixins
+ # since they will be used there
+@@ -303,6 +304,18 @@ class SaltLoggingClass(six.with_metaclass(LoggingMixInMeta, LOGGING_LOGGER_CLASS
+     def _log(self, level, msg, args, exc_info=None, extra=None,  # pylint: disable=arguments-differ
+              exc_info_on_loglevel=None):
+         # If both exc_info and exc_info_on_loglevel are both passed, let's fail
++        if extra is None:
++            extra = {}
++
++        current_jid = RequestContext.current.get('data', {}).get('jid', None)
++        log_fmt_jid = RequestContext.current.get('opts', {}).get('log_fmt_jid', None)
++
++        if current_jid is not None:
++            extra['jid'] = current_jid
++
++        if log_fmt_jid is not None:
++            extra['log_fmt_jid'] = log_fmt_jid
++
+         if exc_info and exc_info_on_loglevel:
+             raise RuntimeError(
+                 'Only one of \'exc_info\' and \'exc_info_on_loglevel\' is '
+@@ -333,6 +346,8 @@ class SaltLoggingClass(six.with_metaclass(LoggingMixInMeta, LOGGING_LOGGER_CLASS
+                    func=None, extra=None, sinfo=None):
+         # Let's remove exc_info_on_loglevel from extra
+         exc_info_on_loglevel = extra.pop('exc_info_on_loglevel')
++
++        jid = extra.pop('jid', '')
+         if not extra:
+             # If nothing else is in extra, make it None
+             extra = None
+@@ -391,6 +406,7 @@ class SaltLoggingClass(six.with_metaclass(LoggingMixInMeta, LOGGING_LOGGER_CLASS
+             logrecord.exc_info_on_loglevel_formatted = None
+ 
+         logrecord.exc_info_on_loglevel = exc_info_on_loglevel
++        logrecord.jid = jid
+         return logrecord
+ 
+     # pylint: enable=C0103
+diff --git a/salt/master.py b/salt/master.py
+index c31a56327d3f..f925c28742d8 100644
+--- a/salt/master.py
++++ b/salt/master.py
+@@ -8,6 +8,7 @@ involves preparing the three listeners and the workers needed by the master.
+ from __future__ import absolute_import, with_statement
+ import copy
+ import ctypes
++import functools
+ import os
+ import re
+ import sys
+@@ -87,6 +88,8 @@ try:
+ except ImportError:
+     HAS_HALITE = False
+ 
++from tornado.stack_context import StackContext
++from salt.utils.ctx import RequestContext
+ 
+ log = logging.getLogger(__name__)
+ 
+@@ -900,7 +903,14 @@ class MWorker(SignalHandlingMultiprocessingProcess):
+         log.trace('AES payload received with command {0}'.format(data['cmd']))
+         if data['cmd'].startswith('__'):
+             return False
+-        return self.aes_funcs.run_func(data['cmd'], data)
++
++        def run_func(data):
++            return self.aes_funcs.run_func(data['cmd'], data)
++
++        with StackContext(functools.partial(RequestContext,
++                                            {'data': data,
++                                             'opts': self.opts})):
++            return run_func(data)
+ 
+     def run(self):
+         '''
+diff --git a/salt/minion.py b/salt/minion.py
+index 7d1801c3bdc1..dbbedb0a1c86 100644
+--- a/salt/minion.py
++++ b/salt/minion.py
+@@ -4,6 +4,7 @@ Routines to set up a minion
+ '''
+ # Import python libs
+ from __future__ import absolute_import, print_function, with_statement
++import functools
+ import os
+ import re
+ import sys
+@@ -31,7 +32,7 @@ else:
+     import salt.ext.ipaddress as ipaddress
+ from salt.ext.six.moves import range
+ from salt.utils.zeromq import zmq, ZMQDefaultLoop, install_zmq, ZMQ_VERSION_INFO
+-
++from salt.utils.ctx import RequestContext
+ # pylint: enable=no-name-in-module,redefined-builtin
+ import tornado
+ 
+@@ -1312,7 +1313,6 @@ class Minion(MinionBase):
+                 'Executing command {0[fun]} with jid {0[jid]}'.format(data)
+             )
+         log.debug('Command details {0}'.format(data))
+-
+         # Don't duplicate jobs
+         log.trace('Started JIDs: {0}'.format(self.jid_queue))
+         if self.jid_queue is not None:
+@@ -1402,11 +1402,17 @@ class Minion(MinionBase):
+                     get_proc_dir(opts['cachedir'], uid=uid)
+                     )
+ 
+-        with tornado.stack_context.StackContext(minion_instance.ctx):
++        def run_func(minion_instance, opts, data):
+             if isinstance(data['fun'], tuple) or isinstance(data['fun'], list):
+-                Minion._thread_multi_return(minion_instance, opts, data)
++                return Minion._thread_multi_return(minion_instance, opts, data)
+             else:
+-                Minion._thread_return(minion_instance, opts, data)
++                return Minion._thread_return(minion_instance, opts, data)
++
++        with tornado.stack_context.StackContext(functools.partial(RequestContext,
++                                                                  {'data': data, 'opts': opts})):
++            with tornado.stack_context.StackContext(minion_instance.ctx):
++                run_func(minion_instance, opts, data)
++
+ 
+     @classmethod
+     def _thread_return(cls, minion_instance, opts, data):
+@@ -1429,7 +1435,7 @@ class Minion(MinionBase):
+ 
+         sdata = {'pid': os.getpid()}
+         sdata.update(data)
+-        log.info('Starting a new job with PID {0}'.format(sdata['pid']))
++        log.info('Starting a new job "{fun}" with jid {jid}. PID {pid}'.format(**sdata))
+         with salt.utils.fopen(fn_, 'w+b') as fp_:
+             fp_.write(minion_instance.serial.dumps(sdata))
+         ret = {'success': False}
+diff --git a/salt/utils/ctx.py b/salt/utils/ctx.py
+new file mode 100644
+index 000000000000..2a49565bfcdc
+--- /dev/null
++++ b/salt/utils/ctx.py
+@@ -0,0 +1,52 @@
++# -*- coding: utf-8 -*-
++
++# Import python libs
++from __future__ import absolute_import, with_statement, print_function, unicode_literals
++import threading
++
++
++class ClassProperty(property):
++    '''
++    Use a classmethod as a property
++    http://stackoverflow.com/a/1383402/1258307
++    '''
++    def __get__(self, cls, owner):
++        return self.fget.__get__(None, owner)()  # pylint: disable=no-member
++
++
++class RequestContext(object):
++    '''
++    A context manager that saves some per-thread state globally.
++    Intended for use with Tornado's StackContext.
++    https://gist.github.com/simon-weber/7755289
++    Simply import this class into any module and access the current request handler by this
++    class's class method property 'current'. If it returns None, there's no active request.
++    .. code:: python
++        from raas.utils.ctx import RequestContext
++        current_request_handler = RequestContext.current
++    '''
++
++    _state = threading.local()
++    _state.current_request = {}
++
++    def __init__(self, current_request):
++        self._current_request = current_request
++
++    @ClassProperty
++    @classmethod
++    def current(cls):
++        if not hasattr(cls._state, 'current_request'):
++            return {}
++        return cls._state.current_request
++
++    def __enter__(self):
++        self._prev_request = self.__class__.current
++        self.__class__._state.current_request = self._current_request
++
++    def __exit__(self, *exc):
++        self.__class__._state.current_request = self._prev_request
++        del self._prev_request
++        return False
++
++    def __call__(self):
++        return self
+\ No newline at end of file
+-- 
+2.23.0
+
