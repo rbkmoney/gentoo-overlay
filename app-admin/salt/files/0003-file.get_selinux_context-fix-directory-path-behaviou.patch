@@ -1,7 +1,7 @@
-From d198c9ca7b3475abdbb5a369f018645e43980021 Mon Sep 17 00:00:00 2001
+From ea4c7df0d37efc2beecaa4e8dc9b088f473c7711 Mon Sep 17 00:00:00 2001
 From: Alexander Miroshnichenko <a.miroshnichenko@rbk.money>
-Date: Tue, 29 Oct 2019 15:09:25 +0300
-Subject: [PATCH] file.get_selinux_context: fix directory path behaviour
+Date: Tue, 26 Nov 2019 15:24:08 +0300
+Subject: [PATCH 3/3] file.get_selinux_context: fix directory path behaviour
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
@@ -11,10 +11,10 @@ Signed-off-by: Alexander Miroshnichenko <a.miroshnichenko@rbk.money>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/salt/modules/file.py b/salt/modules/file.py
-index d0847c669b76..03fedbc6c371 100644
+index fe948dd88f85..24668d7b196a 100644
 --- a/salt/modules/file.py
 +++ b/salt/modules/file.py
-@@ -3850,7 +3850,7 @@ def get_selinux_context(path):
+@@ -3592,7 +3592,7 @@ def get_selinux_context(path):
  
          salt '*' file.get_selinux_context /etc/hosts
      '''
