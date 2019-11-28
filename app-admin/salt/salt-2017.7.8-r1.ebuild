@@ -94,7 +94,6 @@ PATCHES=(
 	"${FILESDIR}"/0001-JSON-format-logging-handler-added.patch
 	"${FILESDIR}"/0002-JID-logging-enabled-for-json_file-handler.patch
 	"${FILESDIR}"/0003-file.get_selinux_context-fix-directory-path-behaviou.patch
-	"${FILESDIR}"/0004-fix-gentoo-service-reload-action.patch
 )
 
 python_prepare() {
