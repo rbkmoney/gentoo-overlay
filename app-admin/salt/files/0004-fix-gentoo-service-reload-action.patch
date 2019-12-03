@@ -1,0 +1,24 @@
+From 181fe0e5481fa8a7089f26b8ba6fbb00b118367a Mon Sep 17 00:00:00 2001
+From: Alexey Pronin <a@vuln.be>
+Date: Wed, 27 Nov 2019 18:50:29 +0300
+Subject: [PATCH] gentoo_service: add reload_ alias to enable reload function
+
+---
+ salt/modules/gentoo_service.py | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/salt/modules/gentoo_service.py b/salt/modules/gentoo_service.py
+index 748f96ea095f..86b8f16b236c 100644
+--- a/salt/modules/gentoo_service.py
++++ b/salt/modules/gentoo_service.py
+@@ -24,6 +24,10 @@
+ # Define the module's virtual name
+ __virtualname__ = 'service'
+ 
++# Define the module's function aliases
++__func_alias__ = {
++    'reload_': 'reload'
++}
+ 
+ def __virtual__():
+     '''
