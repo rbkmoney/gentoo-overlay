@@ -63,6 +63,7 @@ src_install() {
 		newins ${FILESDIR}/core.env env
 		insinto /usr/share/${PN}/
 		doins -r ${S}/make/migrations
+		doins ${S}/VERSION
 	fi
 	use jobservice && newbin ${GOBIN}/jobservice ${PN}-jobservice
 	use registryctl && newbin ${GOBIN}/registryctl ${PN}-registryctl

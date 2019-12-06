@@ -7,7 +7,7 @@ envfile=${HARBOR_CORE_ENV_FILE:-/etc/core/env}
 envkeys="$(grep -v ^# ${envfile} |cut -f1 -d=)"
 pidfile=${pidfile:-/run/harbor-core.pid}
 command=/usr/bin/harbor-core
-start_stop_daemon_args="`for key in ${envkeys}; 
+start_stop_daemon_args="-d /usr/share/harbor `for key in ${envkeys}; 
 	do echo -n ' -e '"${key}"=$(grep ^${key} ${envfile}|cut -f2 -d=); 
 	done` --user harbor --group harbor --background --make-pidfile"
 
