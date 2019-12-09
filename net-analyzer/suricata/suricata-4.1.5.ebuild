@@ -43,6 +43,7 @@ DEPEND="
 RDEPEND="${DEPEND}"
 
 src_prepare() {
+	eapply_user
 	sed -ie 's/docdir =.*/docdir = ${datarootdir}\/doc\/'${PF}'\//' "${S}/doc/Makefile.am"
 	eautoreconf
 }
@@ -127,8 +128,8 @@ src_install() {
 	fowners -R ${PN}: "/var/lib/${PN}" "/var/log/${PN}" "/etc/${PN}"
 	fperms 750 "/var/lib/${PN}" "/var/log/${PN}" "/etc/${PN}"
 
-	newinitd "${FILESDIR}/${P}-01.initd" ${PN}
-	newconfd "${FILESDIR}/${P}-01.confd" ${PN}
+	newinitd "${FILESDIR}/${PN}-01.initd" ${PN}
+	newconfd "${FILESDIR}/${PN}-01.confd" ${PN}
 
 	if use logrotate; then
 		insopts -m0644
