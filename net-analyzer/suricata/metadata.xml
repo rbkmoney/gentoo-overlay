@@ -14,5 +14,6 @@
     <flag name="redis">Enable Redis support</flag>
     <flag name="rules">Install default ruleset</flag>
     <flag name="logrotate">Install logrotate rule</flag>
+    <flag name="profiling">Enable rules profiling</flag>
   </use>
 </pkgmetadata>
