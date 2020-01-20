@@ -1,0 +1,28 @@
+From ea4c7df0d37efc2beecaa4e8dc9b088f473c7711 Mon Sep 17 00:00:00 2001
+From: Alexander Miroshnichenko <a.miroshnichenko@rbk.money>
+Date: Tue, 26 Nov 2019 15:24:08 +0300
+Subject: [PATCH 3/3] file.get_selinux_context: fix directory path behaviour
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Alexander Miroshnichenko <a.miroshnichenko@rbk.money>
+---
+ salt/modules/file.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/salt/modules/file.py b/salt/modules/file.py
+index fe948dd88f85..24668d7b196a 100644
+--- a/salt/modules/file.py
++++ b/salt/modules/file.py
+@@ -3592,7 +3592,7 @@ def get_selinux_context(path):
+ 
+         salt '*' file.get_selinux_context /etc/hosts
+     '''
+-    out = __salt__['cmd.run'](['ls', '-Z', path], python_shell=False)
++    out = __salt__['cmd.run'](['ls', '-dZ', path], python_shell=False)
+ 
+     try:
+         ret = re.search(r'\w+:\w+:\w+:\w+', out).group(0)
+-- 
+2.23.0
+
