@@ -56,8 +56,11 @@ RDEPEND="
 	>=dev-libs/poco-1.9.0
 	dev-libs/libpcre
 	dev-libs/jemalloc
-	dev-libs/protobuf
 	dev-cpp/sparsehash
+	=sys-devel/llvm-7.1.0
+	app-arch/brotli
+	=dev-libs/protobuf-3.10.1
+	dev-db/mariadb-connector-c
 "
 
 DEPEND="${RDEPEND}
