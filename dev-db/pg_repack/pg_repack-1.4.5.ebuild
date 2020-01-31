@@ -13,11 +13,11 @@ SRC_URI="https://github.com/reorg/${PN}/archive/${MY_PV}.tar.gz -> ${MY_P}.tar.g
 LICENSE="BSD"
 KEYWORDS="~amd64 ~x86"
 SLOT="0"
-IUSE="client debug static-libs"
-REQUIRED_USE="debug? ( client ) client? ( static-libs )"
+IUSE="client debug"
+REQUIRED_USE="debug? ( client )"
 
-RDEPEND="client? ( dev-db/postgresql:*[static-libs?] )"
-DEPEND="dev-db/postgresql:*[static-libs?]"
+DEPEND="dev-db/postgresql"
+RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
 
