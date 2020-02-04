@@ -4,13 +4,13 @@
 EAPI=6
 inherit user golang-build golang-vcs-snapshot
 
-EGO_PN="github.com/coreos/clair"
+EGO_PN="github.com/quay/clair"
 EGIT_COMMIT="v${PV}"
 ARCHIVE_URI="https://${EGO_PN}/archive/${EGIT_COMMIT}.tar.gz -> ${P}.tar.gz"
 KEYWORDS="~amd64"
 
 DESCRIPTION="Vulnerability Static Analysis for Containers"
-HOMEPAGE="https://github.com/coreos/clair"
+HOMEPAGE="https://github.com/quay/clair"
 SRC_URI="${ARCHIVE_URI}"
 LICENSE="Apache-2.0"
 SLOT="0"
