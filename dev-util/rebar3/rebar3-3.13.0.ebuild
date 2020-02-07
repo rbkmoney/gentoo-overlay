@@ -19,7 +19,7 @@ RESTRICT="mirror network-sandbox"
 DEPEND="dev-lang/erlang:="
 RDEPEND="${DEPEND}"
 
-S="${WORKDIR}/rebar3-${MY_PV}"
+S="${WORKDIR}/${MY_P}"
 
 src_compile() {
 	./bootstrap || die "rebar3 bootstrap failed!"
