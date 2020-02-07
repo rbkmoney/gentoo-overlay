@@ -16,7 +16,7 @@ SLOT="3"
 KEYWORDS="~amd64"
 RESTRICT="mirror network-sandbox"
 
-DEPEND=">dev-lang/erlang-20"
+DEPEND="dev-lang/erlang:="
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/rebar3-${MY_PV}"
