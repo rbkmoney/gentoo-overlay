@@ -17,7 +17,7 @@ SRC_URI="http://s3.amazonaws.com/downloads.basho.com/erlang/otp_src_${MY_PV}-bas
 RESTRICT="mirror"
 
 LICENSE="ErlPL-1.1"
-SLOT="16"
+SLOT="0/16"
 KEYWORDS="amd64 x86"
 IUSE="compat-ethread doc emacs halfword hipe java kpoll odbc smp sctp ssl systemd tk wxwidgets"
 
