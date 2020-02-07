@@ -1,4 +1,4 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -12,10 +12,10 @@ GOLANG_PKG_HAVE_TEST=1
 GOLANG_PKG_BUILDPATH="/cmd/${PN}"
 
 GOLANG_PKG_DEPENDENCIES=(
-    "github.com/pborman/uuid:8b1b929"
-    "github.com/prometheus/client_golang:c5b7fcc"
-    "github.com/sirupsen/logrus:839c75f"
-    "github.com/stretchr/testify:221dbe5"
+	"github.com/pborman/uuid:8b1b929"
+	"github.com/prometheus/client_golang:c5b7fcc"
+	"github.com/sirupsen/logrus:839c75f"
+	"github.com/stretchr/testify:221dbe5"
 	"github.com/beorn7/perks:37c8de3"
 	"github.com/cespare/xxhash:d7df741"
 	"github.com/golang/protobuf:d23c512"
