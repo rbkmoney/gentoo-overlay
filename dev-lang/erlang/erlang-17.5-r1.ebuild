@@ -16,7 +16,7 @@ SRC_URI="http://www.erlang.org/download/otp_src_${PV}.tar.gz
 	doc? ( http://erlang.org/download/otp_doc_html_${PV}.tar.gz )"
 
 LICENSE="ErlPL-1.1"
-SLOT="0"
+SLOT="0/17"
 KEYWORDS="alpha amd64 ~arm ~ia64 ppc ppc64 sparc x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~x64-solaris"
 IUSE="compat-ethread doc emacs halfword hipe java kpoll odbc smp sctp ssl systemd tk wxwidgets"
 
