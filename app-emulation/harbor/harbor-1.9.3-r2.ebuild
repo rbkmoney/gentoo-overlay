@@ -4,8 +4,8 @@
 EAPI=6
 
 GOLANG_PKG_IMPORTPATH="github.com/goharbor"
+GOLANG_PKG_ARCHIVEPREFIX="v"
 GOLANG_PKG_VERSION="${PV}"
-GOLANG_PKG_HAVE_TEST=1
 GOLANG_PKG_BUILDPATH="/src/core /src/jobservice /src/registryctl"
 GOLANG_PKG_HAVE_TEST=1
 
@@ -40,6 +40,11 @@ pkg_setup() {
 	use portal && webapp_pkg_setup
 }
 
+src_prepare() {
+	epatch "${FILESDIR}"/0001-uiversion-file-update-path.patch
+	default
+}
+
 src_compile() {
 	if use core || use jobservice || use registryctl; then
 		golang-single_src_compile
@@ -63,6 +68,7 @@ src_install() {
 		newins ${FILESDIR}/core.env env
 		insinto /usr/share/${PN}/
 		doins -r ${S}/make/migrations
+		doins -r ${S}/src/core/views
 		doins ${S}/VERSION
 	fi
 	use jobservice && newbin ${GOBIN}/jobservice ${PN}-jobservice

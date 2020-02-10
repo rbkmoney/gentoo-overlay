@@ -1,0 +1,28 @@
+From 305540dcf9f06ebcf28b567e1dc9739dd97b63c7 Mon Sep 17 00:00:00 2001
+From: Alexander Miroshnichenko <a.miroshnichenko@rbk.money>
+Date: Fri, 6 Dec 2019 18:22:49 +0300
+Subject: [PATCH] uiversion file: update path
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Alexander Miroshnichenko <a.miroshnichenko@rbk.money>
+---
+ src/core/api/systeminfo.go | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/core/api/systeminfo.go b/src/core/api/systeminfo.go
+index a0929d54529b..f030b9dbeb46 100644
+--- a/src/core/api/systeminfo.go
++++ b/src/core/api/systeminfo.go
+@@ -41,7 +41,7 @@ type SystemInfoAPI struct {
+ }
+ 
+ const defaultRootCert = "/etc/core/ca/ca.crt"
+-const harborVersionFile = "/harbor/UIVERSION"
++const harborVersionFile = "VERSION"
+ 
+ // SystemInfo models for system info.
+ type SystemInfo struct {
+-- 
+2.23.0
+
