@@ -30,6 +30,10 @@ BDEPEND=""
 
 WEBAPP_MANUAL_SLOT="yes"
 
+PATCHES=(
+	"${FILESDIR}"/0001-uiversion-file-update-path.patch
+)
+
 pkg_setup() {
 
 	if use core || use jobservice || use registryctl; then
@@ -38,11 +42,6 @@ pkg_setup() {
 	fi
 
 	use portal && webapp_pkg_setup
-}
-
-src_prepare() {
-	epatch "${FILESDIR}"/0001-uiversion-file-update-path.patch
-	default
 }
 
 src_compile() {
