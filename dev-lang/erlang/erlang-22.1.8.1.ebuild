@@ -10,6 +10,7 @@ inherit autotools eapi7-ver elisp-common java-pkg-opt-2 systemd wxwidgets
 # open up a bug to let it be created.
 
 UPSTREAM_V="$(ver_cut 1-2)"
+SLOT_V="$(ver_cut 1)"
 
 DESCRIPTION="Erlang programming language, runtime environment and libraries (OTP)"
 HOMEPAGE="https://www.erlang.org/"
@@ -18,7 +19,7 @@ SRC_URI="https://github.com/erlang/otp/archive/OTP-${PV}.tar.gz -> ${P}.tar.gz
 	doc? ( http://erlang.org/download/otp_doc_html_${UPSTREAM_V}.tar.gz -> ${PN}_doc_html_${UPSTREAM_V}.tar.gz )"
 
 LICENSE="Apache-2.0"
-SLOT="0/21"
+SLOT="0/${SLOT_V}"
 KEYWORDS="~alpha amd64 ~arm ~arm64 ~hppa ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~x64-solaris"
 IUSE="doc emacs +hipe java +kpoll libressl odbc pgo sctp ssl systemd tk wxwidgets lcnt systemtap"
 
