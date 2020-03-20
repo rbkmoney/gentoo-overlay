@@ -16,7 +16,7 @@ SLOT="3"
 KEYWORDS="~amd64"
 RESTRICT="mirror network-sandbox"
 
-DEPEND="dev-lang/erlang:="
+DEPEND="dev-lang/erlang:0="
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
