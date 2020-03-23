@@ -97,6 +97,11 @@ checkpidinfo() {
 
 start() {
 	checkconfig || return 1
+	initpidinfo
+	if [ -e "${SURICATAPID}" -a $((SUR_PID_CHECK)) -ne 1 ]; then
+		eerror "Could not determine PID of ${SVCNAME}! Removing pid file ${SURICATAPID}"
+		rm "${SURICATAPID}"
+	fi
 	ebegin "Starting ${SVCNAME}"
 	start-stop-daemon --start --quiet --exec ${SURICATA_BIN} \
 		-- --pidfile ${SURICATAPID} -D ${SURICATAOPTS} ${SURICATALOGPATH} >/dev/null 2>&1
