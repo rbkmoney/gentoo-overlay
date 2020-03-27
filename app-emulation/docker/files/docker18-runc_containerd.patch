@@ -1,0 +1,45 @@
+diff -ur ocker-ce/components/engine/hack/dockerfile/install/containerd.installer docker-ce/components/engine/hack/dockerfile/install/containerd.installer
+--- docker-ce/components/engine/hack/dockerfile/install/containerd.installer	2019-08-29 04:23:36.000000000 +0300
++++ docker-ce/components/engine/hack/dockerfile/install/containerd.installer	2020-03-27 12:18:24.741909290 +0300
+@@ -4,7 +4,7 @@
+ # containerd is also pinned in vendor.conf. When updating the binary
+ # version you may also need to update the vendor version to pick up bug
+ # fixes or new APIs.
+-CONTAINERD_COMMIT=894b81a4b802e4eb2a91d1ce216b8817763c29fb # v1.2.6
++CONTAINERD_COMMIT=7ad184331fa3e55e52b890ea95e65ba581ae3429 # v1.2.13
+ 
+ install_containerd() {
+ 	echo "Install containerd version $CONTAINERD_COMMIT"
+diff -ur ocker-ce/components/engine/hack/dockerfile/install/runc.installer docker-ce/components/engine/hack/dockerfile/install/runc.installer
+--- docker-ce/components/engine/hack/dockerfile/install/runc.installer	2019-08-29 04:23:36.000000000 +0300
++++ docker-ce/components/engine/hack/dockerfile/install/runc.installer	2020-03-27 12:19:11.241867662 +0300
+@@ -4,7 +4,7 @@
+ # The version of runc should match the version that is used by the containerd
+ # version that is used. If you need to update runc, open a pull request in
+ # the containerd project first, and update both after that is merged.
+-RUNC_COMMIT=425e105d5a03fabd737a126ad93d62a9eeede87f # v1.0.0-rc8
++RUNC_COMMIT=dc9208a3303feef5b3839f4323d9beb36df0a9dd # v1.0.0-rc10
+ 
+ install_runc() {
+ 	# If using RHEL7 kernels (3.10.0 el7), disable kmem accounting/limiting
+diff -ur ocker-ce/components/engine/vendor.conf docker-ce/components/engine/vendor.conf
+--- docker-ce/components/engine/vendor.conf	2019-08-29 04:23:36.000000000 +0300
++++ docker-ce/components/engine/vendor.conf	2020-03-27 12:28:20.144709596 +0300
+@@ -79,7 +79,7 @@
+ # the containerd project first, and update both after that is merged.
+ # This commit does not need to match RUNC_COMMIT as it is used for helper
+ # packages but should be newer or equal.
+-github.com/opencontainers/runc 96ec2177ae841256168fcf76954f7177af9446eb
++github.com/opencontainers/runc dc9208a3303feef5b3839f4323d9beb36df0a9dd # v1.0.0-rc10
+ github.com/opencontainers/runtime-spec 5684b8af48c1ac3b1451fa499724e30e3c20a294 # v1.0.1-49-g5684b8a
+ github.com/opencontainers/image-spec v1.0.1
+ github.com/seccomp/libseccomp-golang 32f571b70023028bd57d9288c20efbcb237f3ce0
+@@ -118,7 +118,7 @@
+ google.golang.org/genproto 694d95ba50e67b2e363f3483057db5d4910c18f9
+ 
+ # containerd
+-github.com/containerd/containerd 9754871865f7fe2f4e74d43e2fc7ccd237edcbce # v1.2.2
++github.com/containerd/containerd 7ad184331fa3e55e52b890ea95e65ba581ae3429 # v1.2.13
+ github.com/containerd/fifo 3d5202aec260678c48179c56f40e6f38a095738c
+ github.com/containerd/continuity 004b46473808b3e7a4a3049c20e4376c91eb966d
+ github.com/containerd/cgroups 4994991857f9b0ae8dc439551e8bebdbb4bf66c1
