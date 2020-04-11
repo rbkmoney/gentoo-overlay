@@ -13,7 +13,7 @@ DESCRIPTION="ClamAV Signature Mirroring Tool"
 HOMEPAGE="https://github.com/akissa/clamavmirror https://pypi.org/project/clamavmirror/"
 SRC_URI="https://github.com/akissa/clamavmirror/archive/${COMMIT}.tar.gz -> ${P}.tar.gz"
 
-LICENSE="Mozilla Public License Version 2.0"
+LICENSE="MPL-2.0"
 SLOT="0"
 KEYWORDS="~alpha amd64 arm ~arm64 hppa ia64 ppc ppc64 ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-solaris"
 
