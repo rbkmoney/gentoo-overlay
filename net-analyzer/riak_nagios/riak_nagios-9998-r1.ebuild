@@ -27,6 +27,6 @@ src_compile() {
 
 src_install() {
 	exeinto "/usr/$(get_libdir)/nagios/plugins/riak"
-	doexe check_node bin/*
+	doexe check_node bin/* "${FILESDIR}/check_node_wrapper"
 	dodoc README.md
 }
