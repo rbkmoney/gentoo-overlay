@@ -24,7 +24,7 @@ RDEPEND="
 	net-libs/libnfnetlink
 	dev-libs/nspr
 	dev-libs/nss
-	>=net-libs/libhtp-0.5.32
+	>=net-libs/libhtp-0.5.33
 	net-libs/libpcap
 	sys-apps/file
 	cuda?       ( dev-util/nvidia-cuda-toolkit )
