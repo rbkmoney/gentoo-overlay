@@ -114,7 +114,6 @@ BDEPEND="
 	)
 "
 RDEPEND="${COMMON_DEPEND}
-	net-misc/socat
 	sys-apps/gptfdisk
 	sys-block/parted
 	sys-fs/cryptsetup
