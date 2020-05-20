@@ -22,6 +22,7 @@ optional_policy(`
 	')
 
 	allow nginx_t self:capability { dac_override dac_read_search };
+	miscfiles_read_generic_certs(nginx_t)
 
 	tunable_policy(`nginx_can_read_ebuild',`
 		portage_read_ebuild(nginx_t)
