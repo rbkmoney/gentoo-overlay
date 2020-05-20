@@ -11,6 +11,7 @@ INSTALL_PATH="/usr/share/elasticsearch/plugins/${PLUGIN_NAME}"
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64"
+S="${WORKDIR}"
 
 RESTRICT="network-sandbox"
 
