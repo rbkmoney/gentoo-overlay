@@ -1,1 +1,38 @@
 #
+#######################################
+## <summary>
+##      The template to define a nagios plugin domain.
+## </summary>
+## <param name="domain_prefix">
+##      <summary>
+##      Domain prefix to be used.
+##      </summary>
+## </param>
+#
+template(`nagios_plugin_template_nonsystem',`
+        gen_require(`
+                attribute nagios_plugin_domain;
+                type user_t, staff_t;
+                role user_r, staff_r;
+                type nagios_$1_plugin_t, nagios_$1_plugin_exec_t;
+        ')
+
+        ########################################
+        #
+        # Declarations
+        #
+
+        role user_r types nagios_$1_plugin_t;
+        role staff_r types nagios_$1_plugin_t;
+
+        ########################################
+        #
+        # Policy
+        #
+
+        domtrans_pattern(user_t, nagios_$1_plugin_exec_t, nagios_$1_plugin_t)
+        domtrans_pattern(staff_t, nagios_$1_plugin_exec_t, nagios_$1_plugin_t)
+        domain_use_interactive_fds(nagios_$1_plugin_t)
+        ssh_rw_pipes(nagios_$1_plugin_t)
+        files_search_all_mountpoints(nagios_$1_plugin_t)
+')

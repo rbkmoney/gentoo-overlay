@@ -1,4 +1,4 @@
-policy_module(custom-server, 1.0.0)
+policy_module(custom-server, 1.0.2)
 
 
 ########################################
@@ -14,6 +14,16 @@ policy_module(custom-server, 1.0.0)
 gen_tunable(nginx_can_read_ebuild, false)
 
 ####### Policy
+
+# nagios optional policy
+optional_policy(`
+        nagios_plugin_template_nonsystem(admin)
+        nagios_plugin_template_nonsystem(checkdisk)
+        nagios_plugin_template_nonsystem(mail)
+        nagios_plugin_template_nonsystem(services)
+        nagios_plugin_template_nonsystem(system)
+        nagios_plugin_template_nonsystem(eventhandler)
+')
 
 # NGINX optional policy
 optional_policy(`
