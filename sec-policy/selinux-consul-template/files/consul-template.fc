@@ -1,0 +1,1 @@
+/usr/bin/consul-template	-	gen_context(system_u:object_r:consul_template_exec_t,s0)

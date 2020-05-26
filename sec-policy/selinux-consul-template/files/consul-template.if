@@ -1,0 +1,21 @@
+## <summary>policy for Hashicorp Consul Template</summary>
+
+########################################
+## <summary>
+##	Execute consul_template_exec_t in the consul domain.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`consul_template_domtrans',`
+	gen_require(`
+		type consul_template_t, consul_template_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	domtrans_pattern($1, consul_template_exec_t, consul_template_t)
+')
+
