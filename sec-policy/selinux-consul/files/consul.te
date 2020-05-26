@@ -1,0 +1,18 @@
+policy_module(consul, 1.0.0)
+
+########################################
+#
+# Declarations
+#
+
+type consul_t;
+type consul_exec_t;
+init_daemon_domain(consul_t, consul_exec_t)
+
+permissive consul_t;
+
+########################################
+#
+# consul local policy
+#
+
