@@ -2,7 +2,7 @@
 
 ########################################
 ## <summary>
-##	Execute consul_template_exec_t in the consul domain.
+##	Execute consul_template_exec_t in the consul-template domain.
 ## </summary>
 ## <param name="domain">
 ## <summary>

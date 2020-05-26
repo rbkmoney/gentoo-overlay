@@ -4,12 +4,12 @@
 EAPI="5"
 
 IUSE=""
-MODS="consul-template"
-POLICY_FILES="consul-template.te consul-template.fc consul-template.if"
+MODS="consultemplate"
+POLICY_FILES="consultemplate.te consultemplate.fc consultemplate.if"
 
 inherit selinux-policy-2
 
-DESCRIPTION="SELinux policy for consul-template"
+DESCRIPTION="SELinux policy for consultemplate"
 
 RDEPEND="sec-policy/selinux-base-policy"
 

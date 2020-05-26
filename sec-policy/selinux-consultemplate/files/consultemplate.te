@@ -1,4 +1,4 @@
-policy_module(consul-template, 1.0.0)
+policy_module(consultemplate, 1.0.0)
 
 ########################################
 #
@@ -8,7 +8,6 @@ policy_module(consul-template, 1.0.0)
 type consul_template_t;
 type consul_template_exec_t;
 init_daemon_domain(consul_template_t, consul_template_exec_t)
-
 
 permissive consul_template_t;
 
