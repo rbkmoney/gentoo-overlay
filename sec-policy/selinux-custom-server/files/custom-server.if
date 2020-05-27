@@ -83,4 +83,6 @@ interface(`mutt_user_mta',`
         allow { user_mail_t mta_user_agent } $1:fd use;
         allow { user_mail_t mta_user_agent } $1:fifo_file rw_fifo_file_perms;
 
+	mutt_read_tmp_files(user_mail_t)
+	mutt_read_home_files(user_mail_t)
 ')
