@@ -28,11 +28,9 @@ optional_policy(`
 optional_policy(`
 	gen_require(`
 		type mutt_t;
-		role staff_r, user_r;
 	')
 
-	mta_role(staff_r, mutt_t)
-	mta_role(user_r, mutt_t)
+	mutt_user_mta(mutt_t)
 ')
 
 # NGINX optional policy
