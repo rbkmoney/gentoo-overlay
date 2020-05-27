@@ -28,11 +28,11 @@ optional_policy(`
 optional_policy(`
 	gen_require(`
 		type mutt_t;
+		role staff_r, user_r;
 	')
 
-	mta_send_mail(mutt_t)
-	mta_signal_system_mail(mutt_t)
-	mta_kill_system_mail(mutt_t)
+	mta_role(staff_r, mutt_t)
+	mta_role(user_r, mutt_t)
 ')
 
 # NGINX optional policy
