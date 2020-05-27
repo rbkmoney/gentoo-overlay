@@ -80,9 +80,9 @@ interface(`mutt_user_mta',`
         allow $1 user_mail_tmp_t:dir { manage_dir_perms relabel_dir_perms };
         allow $1 user_mail_tmp_t:file { manage_file_perms relabel_file_perms };
 
-        allow { user_mail_t mta_user_agent } $1:fd use;
-        allow { user_mail_t mta_user_agent } $1:fifo_file rw_fifo_file_perms;
+        #allow { user_mail_t mta_user_agent } $1:fd use;
+        #allow { user_mail_t mta_user_agent } $1:fifo_file rw_fifo_file_perms;
 
 	mutt_read_tmp_files(user_mail_t)
-	mutt_read_home_files(user_mail_t)
+	#mutt_read_home_files(user_mail_t)
 ')
