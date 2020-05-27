@@ -31,6 +31,8 @@ optional_policy(`
 	')
 
 	mutt_user_mta(mutt_t)
+	sendmail_rw_pipes(mutt_t)
+	sendmail_rw_unix_stream_sockets(mutt_t)
 ')
 
 # NGINX optional policy
