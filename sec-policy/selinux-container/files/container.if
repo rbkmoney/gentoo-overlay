@@ -1,0 +1,80 @@
+## <summary></summary>
+
+########################################
+## <summary>
+##	Execute container in the container domain.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`container_runtime_domtrans',`
+	gen_require(`
+		type container_runtime_t, container_runtime_exec_t;
+		type container_runtime_tmpfs_t;
+	')
+
+	corecmd_search_bin($1)
+	domtrans_pattern($1, container_runtime_exec_t, container_runtime_t)
+	allow container_runtime_t $1:fifo_file setattr;
+')
+
+########################################
+## <summary>
+##	Execute container runtime in the container runtime domain
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to transition.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access.
+##	</summary>
+## </param>
+## <rolecap/>
+#
+interface(`container_runtime_run',`
+	gen_require(`
+		type container_runtime_t;
+	')
+
+	container_runtime_domtrans($1)
+	role $2 types container_runtime_t;
+')
+
+########################################
+## <summary>
+##	Creates types and rules for a basic
+##	container runtime process domain.
+## </summary>
+## <param name="prefix">
+##	<summary>
+##	Prefix for the domain.
+##	</summary>
+## </param>
+#
+template(`container_runtime_domain_template',`
+	gen_require(`
+		attribute container_runtime_domain;
+		type container_runtime_t;
+		type container_var_lib_t;
+		type container_ro_file_t;
+	')
+
+	type $1_t, container_runtime_domain;
+	role system_r types $1_t;
+	domain_type($1_t)
+	domain_subj_id_change_exemption($1_t)
+	domain_role_change_exemption($1_t)
+
+	mls_file_read_to_clearance($1_t)
+	mls_file_write_to_clearance($1_t)
+
+	storage_raw_rw_fixed_disk($1_t)
+	auth_use_nsswitch($1_t)
+	logging_send_syslog_msg($1_t)
+')

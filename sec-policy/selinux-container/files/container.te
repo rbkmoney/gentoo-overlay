@@ -1,0 +1,90 @@
+policy_module(container, 0.1.0)
+gen_require(`
+	class passwd rootok;
+	role sysadm_r;
+	type sysadm_t;
+')
+
+container_runtime_run(sysadm_t, sysadm_r)
+
+########################################
+#
+# Declarations
+#
+
+attribute container_runtime_domain;
+container_runtime_domain_template(container_runtime)
+typealias container_runtime_t alias docker_t;
+type container_runtime_exec_t alias docker_exec_t;
+can_exec(container_runtime_t,container_runtime_exec_t)
+attribute container_domain;
+attribute container_net_domain;
+allow container_runtime_domain container_domain:process { dyntransition transition };
+allow container_domain container_runtime_domain:process sigchld;
+allow container_runtime_domain container_domain:process2 { nnp_transition nosuid_transition };
+dontaudit container_runtime_domain container_domain:process { noatsecure rlimitinh siginh };
+
+type spc_t, container_domain;
+domain_type(spc_t)
+role system_r types spc_t;
+
+type container_auth_t alias docker_auth_t;
+type container_auth_exec_t alias docker_auth_exec_t;
+init_daemon_domain(container_auth_t, container_auth_exec_t)
+
+type spc_var_run_t;
+files_pid_file(spc_var_run_t)
+
+type container_var_lib_t alias docker_var_lib_t;
+files_type(container_var_lib_t)
+
+type container_home_t alias docker_home_t;
+userdom_user_home_content(container_home_t)
+
+type container_config_t alias docker_config_t;
+files_config_file(container_config_t)
+
+type container_lock_t alias docker_lock_t;
+files_lock_file(container_lock_t)
+
+type container_log_t alias docker_log_t;
+logging_log_file(container_log_t)
+
+type container_runtime_tmp_t alias docker_tmp_t;
+files_tmp_file(container_runtime_tmp_t)
+
+type container_runtime_tmpfs_t alias docker_tmpfs_t;
+files_tmpfs_file(container_runtime_tmpfs_t)
+
+type container_var_run_t alias docker_var_run_t;
+files_pid_file(container_var_run_t)
+
+type container_plugin_var_run_t alias docker_plugin_var_run_t;
+files_pid_file(container_plugin_var_run_t)
+
+type container_devpts_t alias docker_devpts_t;
+term_pty(container_devpts_t)
+
+type container_ro_file_t;
+typealias container_ro_file_t alias { container_share_t docker_share_t };
+files_mountpoint(container_ro_file_t)
+
+type container_file_t;
+files_mountpoint(container_file_t)
+
+type container_port_t alias docker_port_t;
+corenet_port(container_port_t)
+
+init_daemon_domain(container_runtime_t, container_runtime_exec_t)
+#ifdef(`enable_mcs',`
+#	init_ranged_daemon_domain(container_runtime_t, container_runtime_exec_t, s0 - mcs_systemhigh)
+#')
+
+ifdef(`enable_mls',`
+	init_ranged_daemon_domain(container_runtime_t, container_runtime_exec_t, s0 - mls_systemhigh)
+')
+
+permissive container_runtime_t;
+permissive container_auth_t;
+
+########################################
