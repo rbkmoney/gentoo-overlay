@@ -1,0 +1,228 @@
+diff -ur systemd-stable-245.5/src/basic/socket-util.h systemd-stable-245.5.new/src/basic/socket-util.h
+--- systemd-stable-245.5/src/basic/socket-util.h	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/basic/socket-util.h	2020-06-30 11:39:12.196587133 +0000
+@@ -2,6 +2,7 @@
+ #pragma once
+ 
+ #include <inttypes.h>
++#include <netinet/if_ether.h>
+ #include <linux/netlink.h>
+ #include <linux/if_ether.h>
+ #include <linux/if_infiniband.h>
+diff -ur systemd-stable-245.5/src/libsystemd/sd-netlink/netlink-types.c systemd-stable-245.5.new/src/libsystemd/sd-netlink/netlink-types.c
+--- systemd-stable-245.5/src/libsystemd/sd-netlink/netlink-types.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/libsystemd/sd-netlink/netlink-types.c	2020-06-30 11:38:29.976587133 +0000
+@@ -3,6 +3,7 @@
+ #include <netinet/in.h>
+ #include <stdint.h>
+ #include <sys/socket.h>
++#include <netinet/if_ether.h>
+ #include <linux/can/vxcan.h>
+ #include <linux/netlink.h>
+ #include <linux/rtnetlink.h>
+diff -ur systemd-stable-245.5/src/libsystemd-network/sd-dhcp6-client.c systemd-stable-245.5.new/src/libsystemd-network/sd-dhcp6-client.c
+--- systemd-stable-245.5/src/libsystemd-network/sd-dhcp6-client.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/libsystemd-network/sd-dhcp6-client.c	2020-06-30 11:38:29.976587133 +0000
+@@ -5,7 +5,6 @@
+ 
+ #include <errno.h>
+ #include <sys/ioctl.h>
+-#include <linux/if_arp.h>
+ #include <linux/if_infiniband.h>
+ 
+ #include "sd-dhcp6-client.h"
+diff -ur systemd-stable-245.5/src/machine/machine-dbus.c systemd-stable-245.5.new/src/machine/machine-dbus.c
+--- systemd-stable-245.5/src/machine/machine-dbus.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/machine/machine-dbus.c	2020-06-30 11:38:29.976587133 +0000
+@@ -3,6 +3,7 @@
+ #include <errno.h>
+ #include <sys/mount.h>
+ #include <sys/wait.h>
++#include <netinet/if_ether.h>
+ 
+ /* When we include libgen.h because we need dirname() we immediately
+  * undefine basename() since libgen.h defines it as a macro to the POSIX
+diff -ur systemd-stable-245.5/src/network/netdev/bond.c systemd-stable-245.5.new/src/network/netdev/bond.c
+--- systemd-stable-245.5/src/network/netdev/bond.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/network/netdev/bond.c	2020-06-30 11:38:29.976587133 +0000
+@@ -1,5 +1,6 @@
+ /* SPDX-License-Identifier: LGPL-2.1+ */
+ 
++#include <netinet/if_ether.h>
+ #include "alloc-util.h"
+ #include "bond.h"
+ #include "conf-parser.h"
+diff -ur systemd-stable-245.5/src/network/netdev/bridge.c systemd-stable-245.5.new/src/network/netdev/bridge.c
+--- systemd-stable-245.5/src/network/netdev/bridge.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/network/netdev/bridge.c	2020-06-30 11:38:29.976587133 +0000
+@@ -1,5 +1,6 @@
+ /* SPDX-License-Identifier: LGPL-2.1+ */
+ 
++#include <netinet/if_ether.h>
+ #include <net/if.h>
+ 
+ #include "bridge.h"
+diff -ur systemd-stable-245.5/src/network/netdev/macsec.c systemd-stable-245.5.new/src/network/netdev/macsec.c
+--- systemd-stable-245.5/src/network/netdev/macsec.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/network/netdev/macsec.c	2020-06-30 11:38:29.976587133 +0000
+@@ -1,5 +1,6 @@
+ /* SPDX-License-Identifier: LGPL-2.1+ */
+ 
++#include <netinet/if_ether.h>
+ #include <netinet/in.h>
+ #include <linux/if_ether.h>
+ #include <linux/if_macsec.h>
+diff -ur systemd-stable-245.5/src/network/netdev/netdev-gperf.gperf systemd-stable-245.5.new/src/network/netdev/netdev-gperf.gperf
+--- systemd-stable-245.5/src/network/netdev/netdev-gperf.gperf	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/network/netdev/netdev-gperf.gperf	2020-06-30 11:38:29.976587133 +0000
+@@ -2,6 +2,7 @@
+ #if __GNUC__ >= 7
+ _Pragma("GCC diagnostic ignored \"-Wimplicit-fallthrough\"")
+ #endif
++#include <netinet/if_ether.h>
+ #include <stddef.h>
+ #include "bond.h"
+ #include "bridge.h"
+diff -ur systemd-stable-245.5/src/network/netdev/netdev.c systemd-stable-245.5.new/src/network/netdev/netdev.c
+--- systemd-stable-245.5/src/network/netdev/netdev.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/network/netdev/netdev.c	2020-06-30 11:38:29.976587133 +0000
+@@ -1,5 +1,6 @@
+ /* SPDX-License-Identifier: LGPL-2.1+ */
+ 
++#include <netinet/if_ether.h>
+ #include <net/if.h>
+ #include <netinet/in.h>
+ 
+diff -ur systemd-stable-245.5/src/network/networkd-brvlan.c systemd-stable-245.5.new/src/network/networkd-brvlan.c
+--- systemd-stable-245.5/src/network/networkd-brvlan.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/network/networkd-brvlan.c	2020-06-30 11:38:29.976587133 +0000
+@@ -4,6 +4,7 @@
+ ***/
+ 
+ #include <netinet/in.h>
++#include <netinet/if_ether.h>
+ #include <linux/if_bridge.h>
+ #include <stdbool.h>
+ 
+diff -ur systemd-stable-245.5/src/network/networkd-dhcp-common.c systemd-stable-245.5.new/src/network/networkd-dhcp-common.c
+--- systemd-stable-245.5/src/network/networkd-dhcp-common.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/network/networkd-dhcp-common.c	2020-06-30 11:38:29.986587133 +0000
+@@ -4,6 +4,7 @@
+ #include "escape.h"
+ #include "in-addr-util.h"
+ #include "networkd-dhcp-common.h"
++#include <netinet/if_ether.h>
+ #include "networkd-network.h"
+ #include "parse-util.h"
+ #include "string-table.h"
+diff -ur systemd-stable-245.5/src/network/networkd-dhcp4.c systemd-stable-245.5.new/src/network/networkd-dhcp4.c
+--- systemd-stable-245.5/src/network/networkd-dhcp4.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/network/networkd-dhcp4.c	2020-06-30 11:38:29.986587133 +0000
+@@ -1,9 +1,9 @@
+ /* SPDX-License-Identifier: LGPL-2.1+ */
+ 
++#include <netinet/if_ether.h>
+ #include <netinet/in.h>
+ #include <netinet/ip.h>
+ #include <linux/if.h>
+-#include <linux/if_arp.h>
+ 
+ #include "alloc-util.h"
+ #include "dhcp-client-internal.h"
+diff -ur systemd-stable-245.5/src/network/networkd-dhcp6.c systemd-stable-245.5.new/src/network/networkd-dhcp6.c
+--- systemd-stable-245.5/src/network/networkd-dhcp6.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/network/networkd-dhcp6.c	2020-06-30 11:38:29.986587133 +0000
+@@ -3,9 +3,9 @@
+   Copyright © 2014 Intel Corporation. All rights reserved.
+ ***/
+ 
++#include <netinet/if_ether.h>
+ #include <netinet/in.h>
+ #include <linux/if.h>
+-#include <linux/if_arp.h>
+ #include "sd-radv.h"
+ 
+ #include "sd-dhcp6-client.h"
+diff -ur systemd-stable-245.5/src/network/networkd-link.c systemd-stable-245.5.new/src/network/networkd-link.c
+--- systemd-stable-245.5/src/network/networkd-link.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/network/networkd-link.c	2020-06-30 11:38:29.986587133 +0000
+@@ -1,8 +1,8 @@
+ /* SPDX-License-Identifier: LGPL-2.1+ */
+ 
++#include <netinet/if_ether.h>
+ #include <netinet/in.h>
+ #include <linux/if.h>
+-#include <linux/if_arp.h>
+ #include <unistd.h>
+ 
+ #include "alloc-util.h"
+diff -ur systemd-stable-245.5/src/network/networkd-network.c systemd-stable-245.5.new/src/network/networkd-network.c
+--- systemd-stable-245.5/src/network/networkd-network.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/network/networkd-network.c	2020-06-30 11:38:29.986587133 +0000
+@@ -1,5 +1,6 @@
+ /* SPDX-License-Identifier: LGPL-2.1+ */
+ 
++#include <netinet/if_ether.h>
+ #include <net/if.h>
+ #include <netinet/in.h>
+ #include <linux/netdevice.h>
+diff -ur systemd-stable-245.5/src/network/test-network-tables.c systemd-stable-245.5.new/src/network/test-network-tables.c
+--- systemd-stable-245.5/src/network/test-network-tables.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/network/test-network-tables.c	2020-06-30 11:38:29.986587133 +0000
+@@ -1,3 +1,4 @@
++#include <netinet/if_ether.h>
+ #include "bond.h"
+ #include "dhcp6-internal.h"
+ #include "dhcp6-protocol.h"
+diff -ur systemd-stable-245.5/src/shared/ethtool-util.c systemd-stable-245.5.new/src/shared/ethtool-util.c
+--- systemd-stable-245.5/src/shared/ethtool-util.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/shared/ethtool-util.c	2020-06-30 11:38:29.986587133 +0000
+@@ -1,5 +1,6 @@
+ /* SPDX-License-Identifier: LGPL-2.1+ */
+ 
++#include <netinet/if_ether.h>
+ #include <net/if.h>
+ #include <sys/ioctl.h>
+ #include <linux/ethtool.h>
+diff -ur systemd-stable-245.5/src/shared/ethtool-util.h systemd-stable-245.5.new/src/shared/ethtool-util.h
+--- systemd-stable-245.5/src/shared/ethtool-util.h	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/shared/ethtool-util.h	2020-06-30 11:38:29.986587133 +0000
+@@ -3,6 +3,7 @@
+ 
+ #include <macro.h>
+ #include <net/ethernet.h>
++#include <netinet/if_ether.h>
+ #include <linux/ethtool.h>
+ 
+ #include "conf-parser.h"
+diff -ur systemd-stable-245.5/src/systemd/sd-netlink.h systemd-stable-245.5.new/src/systemd/sd-netlink.h
+--- systemd-stable-245.5/src/systemd/sd-netlink.h	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/systemd/sd-netlink.h	2020-06-30 11:34:24.046587133 +0000
+@@ -18,6 +18,7 @@
+ ***/
+ 
+ #include <inttypes.h>
++#include <netinet/if_ether.h>
+ #include <net/ethernet.h>
+ #include <netinet/in.h>
+ #include <linux/neighbour.h>
+diff -ur systemd-stable-245.5/src/udev/net/link-config.c systemd-stable-245.5.new/src/udev/net/link-config.c
+--- systemd-stable-245.5/src/udev/net/link-config.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/udev/net/link-config.c	2020-06-30 11:38:29.986587133 +0000
+@@ -1,5 +1,6 @@
+ /* SPDX-License-Identifier: LGPL-2.1+ */
+ 
++#include <netinet/if_ether.h>
+ #include <linux/netdevice.h>
+ #include <netinet/ether.h>
+ 
+diff -ur systemd-stable-245.5/src/udev/udev-builtin-net_setup_link.c systemd-stable-245.5.new/src/udev/udev-builtin-net_setup_link.c
+--- systemd-stable-245.5/src/udev/udev-builtin-net_setup_link.c	2020-04-17 12:37:12.000000000 +0000
++++ systemd-stable-245.5.new/src/udev/udev-builtin-net_setup_link.c	2020-06-30 11:38:29.986587133 +0000
+@@ -1,5 +1,6 @@
+ /* SPDX-License-Identifier: LGPL-2.1+ */
+ 
++#include <netinet/if_ether.h>
+ #include "device-util.h"
+ #include "alloc-util.h"
+ #include "link-config.h"
