@@ -3,13 +3,13 @@
 
 EAPI=7
 
-PYTHON_COMPAT=( python3_{5,6} )
+PYTHON_COMPAT=( python3_{7,8} )
 
 inherit python-single-r1
 
 DESCRIPTION="Network Boot and Update Server"
-HOMEPAGE="https://github.com/cobbler"
-SRC_URI="https://github.com/cobbler/cobbler/archive/v${PV}.tar.gz -> ${P}.tar.gz"
+HOMEPAGE="https://cobbler.github.io https://github.com/cobbler"
+SRC_URI="https://github.com/cobbler/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 
 SLOT="0"
 LICENSE="Apache-2.0"
