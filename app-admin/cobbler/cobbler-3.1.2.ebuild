@@ -39,11 +39,9 @@ src_prepare() {
 		-e 's|"build/config/apache/cobbler_web.conf",||g' \
 		-e 's|"build/config/service/cobblerd.service",||g' \
 		setup.py || die
-	# eapply "${FILESDIR}/utils.patch"
-	# eapply "${FILESDIR}/cobblerd.patch"
-	# eapply "${FILESDIR}/api.patch"
-	# eapply "${FILESDIR}/tftpgen.patch"
-	# eapply "${FILESDIR}/modules-managers-import-signatures-3.0.1.patch"
+	eapply "${FILESDIR}/cobblerd.patch"
+	eapply "${FILESDIR}/utils.patch"
+	eapply "${FILESDIR}/tftpgen.patch"
 	default
 }
 src_compile() {
