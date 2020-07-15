@@ -30,7 +30,7 @@ IUSE="debug extra-hardened"
 
 REQUIRED_USE="extra-hardened? ( !debug )"
 
-RESTRICT="strip"
+RESTRICT="extra-hardened? ( strip )"
 
 BDEPEND="
 	!initramfs? ( sys-kernel/initramfs-image )
