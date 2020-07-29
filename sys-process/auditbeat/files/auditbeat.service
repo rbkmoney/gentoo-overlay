@@ -5,12 +5,14 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
+Environment="AUDITBEAT_CONFIG=/etc/auditbeat/auditbeat.yml"
+Environment="AUDITBEAT_DATADIR=/var/lib/auditbeat"
+Environment="AUDITBEAT_LOGDIR=/var/log/auditbeat"
+Environment="AUDITBEAT_OPTS="
+EnvironmentFile=/etc/conf.d/auditbeat
 User=root
 Group=root
-Environment="BEAT_LOG_OPTS="
-Environment="BEAT_CONFIG_OPTS=-c /etc/auditbeat/auditbeat.yml"
-Environment="BEAT_PATH_OPTS=--path.home /usr/share/auditbeat --path.config /etc/auditbeat --path.data /var/lib/auditbeat --path.logs /var/log/auditbeat"
-ExecStart=/usr/share/auditbeat/bin/auditbeat --environment systemd $BEAT_LOG_OPTS $BEAT_CONFIG_OPTS $BEAT_PATH_OPTS
+ExecStart=/usr/bin/auditbeat -c ${AUDITBEAT_CONFIG} --path.config /etc/auditbeat --path.logs ${AUDITBEAT_LOGDIR} ${AUDITBEAT_OPTS} --path.data ${AUDITBEAT_DATADIR} --path.home ${AUDITBEAT_DATADIR} --path.logs ${AUDITBEAT_LOGDIR}
 Restart=always
 
 [Install]

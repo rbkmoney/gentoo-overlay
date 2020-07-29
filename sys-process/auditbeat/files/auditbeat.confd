@@ -1,15 +1,15 @@
-# Run filebeat under this user/group
-#FILEBEAT_USER=""
-#FILEBEAT_GROUP=""
+# Run auditbeat under this user/group
+#AUDITBEAT_USER=""
+#AUDITBEAT_GROUP=""
 
 # Configuration path
-#FILEBEAT_CONFIG=""
+#AUDITBEAT_CONFIG=""
 
 # Path to data directory
-#FILEBEAT_DATADIR=""
+#AUDITBEAT_DATADIR=""
 
 # Path to log directory
-#FILEBEAT_LOGDIR=""
+#AUDITBEAT_LOGDIR=""
 
-# Additional arguments passed to filebeat
-#FILEBEAT_OPTS=""
+# Additional arguments passed to auditbeat
+#AUDITBEAT_OPTS=""
