@@ -15,7 +15,7 @@ RESTRICT="test"
 IUSE="cpu_flags_x86_avx cpu_flags_x86_avx2 selinux"
 
 DEPEND=">=dev-lang/go-1.12.9"
-RDEPEND="!app-admin/auditbeat-bin
+RDEPEND="!sys-process/auditbeat-bin
 		selinux? ( sec-policy/selinux-auditbeat )"
 
 # Do not complain about CFLAGS etc since go projects do not use them.
