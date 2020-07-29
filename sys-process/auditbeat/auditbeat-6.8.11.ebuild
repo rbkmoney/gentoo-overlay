@@ -3,6 +3,8 @@
 
 EAPI=7
 
+inherit systemd
+
 DESCRIPTION="Lightweight shipper for audit data"
 HOMEPAGE="https://www.elastic.co/products/beats"
 SRC_URI="https://github.com/elastic/beats/archive/v${PV}.tar.gz -> ${P}.tar.gz"
