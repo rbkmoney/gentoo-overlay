@@ -12,10 +12,11 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 RESTRICT="test"
 
-IUSE="cpu_flags_x86_avx cpu_flags_x86_avx2"
+IUSE="cpu_flags_x86_avx cpu_flags_x86_avx2 selinux"
 
 DEPEND=">=dev-lang/go-1.12.9"
-RDEPEND="!app-admin/auditbeat-bin"
+RDEPEND="!app-admin/auditbeat-bin
+		selinux? ( sec-policy/selinux-auditbeat )"
 
 # Do not complain about CFLAGS etc since go projects do not use them.
 QA_FLAGS_IGNORED='.*'
@@ -47,6 +48,7 @@ src_prepare() {
 		sed -i '/useAVX2 /Id' vendor/golang.org/x/crypto/blake2b/blake2b.go
 		sed -i '/AVX2(/Id'  vendor/golang.org/x/crypto/blake2b/blake2bAVX2_amd64.go
 		sed -i '/useAVX2 /Id' vendor/golang.org/x/crypto/blake2b/blake2bAVX2_amd64.go
+
 		if ! use cpu_flags_x86_avx ; then
 			sed -i 's/} else if useSSE4/if useSSE4/g' vendor/golang.org/x/crypto/blake2b/blake2bAVX2_amd64.go
 		else
@@ -67,6 +69,7 @@ src_install() {
 
 	newconfd "${FILESDIR}/${PN}.confd" ${PN}
 	newinitd "${FILESDIR}/${PN}.initd.1" ${PN}
+	systemd_dounit "${FILESDIR}"/${PN}.service
 
 	docinto examples
 	dodoc ${PN}/{auditbeat.yml,auditbeat.reference.yml}
