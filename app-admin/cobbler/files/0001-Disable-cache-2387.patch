@@ -1,0 +1,86 @@
+From ebe62e612267ed85f7bc1c8a96af6bf5a883ce9a Mon Sep 17 00:00:00 2001
+From: holmesb <5072156+holmesb@users.noreply.github.com>
+Date: Wed, 29 Jul 2020 15:43:20 +0100
+Subject: [PATCH] Disable cache (#2387)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+* Disabling cache for time-being since it breaks XMLRPC API
+* Making disabling cache optional since it still works with local XMLRPC calls.  It remains enabled (cache_enabled: 1) by default.
+* Sorry but just noticed I'd left a redundant "api_handle" argument from attempts to debug this problem.  Removing.
+
+Co-authored-by: brendan <brendan.holmes@asos.com-at-258762421671>
+Signed-off-by: Alexander Miroshnichenko <alex@millerson.name>
+---
+ cobbler/items/item.py   | 3 ++-
+ cobbler/settings.py     | 1 +
+ config/cobbler/settings | 6 ++++++
+ docs/cobbler-conf.rst   | 9 +++++++++
+ 4 files changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/cobbler/items/item.py b/cobbler/items/item.py
+index 09e88b025902..2ed080eafc3d 100644
+--- a/cobbler/items/item.py
++++ b/cobbler/items/item.py
+@@ -247,7 +247,8 @@ class Item(object):
+ 
+         :return: A dictionary with all values present in this object.
+         """
+-        # return utils.to_dict_from_fields(self, self.get_fields())
++        if not self.settings.cache_enabled:
++            return utils.to_dict_from_fields(self, self.get_fields())
+ 
+         value = self.get_from_cache(self)
+         if value is None:
+diff --git a/cobbler/settings.py b/cobbler/settings.py
+index 5812078ca051..16242a13870d 100644
+--- a/cobbler/settings.py
++++ b/cobbler/settings.py
+@@ -54,6 +54,7 @@ DEFAULTS = {
+     "build_reporting_smtp_server": ["localhost", "str"],
+     "build_reporting_subject": ["", "str"],
+     "buildisodir": ["/var/cache/cobbler/buildiso", "str"],
++    "cache_enabled": [1, "bool"],
+     "cheetah_import_whitelist": [["re", "random", "time"], "list"],
+     "client_use_https": [0, "bool"],
+     "client_use_localhost": [0, "bool"],
+diff --git a/config/cobbler/settings b/config/cobbler/settings
+index 36b7b327232c..f4c2e17a55f1 100644
+--- a/config/cobbler/settings
++++ b/config/cobbler/settings
+@@ -64,6 +64,12 @@ build_reporting_smtp_server: "localhost"
+ build_reporting_subject: ""
+ build_reporting_ignorelist: [ "" ]
+ 
++# If cache_enabled is 1, a cache will keep converted records in memory to make checking them faster.  This helps with
++# use cases like writing out large numbers of records.  There is a known issue with cache and remote XMLRPC API calls.
++# If you will use Cobbler with config management or infrastructure-as-code tools such as Terraform, it is recommended
++# to disable by setting to 0.
++cache_enabled: 1
++
+ # Cheetah-language autoinstall templates can import Python modules.
+ # while this is a useful feature, it is not safe to allow them to
+ # import anything they want. This whitelists which modules can be
+diff --git a/docs/cobbler-conf.rst b/docs/cobbler-conf.rst
+index 20a1d14a0c13..092fabb09d8b 100644
+--- a/docs/cobbler-conf.rst
++++ b/docs/cobbler-conf.rst
+@@ -101,6 +101,15 @@ defaults:
+     build_reporting_subject: ""
+     build_reporting_ignorelist: [ "" ]
+ 
++cache_enabled
++========================
++If cache_enabled is 1, a cache will keep converted records in memory to make checking them faster.  This helps with
++use cases like writing out large numbers of records.  There is a known issue with cache and remote XMLRPC API calls.
++If you will use Cobbler with config management or infrastructure-as-code tools such as Terraform, it is recommended
++to disable by setting to 0.
++
++default: ``1``
++
+ cheetah_import_whitelist
+ ========================
+ Cheetah-language autoinstall templates can import Python modules. while this is a useful feature, it is not safe to
+-- 
+2.26.2
+
