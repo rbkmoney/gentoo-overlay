@@ -2,10 +2,10 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
-
 PYTHON_COMPAT=( python3_{6,7,8} )
+DISTUTILS_SINGLE_IMPL=1
 
-inherit python-single-r1
+inherit distutils-r1
 
 DESCRIPTION="Network Boot and Update Server"
 HOMEPAGE="https://cobbler.github.io https://github.com/cobbler"
@@ -14,6 +14,8 @@ SRC_URI="https://github.com/cobbler/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 SLOT="0"
 LICENSE="Apache-2.0"
 KEYWORDS="~amd64"
+IUSE="man"
+
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 RESTRICT="mirror"
@@ -47,18 +49,21 @@ src_prepare() {
 		-e 's|"build/config/apache/cobbler.conf",||g' \
 		-e 's|"build/config/apache/cobbler_web.conf",||g' \
 		-e 's|"build/config/service/cobblerd.service",||g' \
+		-e 's|"build/config/cobbler/settings"||g' \
 		setup.py || die
-}
-src_compile() {
-	"${PYTHON}" setup.py build -f || die
+
+	if ! use man; then
+		sed -i '/docs\//Id' setup.py
+	fi
 }
 
 src_install() {
-	"${PYTHON}" setup.py install --root "${D}" -f || die
+	distutils-r1_src_install
 
 	# insinto /etc/${PN}
 	# doins conf/*
 	dodoc config/apache/*
+	dodoc config/cobbler/settings
 	dodoc "${FILESDIR}/cobbler.nginx.conf"
 	dodoc "${FILESDIR}/cobbler-web.uwsgi.ini"
 	dodoc "${FILESDIR}/cobbler-svc.uwsgi.ini"
