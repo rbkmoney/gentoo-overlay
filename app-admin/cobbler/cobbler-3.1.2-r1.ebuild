@@ -31,7 +31,16 @@ RDEPEND="${PYTHON_DEPS}
 	acct-group/cobbler"
 DEPEND="${RDEPEND}"
 
+PATCHES=(
+	"${FILESDIR}/cobblerd.patch"
+	"${FILESDIR}/utils.patch"
+	"${FILESDIR}/tftpgen.patch"
+	"${FILESDIR}/0001-Disable-cache-2387.patch"
+)
+
 src_prepare() {
+	default
+
 	# Disablie installation of some files and all chown calls
 	sed -i \
 		-e '/"%s" % webconfig,/d' -e 's|self.change_owner(path, http_user)|pass|g' \
@@ -39,10 +48,6 @@ src_prepare() {
 		-e 's|"build/config/apache/cobbler_web.conf",||g' \
 		-e 's|"build/config/service/cobblerd.service",||g' \
 		setup.py || die
-	eapply "${FILESDIR}/cobblerd.patch"
-	eapply "${FILESDIR}/utils.patch"
-	eapply "${FILESDIR}/tftpgen.patch"
-	default
 }
 src_compile() {
 	"${PYTHON}" setup.py build -f || die
