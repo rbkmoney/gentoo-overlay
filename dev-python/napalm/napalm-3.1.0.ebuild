@@ -32,7 +32,7 @@ DEPEND="
 	dev-python/future
 	dev-python/six
 	dev-python/jinja
-	dev-python/textfsm
+	dev-python/texttable
 	dev-python/pyserial
 	dev-python/netaddr
 	dev-python/pyyaml
