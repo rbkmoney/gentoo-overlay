@@ -24,7 +24,7 @@ DEPEND="
 	>=dev-python/paramiko-2.4.3
 	>=dev-python/scp-0.13.2
 	dev-python/pyserial
-	dev-python/textfsm
+	dev-python/texttable
 	test? ( dev-python/pytest dev-python/pyyaml )
 "
 
