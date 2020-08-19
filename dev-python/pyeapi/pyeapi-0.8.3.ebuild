@@ -5,7 +5,7 @@ EAPI=7
 
 PYTHON_COMPAT=( python3_{6,7,8} pypy3 )
 
-inherit distutils-r1 eutils flag-o-matic
+inherit distutils-r1
 
 DESCRIPTION="Python client for Arista EOS API"
 HOMEPAGE="https://pypi.org/project/pyeapi/ https://github.com/arista-eosplus/pyeapi"
@@ -14,34 +14,14 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="amd64 x86"
-IUSE=""
-
-IUSE="doc test"
+IUSE="test"
 RESTRICT="!test? ( test ) mirror"
 
-DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
-	dev-python/netaddr
-"
-
-S="${WORKDIR}/${P}"
-
-python_prepare_all() {
-	distutils-r1_python_prepare_all
-}
-
-python_compile() {
-	if ! python_is_python3; then
-		local CFLAGS=${CFLAGS}
-		append-cflags -fno-strict-aliasing
-	fi
-	distutils-r1_python_compile
-}
+RDEPEND="dev-python/netaddr[${PYTHON_USEDEP}]"
+BDEPEND="${RDEPEND}
+	test? ( dev-python/coverage[${PYTHON_USEDEP}]
+			dev-python/mock[${PYTHON_USEDEP}] )"
 
 python_test() {
-	pytest -vv tests || die "Testsuite failed under ${EPYTHON}"
-}
-
-python_install_all() {
-	distutils-r1_python_install_all
+	esetup.py test
 }

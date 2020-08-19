@@ -5,7 +5,7 @@ EAPI=7
 
 PYTHON_COMPAT=( python3_{6,7,8} pypy3 )
 
-inherit distutils-r1 eutils flag-o-matic
+inherit distutils-r1
 
 DESCRIPTION="Parse, Audit, Query, Build, and Modify Cisco IOS-style configurations"
 HOMEPAGE="https://pypi.org/project/ciscoconfparse/ http://www.pennington.net/py/ciscoconfparse/ https://github.com/mpenning/ciscoconfparse"
@@ -15,35 +15,11 @@ LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
-
-IUSE="doc test"
-RESTRICT="!test? ( test ) mirror"
+RESTRICT="mirror"
 
 DEPEND="
 	dev-python/setuptools[${PYTHON_USEDEP}]
-	>=dev-python/dnspython-1.16.0
-	dev-python/colorama
-	dev-python/passlib
+	>=dev-python/dnspython-1.16.0[${PYTHON_USEDEP}]
+	dev-python/colorama[${PYTHON_USEDEP}]
+	dev-python/passlib[${PYTHON_USEDEP}]
 "
-
-S="${WORKDIR}/${P}"
-
-python_prepare_all() {
-	distutils-r1_python_prepare_all
-}
-
-python_compile() {
-	if ! python_is_python3; then
-		local CFLAGS=${CFLAGS}
-		append-cflags -fno-strict-aliasing
-	fi
-	distutils-r1_python_compile
-}
-
-python_test() {
-	pytest -vv tests || die "Testsuite failed under ${EPYTHON}"
-}
-
-python_install_all() {
-	distutils-r1_python_install_all
-}
