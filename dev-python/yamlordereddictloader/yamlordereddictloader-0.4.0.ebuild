@@ -5,7 +5,7 @@ EAPI=7
 
 PYTHON_COMPAT=( python3_{6,7,8} pypy3 )
 
-inherit distutils-r1 eutils flag-o-matic
+inherit distutils-r1
 
 DESCRIPTION="YAML loader and dump for PyYAML allowing to keep keys order"
 HOMEPAGE="https://pypi.org/project/yamlordereddictloader/ https://github.com/fmenabe/python-yamlordereddictloader"
@@ -15,29 +15,6 @@ LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
+RESTRICT="mirror"
 
-IUSE="doc test"
-RESTRICT="!test? ( test ) mirror"
-
-DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
-	dev-python/pyyaml
-"
-
-S="${WORKDIR}/${P}"
-
-python_prepare_all() {
-	distutils-r1_python_prepare_all
-}
-
-python_compile() {
-	if ! python_is_python3; then
-		local CFLAGS=${CFLAGS}
-		append-cflags -fno-strict-aliasing
-	fi
-	distutils-r1_python_compile
-}
-
-python_install_all() {
-	distutils-r1_python_install_all
-}
+RDEPEND="dev-python/pyyaml[${PYTHON_USEDEP}]"

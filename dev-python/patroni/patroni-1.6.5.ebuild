@@ -30,7 +30,7 @@ DEPEND="
 	${RDEPEND}
 	dev-python/setuptools[${PYTHON_USEDEP}]
 	>=dev-python/urllib3-1.19.1
-	!=dev-python/urllib3-1.21
+	!=dev-python/urllib3-1.21-r0
 	dev-python/boto[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
 	>=dev-python/six-1.7
@@ -77,4 +77,3 @@ python_install_all() {
 	use doc && HTML_DOCS=( docs/. )
 	distutils-r1_python_install_all
 }
-
