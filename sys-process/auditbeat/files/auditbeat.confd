@@ -1,0 +1,15 @@
+# Run auditbeat under this user/group
+#AUDITBEAT_USER=""
+#AUDITBEAT_GROUP=""
+
+# Configuration path
+#AUDITBEAT_CONFIG=""
+
+# Path to data directory
+#AUDITBEAT_DATADIR=""
+
+# Path to log directory
+#AUDITBEAT_LOGDIR=""
+
+# Additional arguments passed to auditbeat
+#AUDITBEAT_OPTS=""

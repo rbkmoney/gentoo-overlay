@@ -39,12 +39,15 @@ files_type(auditbeat_var_lib_t)
 # auditbeat local policy
 #
 allow auditbeat_t self:fifo_file read;
-allow auditbeat_t self:capability audit_control;
+allow auditbeat_t self:capability { audit_control dac_read_search };
 allow auditbeat_t self:netlink_audit_socket { bind create getattr nlmsg_read nlmsg_write read write nlmsg_readpriv};
 allow auditbeat_t self:process getsched;
 
 # Temporary rule
 corenet_tcp_connect_all_unreserved_ports(auditbeat_t)
+
+corenet_tcp_connect_http_port(auditbeat_t)
+corenet_udp_bind_generic_node(auditbeat_t)
 
 manage_dirs_pattern(auditbeat_t, auditbeat_log_t, auditbeat_log_t)
 manage_files_pattern(auditbeat_t, auditbeat_log_t, auditbeat_log_t)

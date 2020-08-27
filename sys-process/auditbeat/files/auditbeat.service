@@ -1,0 +1,19 @@
+[Unit]
+Description=Lightweight shipper for audit data
+Documentation=https://www.elastic.co/beats/auditbeat
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Environment="AUDITBEAT_CONFIG=/etc/auditbeat/auditbeat.yml"
+Environment="AUDITBEAT_DATADIR=/var/lib/auditbeat"
+Environment="AUDITBEAT_LOGDIR=/var/log/auditbeat"
+Environment="AUDITBEAT_OPTS="
+EnvironmentFile=/etc/conf.d/auditbeat
+User=root
+Group=root
+ExecStart=/usr/bin/auditbeat -c ${AUDITBEAT_CONFIG} --path.config /etc/auditbeat --path.logs ${AUDITBEAT_LOGDIR} ${AUDITBEAT_OPTS} --path.data ${AUDITBEAT_DATADIR} --path.home ${AUDITBEAT_DATADIR} --path.logs ${AUDITBEAT_LOGDIR}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

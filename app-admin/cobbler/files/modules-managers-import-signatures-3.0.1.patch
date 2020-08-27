@@ -1,0 +1,41 @@
+--- a/cobbler/modules/managers/import_signatures.py 2019-10-29 14:36:39.614826753 +0300
++++ b/cobbler/modules/managers/import_signatures.py 2019-09-04 14:23:53.000000000 +0300
+@@ -36,10 +36,9 @@
+ except:
+     apt_available = False
+ 
+-from cobbler.items import profile, distro
++from cobbler import items
+ from cobbler.cexceptions import CX
+ 
+-import cobbler.items.repo as item_repo
+ import cobbler.templar as templar
+ import cobbler.utils as utils
+ 
+@@ -332,7 +331,7 @@
+                 continue
+             else:
+                 self.logger.info("creating new distro: %s" % name)
+-                distro = distro.Distro(self.collection_mgr)
++                distro = items.distro.Distro(self.collection_mgr)
+ 
+             if name.find("-autoboot") != -1:
+                 # this is an artifact of some EL-3 imports
+@@ -368,7 +367,7 @@
+ 
+             if existing_profile is None:
+                 self.logger.info("creating new profile: %s" % name)
+-                profile = profile.Profile(self.collection_mgr)
++                profile = items.profile.Profile(self.collection_mgr)
+             else:
+                 self.logger.info("skipping existing profile, name already exists: %s" % name)
+                 continue
+@@ -678,7 +677,7 @@
+         if not mirror:
+             mirror = "http://archive.ubuntu.com/ubuntu"
+ 
+-        repo = item_repo.Repo(self.collection_mgr)
++        repo = items.repo.Repo(self.collection_mgr)
+         repo.set_breed("apt")
+         repo.set_arch(distro.arch)
+         repo.set_keep_updated(True)

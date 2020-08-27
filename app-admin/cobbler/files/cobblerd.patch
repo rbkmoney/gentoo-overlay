@@ -1,0 +1,42 @@
+--- a/cobbler/cobblerd.py 2019-09-04 14:23:53.000000000 +0300
++++ b/cobbler/cobblerd.py 2019-10-29 13:42:32.461016650 +0300
+@@ -52,14 +52,17 @@
+     fd = os.open(ssfile, os.O_CREAT | os.O_RDWR, 0o600)
+     os.write(fd, binascii.hexlify(data))
+     os.close(fd)
+-
+-    http_user = "apache"
+-    family = utils.get_family()
+-    if family == "debian":
+-        http_user = "www-data"
+-    elif family == "suse":
+-        http_user = "wwwrun"
+-    os.lchown("/var/lib/cobbler/web.ss", pwd.getpwnam(http_user)[2], -1)
++    if os.getuid() == 0:
++        # TODO: Remove hardcode
++        http_user = "apache"
++        family = utils.get_family()
++        if family == "debian":
++            http_user = "www-data"
++        elif family == "suse":
++            http_user = "wwwrun"
++        elif family == "gentoo":
++            http_user = "nginx"
++        os.lchown("/var/lib/cobbler/web.ss", pwd.getpwnam(http_user)[2], -1)
+
+     return 1
+
+@@ -78,6 +81,7 @@
+ def do_xmlrpc_rw(cobbler_api, settings, port):
+
+     xinterface = remote.ProxiedXMLRPCInterface(cobbler_api, remote.CobblerXMLRPCInterface)
++    # TODO: Remove hardcode
+     server = remote.CobblerXMLRPCServer(('127.0.0.1', port))
+     server.logRequests = 0      # don't print stuff
+     xinterface.logger.debug("XMLRPC running on %s" % port)
+@@ -96,4 +100,5 @@
+     cobbler_api = cobbler_api.CobblerAPI()
+     settings = cobbler_api.settings()
+     regen_ss_file()
++    # TODO: Remove hardcode
+     do_xmlrpc_rw(cobbler_api, settings, 25151)
