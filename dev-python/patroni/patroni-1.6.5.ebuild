@@ -22,14 +22,7 @@ IUSE="doc test consul etcd zookeeper"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
-	>=dev-python/psycopg-2.8.3
-	dev-python/flake8[${PYTHON_USEDEP}]
-	"
-
-DEPEND="
-	${RDEPEND}
-	dev-python/setuptools[${PYTHON_USEDEP}]
-	>=dev-python/urllib3-1.19.1
+    >=dev-python/urllib3-1.19.1
 	!=dev-python/urllib3-1.21-r0
 	dev-python/boto[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
@@ -39,10 +32,8 @@ DEPEND="
 	dev-python/python-dateutil[${PYTHON_USEDEP}]
 	>=dev-python/psutil-2.0.0
 	dev-util/cdiff[${PYTHON_USEDEP}]
-	test? (
-		dev-python/pytest[${PYTHON_USEDEP}]
-		dev-python/mock[${PYTHON_USEDEP}]
-	)
+	>=dev-python/psycopg-2.8.3
+	dev-python/flake8[${PYTHON_USEDEP}]
 	consul? (
 		>=dev-python/python-consul-0.7.1
 	)
@@ -52,6 +43,14 @@ DEPEND="
 	)
 	zookeeper? (
 		>=dev-python/kazoo-1.3.1
+	)
+	"
+
+BDEPEND="
+	dev-python/setuptools[${PYTHON_USEDEP}]
+	test? (
+		dev-python/pytest[${PYTHON_USEDEP}]
+		dev-python/mock[${PYTHON_USEDEP}]
 	)
 	"
 
@@ -76,4 +75,5 @@ python_test() {
 python_install_all() {
 	use doc && HTML_DOCS=( docs/. )
 	distutils-r1_python_install_all
+	newinitd "${FILESDIR}/patroni-cluster.initd" "patroni-cluster"
 }
