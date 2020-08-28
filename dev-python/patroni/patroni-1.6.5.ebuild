@@ -22,7 +22,7 @@ IUSE="doc test consul etcd zookeeper"
 RESTRICT="!test? ( test )"
 
 RDEPEND="
-    >=dev-python/urllib3-1.19.1
+	>=dev-python/urllib3-1.19.1
 	!=dev-python/urllib3-1.21-r0
 	dev-python/boto[${PYTHON_USEDEP}]
 	dev-python/pyyaml[${PYTHON_USEDEP}]
