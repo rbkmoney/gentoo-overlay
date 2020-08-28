@@ -1,0 +1,21 @@
+#!/sbin/openrc-run
+# Copyright 2020 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+name="patroni-cluster daemon"
+description="Patroni cluster"
+command_user="postgres"
+command=/usr/bin/patroni
+command_args="/etc/patroni/patroni.yml"
+command_background="1"
+pidfile="/run/patroni-cluster.pid"
+rc_ulimit=${rc_ulimit-"-n 65536"}
+
+retry="20"
+output_log="/var/log/patroni.log"
+error_log="/var/log/patroni.log"
+
+depend() {
+    need net
+    use logger
+}
