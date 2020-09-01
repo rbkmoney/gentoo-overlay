@@ -29,7 +29,7 @@ RDEPEND="
 	dev-python/future[${PYTHON_USEDEP}]
 	dev-python/six[${PYTHON_USEDEP}]
 	dev-python/jinja[${PYTHON_USEDEP}]
-	dev-python/texttable[${PYTHON_USEDEP}]
+	dev-python/textfsm[${PYTHON_USEDEP}]
 	dev-python/ntc_templates[${PYTHON_USEDEP}]
 	dev-python/pyserial[${PYTHON_USEDEP}]
 	dev-python/netaddr[${PYTHON_USEDEP}]

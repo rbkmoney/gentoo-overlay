@@ -17,4 +17,4 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 RESTRICT="mirror"
 
-RDEPEND="dev-python/texttable[${PYTHON_USEDEP}]"
+RDEPEND="dev-python/textfsm[${PYTHON_USEDEP}]"
