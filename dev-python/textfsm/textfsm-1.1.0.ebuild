@@ -17,5 +17,6 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 RESTRICT="mirror"
 
-RDEPEND="dev-python/future[${PYTHON_USEDEP}]
+DEPEND="dev-python/future[${PYTHON_USEDEP}]
 	dev-python/six[${PYTHON_USEDEP}]"
+BDEPEND="dev-python/wheel[${PYTHON_USEDEP}]"
