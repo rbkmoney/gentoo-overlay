@@ -17,4 +17,4 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 RESTRICT="mirror"
 
-RDEPEND="dev-python/pyyaml[${PYTHON_USEDEP}]"
+DEPEND="dev-python/pyyaml[${PYTHON_USEDEP}]"

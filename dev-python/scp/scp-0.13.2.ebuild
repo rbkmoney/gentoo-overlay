@@ -16,4 +16,4 @@ KEYWORDS="amd64 x86"
 IUSE=""
 RESTRICT="mirror"
 
-RDEPEND="dev-python/paramiko[${PYTHON_USEDEP}]"
+DEPEND="dev-python/paramiko[${PYTHON_USEDEP}]"

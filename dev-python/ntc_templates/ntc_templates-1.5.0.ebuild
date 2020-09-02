@@ -17,4 +17,4 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 RESTRICT="mirror"
 
-RDEPEND="dev-python/textfsm[${PYTHON_USEDEP}]"
+DEPEND="dev-python/textfsm[${PYTHON_USEDEP}]"

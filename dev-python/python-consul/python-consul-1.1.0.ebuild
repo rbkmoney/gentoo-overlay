@@ -19,7 +19,7 @@ IUSE=""
 IUSE="doc test"
 RESTRICT="!test? ( test ) mirror"
 
-RDEPEND="
+DEPEND="
 	>=dev-python/requests-2.0[${PYTHON_USEDEP}]
 	>=dev-python/six-1.7[${PYTHON_USEDEP}]
 "

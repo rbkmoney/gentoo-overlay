@@ -17,6 +17,6 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 RESTRICT="mirror"
 
-RDEPEND="
+DEPEND="
 	>=dev-python/lxml-4.3.0[${PYTHON_USEDEP}]
 "
