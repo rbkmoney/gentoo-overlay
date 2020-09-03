@@ -21,7 +21,7 @@ KEYWORDS="amd64 x86"
 IUSE="doc test consul etcd zookeeper"
 RESTRICT="!test? ( test )"
 
-RDEPEND="
+DEPEND="
 	>=dev-python/urllib3-1.19.1
 	!=dev-python/urllib3-1.21-r0
 	dev-python/boto[${PYTHON_USEDEP}]

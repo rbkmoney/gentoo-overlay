@@ -17,7 +17,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 RESTRICT="mirror"
 
-RDEPEND="
+DEPEND="
 	>=dev-python/paramiko-2.4.3[${PYTHON_USEDEP}]
 	>=dev-python/scp-0.13.2[${PYTHON_USEDEP}]
 	>=dev-python/ncclient-0.6.3[${PYTHON_USEDEP}]

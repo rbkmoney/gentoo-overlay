@@ -17,11 +17,10 @@ LICENSE="MPL-2.0"
 SLOT="0"
 KEYWORDS="~alpha amd64 arm ~arm64 hppa ia64 ppc ppc64 ~s390 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-solaris"
 
-RDEPEND="app-antivirus/clamav
+DEPEND="app-antivirus/clamav
 	dev-python/dnspython[${PYTHON_USEDEP}]
 	dev-python/urllib3[${PYTHON_USEDEP}]
 	dev-python/certifi[${PYTHON_USEDEP}]"
-DEPEND="dev-python/setuptools[${PYTHON_USEDEP}]"
 
 S="${WORKDIR}/${PN}-${COMMIT}"
 
