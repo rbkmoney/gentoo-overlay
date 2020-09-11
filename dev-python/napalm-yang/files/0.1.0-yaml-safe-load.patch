@@ -1,0 +1,20 @@
+--- a/napalm_yang/helpers.py     2020-09-11 16:29:03.874362230 +0300
++++ b/napalm_yang/helpers.py      2020-09-11 15:54:46.090406837 +0300
+@@ -15,7 +15,7 @@
+     file_name = os.path.join(os.path.dirname(loader.name), node.value)
+
+     with open(file_name, "r") as inputfile:
+-        return yaml.load(inputfile)
++        return yaml.safe_load(inputfile)
+
+
+ yaml.add_constructor("!include", yaml_include)
+@@ -67,7 +67,7 @@
+         return
+
+     with open(filepath, "r") as f:
+-        return yaml.load(f)
++        return yaml.safe_load(f)
+
+
+ def _resolve_rule(rule, **kwargs):
