@@ -26,3 +26,7 @@ DEPEND="
 	dev-python/napalm[${PYTHON_USEDEP}]
 	dev-python/pyangbind[${PYTHON_USEDEP}]
 "
+python_prepare() {
+	eapply "${FILESDIR}/0.1.0-yaml-safe-load.patch"
+	distutils-r1_python_prepare
+}
