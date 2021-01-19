@@ -1,15 +1,15 @@
 # Copyright 1999-2019 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
-EAPI="5"
+EAPI="7"
 
 IUSE=""
-MODS="auditbeat"
-POLICY_FILES="auditbeat.te auditbeat.fc auditbeat.if"
+MODS="consultemplate"
+POLICY_FILES="consultemplate.te consultemplate.fc consultemplate.if"
 
 inherit selinux-policy-2
 
-DESCRIPTION="SELinux policy for auditbeat"
+DESCRIPTION="SELinux policy for consultemplate"
 
 RDEPEND="sec-policy/selinux-base-policy"
 

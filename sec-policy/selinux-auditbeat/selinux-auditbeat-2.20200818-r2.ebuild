@@ -1,20 +1,20 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
-EAPI="5"
+EAPI="7"
 
 IUSE=""
-MODS="knot"
-POLICY_FILES="knot.te knot.fc knot.if"
+MODS="auditbeat"
+POLICY_FILES="auditbeat.te auditbeat.fc auditbeat.if"
 
 inherit selinux-policy-2
 
-DESCRIPTION="SELinux policy for knot"
+DESCRIPTION="SELinux policy for auditbeat"
 
 RDEPEND="sec-policy/selinux-base-policy"
 
 if [[ $PV == 9999* ]] ; then
         KEYWORDS=""
 else
-        KEYWORDS="amd64 x86"
+        KEYWORDS="~amd64 ~x86"
 fi
