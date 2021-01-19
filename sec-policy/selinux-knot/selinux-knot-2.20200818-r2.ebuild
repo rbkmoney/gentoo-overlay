@@ -5,7 +5,6 @@ EAPI="7"
 
 IUSE=""
 MODS="knot"
-POLICY_FILES="knot.te knot.fc knot.if"
 
 inherit selinux-policy-2
 
