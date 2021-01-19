@@ -1,15 +1,15 @@
 # Copyright 1999-2019 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
-EAPI="5"
+EAPI="7"
 
 IUSE=""
-MODS="consul-template"
-POLICY_FILES="consul-template.te consul-template.fc consul-template.if"
+MODS="consul"
+POLICY_FILES="consul.te consul.fc consul.if"
 
 inherit selinux-policy-2
 
-DESCRIPTION="SELinux policy for consul-template"
+DESCRIPTION="SELinux policy for consul"
 
 RDEPEND="sec-policy/selinux-base-policy"
 

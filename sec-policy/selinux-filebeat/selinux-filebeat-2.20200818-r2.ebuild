@@ -1,15 +1,15 @@
 # Copyright 1999-2019 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
-EAPI="5"
+EAPI="7"
 
 IUSE=""
-MODS="consul"
-POLICY_FILES="consul.te consul.fc consul.if"
+MODS="filebeat"
+POLICY_FILES="filebeat.te filebeat.fc filebeat.if"
 
 inherit selinux-policy-2
 
-DESCRIPTION="SELinux policy for consul"
+DESCRIPTION="SELinux policy for filebeat"
 
 RDEPEND="sec-policy/selinux-base-policy"
 
