@@ -465,7 +465,7 @@ src_compile() {
 src_install() {
 	einstalldocs
 	exeinto usr/share/terraform/plugins/local/dmacvicar/libvirt/${PV}/linux_amd64
-	newexe ${PN} ${PN}_${PV}
+	newexe ${PN} ${PN}_v${PV}
 }
 
 pkg_postinst() {
