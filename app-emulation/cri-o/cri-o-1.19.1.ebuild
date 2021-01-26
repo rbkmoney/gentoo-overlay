@@ -38,6 +38,10 @@ DEPEND="
 RDEPEND="${COMMON_DEPEND}
 	!<app-emulation/libpod-1.3.2-r1"
 
+PATCHES=(
+	"${FILESDIR}"/0001-Fix-pinns-compilation-for-TEMP_FAILURE_RETRY.patch
+)
+
 src_prepare() {
 	default
 

@@ -1,0 +1,39 @@
+From c59fd827138efb66226811fb312be41ef1a15e3c Mon Sep 17 00:00:00 2001
+From: Alexander Miroshnichenko <alex@millerson.name>
+Date: Tue, 26 Jan 2021 12:34:11 +0300
+Subject: [PATCH] Fix pinns compilation for TEMP_FAILURE_RETRY
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+In case the macro is not available we now define it on our own in the utils.
+
+Signed-off-by: Alexander Miroshnichenko <alex@millerson.name>
+---
+ pinns/src/utils.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/pinns/src/utils.h b/pinns/src/utils.h
+index 2bb0479c05cf..c213320bfd4d 100644
+--- a/pinns/src/utils.h
++++ b/pinns/src/utils.h
+@@ -11,6 +11,17 @@
+ #include <syslog.h>
+ #include <unistd.h>
+ 
++#ifndef TEMP_FAILURE_RETRY
++#define TEMP_FAILURE_RETRY(expression)                                         \
++  (__extension__({                                                             \
++    long int __result;                                                         \
++    do                                                                         \
++      __result = (long int)(expression);                                       \
++    while (__result == -1L && errno == EINTR);                                 \
++    __result;                                                                  \
++  }))
++#endif
++
+ #define _pexit(s)                                                              \
+   do {                                                                         \
+     fprintf(stderr, "[pinns:e]: %s: %s\n", s, strerror(errno));                \
+-- 
+2.26.2
+
