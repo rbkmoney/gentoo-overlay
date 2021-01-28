@@ -456,6 +456,10 @@ DEPEND="app-emulation/libvirt"
 RDEPEND="${DEPEND}
 		app-admin/terraform"
 
+PATCHES=(
+	"${FILESDIR}"/0001-set-default-bus-for-CDROM-to-sata.patch
+)
+
 src_compile() {
 	local -a flags=(-buildmode=pie -ldflags "-X main.version=${PV} -s -linkmode external -extldflags '${LDFLAGS}'" -trimpath)
 
