@@ -6,8 +6,8 @@ EAPI=7
 inherit kernel-build
 
 MY_P=linux-${PV%.*}
-GENPATCHES_P=genpatches-${PV%.*}-${PV##*.}
-HARDENED_PATCH_VER="${PV}.a"
+GENPATCHES_P=genpatches-${PV%.*}-$((${PV##*.}+2))
+HARDENED_PATCH_VER="${PV}-hardened1"
 GENPATCHES_EXCLUDE="1500_XATTR_USER_PREFIX.patch
 	1510_fs-enable-link-security-restrictions-by-default.patch
 	2900_dev-root-proc-mount-fix.patch
