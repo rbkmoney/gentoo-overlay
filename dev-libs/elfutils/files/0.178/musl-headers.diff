@@ -1,0 +1,70 @@
+diff -urN elfutils-0.182/lib/error.h elfutils-0.182.new/lib/error.h
+--- elfutils-0.182/lib/error.h	1970-01-01 03:00:00.000000000 +0300
++++ elfutils-0.182.new/lib/error.h	2021-02-08 08:42:12.226207277 +0300
+@@ -0,0 +1,27 @@
++#ifndef _ERROR_H_
++#define _ERROR_H_
++
++#include <stdarg.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <errno.h>
++
++static unsigned int error_message_count = 0;
++
++static inline void error(int status, int errnum, const char* format, ...)
++{
++	va_list ap;
++	fprintf(stderr, "%s: ", program_invocation_name);
++	va_start(ap, format);
++	vfprintf(stderr, format, ap);
++	va_end(ap);
++	if (errnum)
++		fprintf(stderr, ": %s", strerror(errnum));
++	fprintf(stderr, "\n");
++	error_message_count++;
++	if (status)
++		exit(status);
++}
++
++#endif	/* _ERROR_H_ */
+diff -urN elfutils-0.182/lib/libintl.h elfutils-0.182.new/lib/libintl.h
+--- elfutils-0.182/lib/libintl.h	1970-01-01 03:00:00.000000000 +0300
++++ elfutils-0.182.new/lib/libintl.h	2021-02-08 08:41:04.639637427 +0300
+@@ -0,0 +1,4 @@
++#ifndef LIBINTL_H
++#define LIBINTL_H
++#define _(x) (x)
++#endif
+diff -urN elfutils-0.182/src/error.h elfutils-0.182.new/src/error.h
+--- elfutils-0.182/src/error.h	1970-01-01 03:00:00.000000000 +0300
++++ elfutils-0.182.new/src/error.h	2021-02-08 08:42:15.839536193 +0300
+@@ -0,0 +1,27 @@
++#ifndef _ERROR_H_
++#define _ERROR_H_
++
++#include <stdarg.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <errno.h>
++
++static unsigned int error_message_count = 0;
++
++static inline void error(int status, int errnum, const char* format, ...)
++{
++	va_list ap;
++	fprintf(stderr, "%s: ", program_invocation_name);
++	va_start(ap, format);
++	vfprintf(stderr, format, ap);
++	va_end(ap);
++	if (errnum)
++		fprintf(stderr, ": %s", strerror(errnum));
++	fprintf(stderr, "\n");
++	error_message_count++;
++	if (status)
++		exit(status);
++}
++
++#endif	/* _ERROR_H_ */
