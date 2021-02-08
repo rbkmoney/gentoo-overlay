@@ -48,18 +48,24 @@ src_prepare() {
 	# https://sourceware.org/PR23914
 	sed -i 's:-Werror::' */Makefile.in || die
 
-	use elibc_musl && PATCHES+=(
+	if use elibc_musl; then
+	PATCHES+=(
 		# Musl Patches
 		"${FILESDIR}"/0.178/fix-aarch64_fregs.patch
 		"${FILESDIR}"/0.178/fix-uninitialized.patch
-		"${FILESDIR}"/0.178/musl-fts-obstack.patch
 		"${FILESDIR}"/0.178/musl-macros.patch
+		"${FILESDIR}"/0.178/musl-cdefs.patch
 		"${FILESDIR}"/0.178/musl-qsort_r.patch
 		"${FILESDIR}"/0.178/musl-strerror_r.patch
 		"${FILESDIR}"/0.178/musl-strndupa.patch
 		"${FILESDIR}"/0.178/musl-asm-ptrace-h.patch
 		"${FILESDIR}"/0.178/musl-headers.diff
 	)
+
+	sed -i -e 's/argp_LDADD)/argp_LDADD) -lfts -lobstack/g' libdw/Makefile.*
+	sed -i -e 's/libelf.so/libelf.so -lfts -lobstack/g' src/Makefile.*
+
+	fi
 
 	default
 }
