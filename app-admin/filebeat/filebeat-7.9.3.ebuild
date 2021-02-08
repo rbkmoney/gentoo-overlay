@@ -3,7 +3,7 @@
 
 EAPI=7
 
-inherit go-module
+inherit systemd go-module
 
 EGO_SUM=(
 	"4d63.com/embedfiles v0.0.0-20190311033909-995e0740726f"
