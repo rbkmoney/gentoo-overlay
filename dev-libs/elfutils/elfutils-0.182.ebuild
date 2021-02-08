@@ -39,28 +39,29 @@ PATCHES=(
 	"${FILESDIR}"/${PN}-0.180-PaX-support.patch
 	"${FILESDIR}"/${PN}-0.179-CC-in-tests.patch
 	"${FILESDIR}"/${PN}-0.181-CC-in-tests-p2.patch
-
-	# Musl Patches
-	"${FILESDIR}"/0.178/fix-aarch64_fregs.patch
-	"${FILESDIR}"/0.178/fix-uninitialized.patch
-	"${FILESDIR}"/0.178/musl-fts-obstack.patch
-	"${FILESDIR}"/0.178/musl-macros.patch
-	"${FILESDIR}"/0.178/musl-qsort_r.patch
-	"${FILESDIR}"/0.178/musl-strerror_r.patch
-	"${FILESDIR}"/0.178/musl-strndupa.patch
-	"${FILESDIR}"/0.178/musl-asm-ptrace-h.patch
 )
 
 src_prepare() {
-	default
-
 	if ! use static-libs; then
 		sed -i -e '/^lib_LIBRARIES/s:=.*:=:' -e '/^%.os/s:%.o$::' lib{asm,dw,elf}/Makefile.in || die
 	fi
 	# https://sourceware.org/PR23914
 	sed -i 's:-Werror::' */Makefile.in || die
 
-	use elibc_musl && PATCHES+=( "${FILESDIR}"/0.178/musl-headers.diff )
+	use elibc_musl && PATCHES+=(
+		# Musl Patches
+		"${FILESDIR}"/0.178/fix-aarch64_fregs.patch
+		"${FILESDIR}"/0.178/fix-uninitialized.patch
+		"${FILESDIR}"/0.178/musl-fts-obstack.patch
+		"${FILESDIR}"/0.178/musl-macros.patch
+		"${FILESDIR}"/0.178/musl-qsort_r.patch
+		"${FILESDIR}"/0.178/musl-strerror_r.patch
+		"${FILESDIR}"/0.178/musl-strndupa.patch
+		"${FILESDIR}"/0.178/musl-asm-ptrace-h.patch
+		"${FILESDIR}"/0.178/musl-headers.diff
+	)
+
+	default
 }
 
 src_configure() {
