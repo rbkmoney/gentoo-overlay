@@ -991,6 +991,10 @@ SLOT="0"
 KEYWORDS="amd64 ~x86"
 RESTRICT="test"
 
+IUSE="selinux"
+
+RDEPEND="selinux? ( sec-policy/selinux-filebeat )"
+
 S="${WORKDIR}/beats-${PV}"
 
 src_prepare() {
