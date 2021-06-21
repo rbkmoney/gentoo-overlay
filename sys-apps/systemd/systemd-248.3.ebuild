@@ -1,4 +1,4 @@
-# Copyright 2011-2020 Gentoo Authors
+# Copyright 2011-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -16,26 +16,27 @@ else
 	MY_P=${MY_PN}-${MY_PV}
 	S=${WORKDIR}/${MY_P}
 	SRC_URI="https://github.com/systemd/${MY_PN}/archive/v${MY_PV}/${MY_P}.tar.gz"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
+	KEYWORDS="~alpha amd64 arm arm64 ~hppa ~ia64 ~mips ppc ppc64 ~riscv sparc x86"
 fi
 
-PYTHON_COMPAT=( python3_{6,7,8} )
+PYTHON_COMPAT=( python3_{7..10} )
 
-inherit bash-completion-r1 linux-info meson multilib-minimal ninja-utils pam python-any-r1 systemd toolchain-funcs udev usr-ldscript
+inherit bash-completion-r1 linux-info meson-multilib pam python-any-r1 systemd toolchain-funcs udev usr-ldscript
 
 DESCRIPTION="System and service manager for Linux"
 HOMEPAGE="https://www.freedesktop.org/wiki/Software/systemd"
 
 LICENSE="GPL-2 LGPL-2.1 MIT public-domain"
 SLOT="0/2"
-IUSE="acl apparmor audit build cgroup-hybrid cryptsetup curl dns-over-tls elibc_musl elfutils +gcrypt gnuefi homed http +hwdb idn importd +kmod +lz4 lzma nat pam pcre pkcs11 policykit pwquality qrcode repart +resolvconf +seccomp selinux smack split-usr static-libs +sysv-utils test vanilla xkb"
+IUSE="acl apparmor audit build cgroup-hybrid cryptsetup curl dns-over-tls elfutils elibc_glibc elibc_musl +gcrypt gnuefi homed http +hwdb idn importd +kmod +lz4 lzma nat pam pcre pkcs11 policykit pwquality qrcode repart +resolvconf +seccomp selinux split-usr static-libs +sysv-utils test tpm vanilla xkb +zstd"
 
 REQUIRED_USE="
-	elibc_musl
-	homed? ( cryptsetup )
+	homed? ( cryptsetup pam )
 	importd? ( curl gcrypt lzma )
+	pwquality? ( homed )
 "
-RESTRICT="!test? ( test )"
+RESTRICT="!test? ( test )
+	elibc_musl? ( homed )"
 
 MINKV="3.11"
 
@@ -49,7 +50,6 @@ COMMON_DEPEND=">=sys-apps/util-linux-2.30:0=[${MULTILIB_USEDEP}]
 	cryptsetup? ( >=sys-fs/cryptsetup-2.0.1:0= )
 	curl? ( net-misc/curl:0= )
 	dns-over-tls? ( >=net-libs/gnutls-3.6.0:0= )
-	elibc_musl? ( sys-libs/musl )
 	elfutils? ( >=dev-libs/elfutils-0.158:0= )
 	gcrypt? ( >=dev-libs/libgcrypt-1.4.5:0=[${MULTILIB_USEDEP}] )
 	homed? ( ${OPENSSL_DEP} )
@@ -74,7 +74,10 @@ COMMON_DEPEND=">=sys-apps/util-linux-2.30:0=[${MULTILIB_USEDEP}]
 	repart? ( ${OPENSSL_DEP} )
 	seccomp? ( >=sys-libs/libseccomp-2.3.3:0= )
 	selinux? ( sys-libs/libselinux:0= )
-	xkb? ( >=x11-libs/libxkbcommon-0.4.1:0= )"
+	tpm? ( app-crypt/tpm2-tss:0= )
+	xkb? ( >=x11-libs/libxkbcommon-0.4.1:0= )
+	zstd? ( >=app-arch/zstd-1.4.0:0=[${MULTILIB_USEDEP}] )
+"
 
 # Newer linux-headers needed by ia64, bug #480218
 DEPEND="${COMMON_DEPEND}
@@ -84,29 +87,38 @@ DEPEND="${COMMON_DEPEND}
 
 # baselayout-2.2 has /run
 RDEPEND="${COMMON_DEPEND}
-	acct-group/adm
-	acct-group/wheel
-	acct-group/kmem
-	acct-group/tty
-	acct-group/utmp
-	acct-group/audio
-	acct-group/cdrom
-	acct-group/dialout
-	acct-group/disk
-	acct-group/input
-	acct-group/kvm
-	acct-group/render
-	acct-group/tape
-	acct-group/video
-	acct-group/systemd-journal
-	acct-user/systemd-journal-remote
-	acct-user/systemd-coredump
-	acct-user/systemd-network
-	acct-user/systemd-resolve
-	acct-user/systemd-timesync
+	>=acct-group/adm-0-r1
+	>=acct-group/wheel-0-r1
+	>=acct-group/kmem-0-r1
+	>=acct-group/tty-0-r1
+	>=acct-group/utmp-0-r1
+	>=acct-group/audio-0-r1
+	>=acct-group/cdrom-0-r1
+	>=acct-group/dialout-0-r1
+	>=acct-group/disk-0-r1
+	>=acct-group/input-0-r1
+	>=acct-group/kvm-0-r1
+	>=acct-group/lp-0-r1
+	>=acct-group/render-0-r1
+	acct-group/sgx
+	>=acct-group/tape-0-r1
+	acct-group/users
+	>=acct-group/video-0-r1
+	>=acct-group/systemd-journal-0-r1
+	>=acct-user/root-0-r1
+	acct-user/nobody
+	>=acct-user/systemd-journal-remote-0-r1
+	>=acct-user/systemd-coredump-0-r1
+	>=acct-user/systemd-network-0-r1
+	acct-user/systemd-oom
+	>=acct-user/systemd-resolve-0-r1
+	>=acct-user/systemd-timesync-0-r1
 	>=sys-apps/baselayout-2.2
 	selinux? ( sec-policy/selinux-base-policy[systemd] )
-	sysv-utils? ( !sys-apps/sysvinit )
+	sysv-utils? (
+		!sys-apps/openrc[sysv-utils(-)]
+		!sys-apps/sysvinit
+	)
 	!sysv-utils? ( sys-apps/sysvinit )
 	resolvconf? ( !net-dns/openresolv )
 	!build? ( || (
@@ -122,7 +134,7 @@ RDEPEND="${COMMON_DEPEND}
 # sys-apps/dbus: the daemon only (+ build-time lib dep for tests)
 PDEPEND=">=sys-apps/dbus-1.9.8[systemd]
 	hwdb? ( >=sys-apps/hwids-20150417[udev] )
-	>=sys-fs/udev-init-scripts-25
+	>=sys-fs/udev-init-scripts-34
 	policykit? ( sys-auth/polkit )
 	!vanilla? ( sys-apps/gentoo-systemd-integration )"
 
@@ -156,7 +168,7 @@ pkg_pretend() {
 		local CONFIG_CHECK="~AUTOFS4_FS ~BLK_DEV_BSG ~CGROUPS
 			~CHECKPOINT_RESTORE ~DEVTMPFS ~EPOLL ~FANOTIFY ~FHANDLE
 			~INOTIFY_USER ~IPV6 ~NET ~NET_NS ~PROC_FS ~SIGNALFD ~SYSFS
-			~TIMERFD ~TMPFS_XATTR ~UNIX
+			~TIMERFD ~TMPFS_XATTR ~UNIX ~USER_NS
 			~CRYPTO_HMAC ~CRYPTO_SHA256 ~CRYPTO_USER_API_HASH
 			~!GRKERNSEC_PROC ~!IDE ~!SYSFS_DEPRECATED
 			~!SYSFS_DEPRECATED_V2"
@@ -205,40 +217,19 @@ src_prepare() {
 	PATCHES+=(
 	)
 
+	if use elibc_musl; then
+		PATCHES+=(
+			"${FILESDIR}"/0001-Allow-building-on-musl-libc.patch
+		)
+	fi
+
+
 	if ! use vanilla; then
 		PATCHES+=(
-			"${FILESDIR}/gentoo-Dont-enable-audit-by-default.patch"
-			"${FILESDIR}/gentoo-systemd-user-pam.patch"
-			"${FILESDIR}/gentoo-generator-path-r1.patch"
-			"${FILESDIR}/gentoo-systemctl-disable-sysv-sync.patch"
-			# Musl libc related patches
-			${FILESDIR}/0001-Handle-missing-gshadow.patch
-			${FILESDIR}/0001-binfmt-Don-t-install-dependency-links-at-install-tim.patch
-			${FILESDIR}/0001-do-not-disable-buffer-in-writing-files.patch
-			${FILESDIR}/0002-don-t-use-glibc-specific-qsort_r.patch
-			${FILESDIR}/0002-src-login-brightness.c-include-sys-wait.h.patch
-			${FILESDIR}/0003-implment-systemd-sysv-install-for-OE.patch
-			${FILESDIR}/0003-missing_type.h-add-__compare_fn_t-and-comparison_fn_.patch
-			${FILESDIR}/0003-src-basic-copy.c-include-signal.h.patch
-			${FILESDIR}/0004-add-fallback-parse_printf_format-implementation.patch
-			${FILESDIR}/0004-src-shared-cpu-set-util.h-add-__cpu_mask-definition.patch
-			${FILESDIR}/0005-src-basic-missing.h-check-for-missing-strndupa.patch
-			${FILESDIR}/0006-Include-netinet-if_ether.h.patch
-			${FILESDIR}/0007-don-t-fail-if-GLOB_BRACE-and-GLOB_ALTDIRFUNC-is-not.patch
-			${FILESDIR}/0008-add-missing-FTW_-macros-for-musl.patch
-			${FILESDIR}/0010-fix-missing-of-__register_atfork-for-non-glibc-build.patch
-			${FILESDIR}/0011-Use-uintmax_t-for-handling-rlim_t.patch
-			${FILESDIR}/0012-mallinfo-musl.patch
-			${FILESDIR}/0014-test-sizeof.c-Disable-tests-for-missing-typedefs-in-.patch
-			${FILESDIR}/0015-don-t-pass-AT_SYMLINK_NOFOLLOW-flag-to-faccessat.patch
-			${FILESDIR}/0016-Define-glibc-compatible-basename-for-non-glibc-syste.patch
-			${FILESDIR}/0017-Do-not-disable-buffering-when-writing-to-oom_score_a.patch
-			${FILESDIR}/0018-distinguish-XSI-compliant-strerror_r-from-GNU-specif.patch
-			${FILESDIR}/0019-Hide-__start_BUS_ERROR_MAP-and-__stop_BUS_ERROR_MAP.patch
-			${FILESDIR}/0020-missing_type.h-add-__compar_d_fn_t-definition.patch
-			${FILESDIR}/0021-avoid-redefinition-of-prctl_mm_map-structure.patch
-			${FILESDIR}/0024-test-json.c-define-M_PIl.patch
-			${FILESDIR}/CVE-2020-13776.patch
+			"${FILESDIR}/gentoo-generator-path-r2.patch"
+			"${FILESDIR}/gentoo-systemctl-disable-sysv-sync-r1.patch"
+			"${FILESDIR}/gentoo-journald-audit.patch"
+			"${FILESDIR}/gentoo-pam.patch"
 		)
 	fi
 
@@ -254,26 +245,6 @@ src_configure() {
 	multilib-minimal_src_configure
 }
 
-meson_use() {
-	usex "$1" true false
-}
-
-meson_multilib() {
-	if multilib_is_native_abi; then
-		echo true
-	else
-		echo false
-	fi
-}
-
-meson_multilib_native_use() {
-	if multilib_is_native_abi && use "$1"; then
-		echo true
-	else
-		echo false
-	fi
-}
-
 multilib_src_configure() {
 	local myconf=(
 		--localstatedir="${EPREFIX}/var"
@@ -282,7 +253,7 @@ multilib_src_configure() {
 		# avoid bash-completion dep
 		-Dbashcompletiondir="$(get_bashcompdir)"
 		# make sure we get /bin:/sbin in PATH
-		-Dsplit-usr=$(usex split-usr true false)
+		$(meson_use split-usr)
 		-Dsplit-bin=true
 		-Drootprefix="$(usex split-usr "${EPREFIX:-/}" "${EPREFIX}/usr")"
 		-Drootlibdir="${EPREFIX}/usr/$(get_libdir)"
@@ -292,91 +263,88 @@ multilib_src_configure() {
 		-Dima=true
 		-Ddefault-hierarchy=$(usex cgroup-hybrid hybrid unified)
 		# Optional components/dependencies
-		-Dacl=$(meson_multilib_native_use acl)
-		-Dapparmor=$(meson_multilib_native_use apparmor)
-		-Daudit=$(meson_multilib_native_use audit)
-		-Dlibcryptsetup=$(meson_multilib_native_use cryptsetup)
-		-Dlibcurl=$(meson_multilib_native_use curl)
-		-Ddns-over-tls=$(meson_multilib_native_use dns-over-tls)
-		-Delfutils=$(meson_multilib_native_use elfutils)
-		-Dgcrypt=$(meson_use gcrypt)
-		-Dgnu-efi=$(meson_multilib_native_use gnuefi)
+		$(meson_native_use_bool acl)
+		$(meson_native_use_bool apparmor)
+		$(meson_native_use_bool audit)
+		$(meson_native_use_bool cryptsetup libcryptsetup)
+		$(meson_native_use_bool curl libcurl)
+		$(meson_native_use_bool dns-over-tls dns-over-tls)
+		$(meson_native_use_bool elfutils)
+		$(meson_use gcrypt)
+		$(meson_native_use_bool gnuefi gnu-efi)
+		-Defi-includedir="${ESYSROOT}/usr/include/efi"
+		-Defi-ld="$(tc-getLD)"
 		-Defi-libdir="${ESYSROOT}/usr/$(get_libdir)"
-		-Dhomed=$(meson_multilib_native_use homed)
-		-Dhwdb=$(meson_multilib_native_use hwdb)
-		-Dmicrohttpd=$(meson_multilib_native_use http)
-		-Didn=$(meson_multilib_native_use idn)
-		-Dimportd=$(meson_multilib_native_use importd)
-		-Dbzip2=$(meson_multilib_native_use importd)
-		-Dzlib=$(meson_multilib_native_use importd)
-		-Dkmod=$(meson_multilib_native_use kmod)
-		-Dlz4=$(meson_use lz4)
-		-Dxz=$(meson_use lzma)
-		-Dlibiptc=$(meson_multilib_native_use nat)
-		-Dpam=$(meson_use pam)
-		-Dp11kit=$(meson_multilib_native_use pkcs11)
-		-Dpcre2=$(meson_multilib_native_use pcre)
-		-Dpolkit=$(meson_multilib_native_use policykit)
-		-Dpwquality=$(meson_multilib_native_use pwquality)
-		-Dqrencode=$(meson_multilib_native_use qrcode)
-		-Drepart=$(meson_multilib_native_use repart)
-		-Dseccomp=$(meson_multilib_native_use seccomp)
-		-Dselinux=$(meson_multilib_native_use selinux)
-		-Dsmack=$(meson_multilib_native_use smack)
-		-Ddbus=$(meson_multilib_native_use test)
-		-Dxkbcommon=$(meson_multilib_native_use xkb)
+		$(meson_native_use_bool homed)
+		$(meson_native_use_bool hwdb)
+		$(meson_native_use_bool http microhttpd)
+		$(meson_native_use_bool idn)
+		$(meson_native_use_bool importd)
+		$(meson_native_use_bool importd bzip2)
+		$(meson_native_use_bool importd zlib)
+		$(meson_native_use_bool kmod)
+		$(meson_use lz4)
+		$(meson_use lzma xz)
+		$(meson_use zstd)
+		$(meson_native_use_bool nat libiptc)
+		$(meson_use pam)
+		$(meson_native_use_bool pkcs11 p11kit)
+		$(meson_native_use_bool pcre pcre2)
+		$(meson_native_use_bool policykit polkit)
+		$(meson_native_use_bool pwquality)
+		$(meson_native_use_bool qrcode qrencode)
+		$(meson_native_use_bool repart)
+		$(meson_native_use_bool seccomp)
+		$(meson_native_use_bool selinux)
+		$(meson_native_use_bool tpm tpm2)
+		$(meson_native_use_bool test dbus)
+		$(meson_native_use_bool xkb xkbcommon)
 		-Dntp-servers="0.gentoo.pool.ntp.org 1.gentoo.pool.ntp.org 2.gentoo.pool.ntp.org 3.gentoo.pool.ntp.org"
 		# Breaks screen, tmux, etc.
 		-Ddefault-kill-user-processes=false
 		-Dcreate-log-dirs=false
-		# Musl related settings
-		-Dgshadow=false
-		-Dlocaled=false
-		-Dnss-myhostname=false
-		-Dnss-systemd=false
-		-Dnss-mymachines=false
-		-Dnss-resolve=false
-		-Dsysusers=false
-		-Duserdb=false
-		-Dutmp=false
+
 		# multilib options
-		-Dbacklight=$(meson_multilib)
-		-Dbinfmt=$(meson_multilib)
-		-Dcoredump=$(meson_multilib)
-		-Denvironment-d=$(meson_multilib)
-		-Dfirstboot=$(meson_multilib)
-		-Dhibernate=$(meson_multilib)
-		-Dhostnamed=$(meson_multilib)
-		-Dldconfig=$(meson_multilib)
-		-Dman=$(meson_multilib)
-		-Dnetworkd=$(meson_multilib)
-		-Dquotacheck=$(meson_multilib)
-		-Drandomseed=$(meson_multilib)
-		-Drfkill=$(meson_multilib)
-		-Dtimedated=$(meson_multilib)
-		-Dtimesyncd=$(meson_multilib)
-		-Dtmpfiles=$(meson_multilib)
-		-Dvconsole=$(meson_multilib)
+		$(meson_native_true backlight)
+		$(meson_native_true binfmt)
+		$(meson_native_true coredump)
+		$(meson_native_true environment-d)
+		$(meson_native_true firstboot)
+		$(meson_native_true hibernate)
+		$(meson_native_true hostnamed)
+		$(meson_native_true ldconfig)
+		$(meson_native_true man)
+		$(meson_native_true networkd)
+		$(meson_native_true quotacheck)
+		$(meson_native_true randomseed)
+		$(meson_native_true rfkill)
+		$(meson_native_true timedated)
+		$(meson_native_true timesyncd)
+		$(meson_native_true tmpfiles)
+		$(meson_native_true vconsole)
 
 		# static-libs
-		-Dstatic-libsystemd=$(usex static-libs true false)
-		-Dstatic-libudev=$(usex static-libs true false)
+		$(meson_use static-libs static-libsystemd)
+		$(meson_use static-libs static-libudev)
+
+		# Musl related settings
+		$(meson_native_use_bool elibc_glibc localed)
+		$(meson_native_use_bool elibc_glibc sysusers)
+		$(meson_native_use_bool elibc_glibc gshadow)
+		$(meson_native_use_bool elibc_glibc utmp)
+		$(meson_native_use_bool elibc_glibc userdb)
+		$(meson_native_use_bool elibc_glibc nss-myhostname)
+		$(meson_native_use_bool elibc_glibc nss-mymachines)
+		$(meson_native_use_bool elibc_glibc nss-systemd)
+		$(meson_native_use_bool elibc_glibc nss-resolve)
 	)
 
 	meson_src_configure "${myconf[@]}"
 }
 
-multilib_src_compile() {
-	eninja
-}
-
 multilib_src_test() {
 	unset DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR
 	meson_src_test
-}
-
-multilib_src_install() {
-	DESTDIR="${D}" eninja install
 }
 
 multilib_src_install_all() {
@@ -403,6 +371,11 @@ multilib_src_install_all() {
 
 	if ! use resolvconf && ! use sysv-utils; then
 		rmdir "${ED}${rootprefix}"/sbin || die
+	fi
+
+	if use elibc_glibc;then
+		# https://bugs.gentoo.org/761763
+		rm -r "${ED}"/usr/lib/sysusers.d || die
 	fi
 
 	# Preserve empty dirs in /etc & /var, bug #437008
