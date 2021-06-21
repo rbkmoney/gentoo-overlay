@@ -6,13 +6,14 @@ EAPI=7
 inherit kernel-build
 
 MY_P=linux-${PV%.*}
-GENPATCHES_P=genpatches-${PV%.*}-$((${PV##*.}+3))
+GENPATCHES_P=genpatches-${PV%.*}-$((${PV##*.}+4))
 HARDENED_PATCH_VER="${PV}-hardened1"
 GENPATCHES_EXCLUDE="1500_XATTR_USER_PREFIX.patch
 	1510_fs-enable-link-security-restrictions-by-default.patch
 	2900_dev-root-proc-mount-fix.patch
 	4200_fbcondecor.patch
-	4400_alpha-sysctl-uac.patch"
+	4400_alpha-sysctl-uac.patch
+	4567_distro-Gentoo-Kconfig.patch"
 
 
 DESCRIPTION="Linux kernel built with Gentoo patches"
@@ -29,8 +30,6 @@ KEYWORDS="~amd64"
 IUSE="debug extra-hardened"
 
 REQUIRED_USE="extra-hardened? ( !debug )"
-
-RESTRICT="strip"
 
 BDEPEND="
 	!initramfs? ( sys-kernel/initramfs-image )
