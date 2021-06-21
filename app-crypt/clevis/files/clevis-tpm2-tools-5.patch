@@ -1,0 +1,118 @@
+From ef76951e4486dadf41ca8085e09849466a0c7fd3 Mon Sep 17 00:00:00 2001
+From: Jonas Witschel <diabonas@gmx.de>
+Date: Wed, 11 Nov 2020 12:43:18 +0100
+Subject: [PATCH] pins/tpm2: add support for tpm2-tools 5.X
+
+tpm2-tools 5.0 consolidates all tools into a single busybox-style binary, so
+the preferred way to invoke the commands would be e.g. "tpm2 createprimary"
+instead of "tpm2_createprimary". However, compatibility symlinks tpm2_* -> tpm2
+are installed by default, so we keep the old syntax for tpm2-tools 5.0 to avoid
+creating another special case, since the option syntax has not changed (it
+should be stable since version 4).
+
+tpm2-tools 3.X is deprecated, but unfortunately still packaged by a few Linux
+distributions, so keep supporting it for now at least.
+---
+ src/pins/tpm2/clevis-decrypt-tpm2 | 12 ++++++------
+ src/pins/tpm2/clevis-encrypt-tpm2 | 16 ++++++++--------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/src/pins/tpm2/clevis-decrypt-tpm2 b/src/pins/tpm2/clevis-decrypt-tpm2
+index 83bf8f0..6226cb7 100755
+--- a/src/pins/tpm2/clevis-decrypt-tpm2
++++ b/src/pins/tpm2/clevis-decrypt-tpm2
+@@ -49,8 +49,8 @@ TPM2TOOLS_INFO="$(tpm2_createprimary -v)"
+ 
+ match='version="(.)\.'
+ [[ $TPM2TOOLS_INFO =~ $match ]] && TPM2TOOLS_VERSION="${BASH_REMATCH[1]}"
+-if [[ $TPM2TOOLS_VERSION != 3 ]] && [[ $TPM2TOOLS_VERSION != 4 ]]; then
+-    echo "The tpm2 pin requires tpm2-tools version 3 or 4" >&2
++if [[ $TPM2TOOLS_VERSION -lt 3 ]] || [[ $TPM2TOOLS_VERSION -gt 5 ]]; then
++    echo "The tpm2 pin requires a tpm2-tools version between 3 and 5" >&2
+     exit 1
+ fi
+ 
+@@ -135,7 +135,7 @@ fi
+ 
+ case "$TPM2TOOLS_VERSION" in
+     3) tpm2_createprimary -Q -H "$auth" -g "$hash" -G "$key" -C "$TMP"/primary.context || fail=$?;;
+-    4) tpm2_createprimary -Q -C "$auth" -g "$hash" -G "$key" -c "$TMP"/primary.context || fail=$?;;
++    4|5) tpm2_createprimary -Q -C "$auth" -g "$hash" -G "$key" -c "$TMP"/primary.context || fail=$?;;
+     *) fail=1;;
+ esac
+ if [ -n "$fail" ]; then
+@@ -146,8 +146,8 @@ fi
+ case "$TPM2TOOLS_VERSION" in
+     3) tpm2_load -Q -c "$TMP"/primary.context -u "$TMP"/jwk.pub -r "$TMP"/jwk.priv \
+                  -C "$TMP"/load.context || fail=$?;;
+-    4) tpm2_load -Q -C "$TMP"/primary.context -u "$TMP"/jwk.pub -r "$TMP"/jwk.priv \
+-                 -c "$TMP"/load.context || fail=$?;;
++    4|5) tpm2_load -Q -C "$TMP"/primary.context -u "$TMP"/jwk.pub -r "$TMP"/jwk.priv \
++                   -c "$TMP"/load.context || fail=$?;;
+     *) fail=1;;
+ esac
+ if [ -n "$fail" ]; then
+@@ -157,7 +157,7 @@ fi
+ 
+ case "$TPM2TOOLS_VERSION" in
+     3) jwk="$(tpm2_unseal -c "$TMP"/load.context ${pcr_spec:+-L $pcr_spec})" || fail=$?;;
+-    4) jwk="$(tpm2_unseal -c "$TMP"/load.context ${pcr_spec:+-p pcr:$pcr_spec})" || fail=$?;;
++    4|5) jwk="$(tpm2_unseal -c "$TMP"/load.context ${pcr_spec:+-p pcr:$pcr_spec})" || fail=$?;;
+     *) fail=1;;
+ esac
+ if [ -n "$fail" ]; then
+diff --git a/src/pins/tpm2/clevis-encrypt-tpm2 b/src/pins/tpm2/clevis-encrypt-tpm2
+index 16d35c4..69a1126 100755
+--- a/src/pins/tpm2/clevis-encrypt-tpm2
++++ b/src/pins/tpm2/clevis-encrypt-tpm2
+@@ -71,8 +71,8 @@ TPM2TOOLS_INFO="$(tpm2_createprimary -v)"
+ 
+ match='version="(.)\.'
+ [[ $TPM2TOOLS_INFO =~ $match ]] && TPM2TOOLS_VERSION="${BASH_REMATCH[1]}"
+-if [[ $TPM2TOOLS_VERSION != 3 ]] && [[ $TPM2TOOLS_VERSION != 4 ]]; then
+-    echo "The tpm2 pin requires tpm2-tools version 3 or 4" >&2
++if [[ $TPM2TOOLS_VERSION -lt 3 ]] || [[ $TPM2TOOLS_VERSION -gt 5 ]]; then
++    echo "The tpm2 pin requires a tpm2-tools version between 3 and 5" >&2
+     exit 1
+ fi
+ 
+@@ -153,7 +153,7 @@ trap 'on_exit' EXIT
+ 
+ case "$TPM2TOOLS_VERSION" in
+     3) tpm2_createprimary -Q -H "$auth" -g "$hash" -G "$key" -C "$TMP"/primary.context || fail=$?;;
+-    4) tpm2_createprimary -Q -C "$auth" -g "$hash" -G "$key" -c "$TMP"/primary.context || fail=$?;;
++    4|5) tpm2_createprimary -Q -C "$auth" -g "$hash" -G "$key" -c "$TMP"/primary.context || fail=$?;;
+     *) fail=1;;
+ esac
+ if [ -n "$fail" ]; then
+@@ -166,7 +166,7 @@ if [ -n "$pcr_ids" ]; then
+     if [ -z "$pcr_digest" ]; then
+         case "$TPM2TOOLS_VERSION" in
+             3) tpm2_pcrlist -Q -L "$pcr_bank":"$pcr_ids" -o "$TMP"/pcr.digest || fail=$?;;
+-            4) tpm2_pcrread -Q "$pcr_bank":"$pcr_ids" -o "$TMP"/pcr.digest || fail=$?;;
++            4|5) tpm2_pcrread -Q "$pcr_bank":"$pcr_ids" -o "$TMP"/pcr.digest || fail=$?;;
+             *) fail=1;;
+         esac
+         if [ -n "$fail" ]; then
+@@ -183,8 +183,8 @@ if [ -n "$pcr_ids" ]; then
+     case "$TPM2TOOLS_VERSION" in
+         3) tpm2_createpolicy -Q -g "$hash" -P -L "$pcr_bank":"$pcr_ids" \
+                              -F "$TMP"/pcr.digest -f "$TMP"/pcr.policy || fail=$?;;
+-        4) tpm2_createpolicy -Q -g "$hash" --policy-pcr -l "$pcr_bank":"$pcr_ids" \
+-                             -f "$TMP"/pcr.digest -L "$TMP"/pcr.policy || fail=$?;;
++        4|5) tpm2_createpolicy -Q -g "$hash" --policy-pcr -l "$pcr_bank":"$pcr_ids" \
++                               -f "$TMP"/pcr.digest -L "$TMP"/pcr.policy || fail=$?;;
+         *) fail=1;;
+     esac
+     if [ -n "$fail" ]; then
+@@ -200,8 +200,8 @@ fi
+ case "$TPM2TOOLS_VERSION" in
+     3) tpm2_create -Q -g "$hash" -G "$alg_create_key" -c "$TMP"/primary.context -u "$TMP"/jwk.pub \
+                    -r "$TMP"/jwk.priv -A "$obj_attr" "${policy_options[@]}" -I- <<< "$jwk" || fail=$?;;
+-    4) tpm2_create -Q -g "$hash" -C "$TMP"/primary.context -u "$TMP"/jwk.pub \
+-                   -r "$TMP"/jwk.priv -a "$obj_attr" "${policy_options[@]}" -i- <<< "$jwk" || fail=$?;;
++    4|5) tpm2_create -Q -g "$hash" -C "$TMP"/primary.context -u "$TMP"/jwk.pub \
++                     -r "$TMP"/jwk.priv -a "$obj_attr" "${policy_options[@]}" -i- <<< "$jwk" || fail=$?;;
+     *) fail=1;;
+ esac
+ if [ -n "$fail" ]; then

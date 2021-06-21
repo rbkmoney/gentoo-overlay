@@ -1,0 +1,29 @@
+From f92d4ba65f88fb8e66d07c4a43b7cb1bec1230e4 Mon Sep 17 00:00:00 2001
+From: Alexander Miroshnichenko <alex@millerson.name>
+Date: Thu, 24 Dec 2020 20:34:06 +0300
+Subject: [PATCH] Fixes build failure with musl libc: pid_t require
+ sys/types.h, respectively.
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+error: unknown type name 'pid_t'
+Signed-off-by: Alexander Miroshnichenko <alex@millerson.name>
+---
+ src/pins/sss/sss.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/pins/sss/sss.h b/src/pins/sss/sss.h
+index 66a490913188..81faf791f81c 100644
+--- a/src/pins/sss/sss.h
++++ b/src/pins/sss/sss.h
+@@ -20,6 +20,7 @@
+ #pragma once
+ #include <jansson.h>
+ #include <stdint.h>
++#include <sys/types.h>
+ 
+ json_t *
+ sss_generate(size_t key_bytes, size_t threshold);
+-- 
+2.26.2
+
