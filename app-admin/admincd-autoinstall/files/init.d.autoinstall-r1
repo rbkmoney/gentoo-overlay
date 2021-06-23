@@ -1,0 +1,12 @@
+#!/sbin/openrc-run
+# Copyright 2020 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+name="autoinstall daemon"
+description="Unattended installation support for Admin CD"
+command=/usr/sbin/run-autoinstall.sh
+command_args="${autoinstall_args}"
+
+depend() {
+	after net sshd dbus
+}
