@@ -19,6 +19,7 @@ IUSE="man"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 RESTRICT="mirror"
+BDEPEND="dev-python/sphinx"
 RDEPEND="${PYTHON_DEPS}
 	dev-python/future
 	dev-python/coverage
