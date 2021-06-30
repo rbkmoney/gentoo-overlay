@@ -23,6 +23,7 @@ BDEPEND="dev-python/sphinx"
 RDEPEND="${PYTHON_DEPS}
 	dev-python/future
 	dev-python/coverage
+	dev-python/dnspython
 	dev-python/netaddr
 	dev-python/distro
 	dev-python/django
@@ -39,6 +40,8 @@ PATCHES=(
 	"${FILESDIR}/utils.patch"
 	"${FILESDIR}/tftpgen.patch"
 	"${FILESDIR}/0001-Disable-cache-2387.patch"
+	"${FILESDIR}/0002-cgi.parse_qs-is-deprecated.patch"
+	"${FILESDIR}/0003-Remove-import-cgi.patch"
 )
 
 src_prepare() {

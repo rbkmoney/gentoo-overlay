@@ -1,0 +1,32 @@
+From aa759646b540e7d5e4364f771782f604a88171fd Mon Sep 17 00:00:00 2001
+From: Thomas Renninger <trenn@suse.com>
+Date: Fri, 19 Feb 2021 22:56:01 +0100
+Subject: [PATCH] Remove import cgi
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+commit 5170d70f77a32d3b4f2196fe5ed47e8d669c98c2
+    cgi.parse_qs is deprecated
+removed the last cgi module user:
+svc/services.py:31:1: F401 'cgi' imported but unused
+
+Signed-off-by: Alexander Miroshnichenko <alex@millerson.name>
+---
+ svc/services.py | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/svc/services.py b/svc/services.py
+index 047eccc161ab..dcfbac119e4a 100644
+--- a/svc/services.py
++++ b/svc/services.py
+@@ -28,7 +28,6 @@ import urllib.request
+ import urllib.parse
+ import urllib.error
+ import xmlrpc.server
+-import cgi
+ 
+ from cobbler import settings
+ 
+-- 
+2.26.2
+

@@ -1,0 +1,34 @@
+From 5170d70f77a32d3b4f2196fe5ed47e8d669c98c2 Mon Sep 17 00:00:00 2001
+From: tpw56j <68420914+tpw56j@users.noreply.github.com>
+Date: Sat, 18 Jul 2020 11:15:52 +0300
+Subject: [PATCH] cgi.parse_qs is deprecated
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+From https://docs.python.org/3.2/library/cgi.html:
+cgi.parse_qs(qs, keep_blank_values=False, strict_parsing=False)
+This function is deprecated in this module. Use urllib.parse.parse_qs() instead. It is maintained here only for backward compatibility.
+
+urllib.parse.parse_qs also works in the python-2.7 (cobbler-2.8.5)
+
+Signed-off-by: Alexander Miroshnichenko <alex@millerson.name>
+---
+ svc/services.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/svc/services.py b/svc/services.py
+index 7001e0258e22..fa4be4aac4e9 100644
+--- a/svc/services.py
++++ b/svc/services.py
+@@ -63,7 +63,7 @@ def application(environ, start_response):
+             form[field] = t
+         label = not label
+ 
+-    form["query_string"] = cgi.parse_qs(environ['QUERY_STRING'])
++    form["query_string"] = urllib.parse.parse_qs(environ['QUERY_STRING'])
+ 
+     # This MAC header is set by anaconda during a kickstart booted with the
+     # kssendmac kernel option. The field will appear here as something
+-- 
+2.26.2
+
