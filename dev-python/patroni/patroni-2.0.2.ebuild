@@ -12,7 +12,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="PostgreSQL customized high-availability solution"
 HOMEPAGE="https://github.com/zalando/patroni"
-SRC_URI="https://github.com/zalando/${MY_PN}/archive/refs/tags/v${PV}.tar.gz"
+SRC_URI="https://github.com/zalando/${MY_PN}/archive/v${PV}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
@@ -31,6 +31,7 @@ DEPEND="
 	>=dev-python/prettytable-0.7
 	dev-python/python-dateutil[${PYTHON_USEDEP}]
 	>=dev-python/psutil-2.0.0
+	dev-util/ydiff[${PYTHON_USEDEP}]
 	>=dev-python/psycopg-2.8.3
 	dev-python/flake8[${PYTHON_USEDEP}]
 	consul? (
