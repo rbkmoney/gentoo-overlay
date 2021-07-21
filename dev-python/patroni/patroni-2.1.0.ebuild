@@ -12,7 +12,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="PostgreSQL customized high-availability solution"
 HOMEPAGE="https://github.com/zalando/patroni"
-SRC_URI="https://github.com/zalando/${MY_PN}/archive/v${PV}.tar.gz"
+SRC_URI="https://github.com/zalando/${MY_PN}/archive/refs/tags/v${PV}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
