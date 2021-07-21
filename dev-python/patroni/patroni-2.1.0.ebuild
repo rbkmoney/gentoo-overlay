@@ -31,7 +31,6 @@ DEPEND="
 	>=dev-python/prettytable-0.7
 	dev-python/python-dateutil[${PYTHON_USEDEP}]
 	>=dev-python/psutil-2.0.0
-	dev-util/cdiff[${PYTHON_USEDEP}]
 	>=dev-python/psycopg-2.8.3
 	dev-python/flake8[${PYTHON_USEDEP}]
 	consul? (
