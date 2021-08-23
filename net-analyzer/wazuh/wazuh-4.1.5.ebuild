@@ -7,6 +7,8 @@ DESCRIPTION="The Open Source Security Platform"
 HOMEPAGE="https://wazuh.com/"
 SRC_URI="https://github.com/wazuh/${PN}/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz"
 
+inherit systemd
+
 LICENSE="GPL-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
@@ -14,16 +16,18 @@ IUSE="+agent audit local +inotify hybrid server mysql postgres"
 REQUIRED_USE="^^ ( agent hybrid local server )
         ?? ( mysql postgres )"
 
-DEPEND="sys-libs/db
+DEPEND="acct-user/ossec
+		acct-group/ossec
+		sys-libs/db
 		sys-process/audit
 		dev-libs/msgpack
 		dev-libs/cJSON
 		net-misc/curl
 		sys-libs/zlib
 		dev-libs/libyaml
-        mysql? ( virtual/mysql )
-        postgres? ( dev-db/postgresql:= )
-        dev-db/sqlite:3"
+		mysql? ( virtual/mysql )
+		postgres? ( dev-db/postgresql:= )
+		dev-db/sqlite:3"
 RDEPEND="${DEPEND}"
 BDEPEND=""
 
@@ -93,4 +97,78 @@ src_configure() {
 
 src_compile(){
 	emake "${MY_OPT[@]}" PREFIX=/var/ossec
+
+	if use agent; then
+		# Generate agent init config
+		../gen_ossec.sh init agent > ossec-init.conf
+
+		# Generate agent config
+		../gen_ossec.sh conf agent gentoo 2 > ossec.conf
+	elif use server; then
+		# Generate server init config
+		../gen_ossec.sh init server > ossec-init.conf
+
+		# Generate server config
+		../gen_ossec.sh conf server gentoo 2 > ossec.conf
+	elif use local; then
+		# Generate local init config
+		../gen_ossec.sh init local > ossec-init.conf
+
+		# Generate local config
+		../gen_ossec.sh conf local gentoo 2 > ossec.conf
+	fi
+}
+
+src_install(){
+
+	systemd_dounit systemd/wazuh-agent.service
+	
+	#diropts -g
+	keepdir /var/ossec/{wodles,ruleset/sca,logs/ossec,var/wodles,var/upgrade,backup} /var/ossec/queue/{alerts,ossec,diff,fim/db}
+	
+	exeinto /var/ossec/agentless
+	doexe agentlessd/scripts/*
+
+	exeinto /var/ossec/active-response/bin
+	doexe ../active-response/*.sh
+	doexe ../active-response/*.py
+	doexe ../active-response/firewalls/*.sh
+	
+	insinto /var/ossec/etc
+	doins ossec.conf
+	
+	into /var/ossec
+	
+	if use agent; then
+		newbin init/ossec-client.sh ossec-control
+		dobin ossec-agentd agent-auth
+		
+		#diropts -g
+		keepdir /var/ossec/var/incoming
+
+		instinto /var/ossec/etc/shared
+		doins rootcheck/db/*.txt
+
+		instinto /var/ossec/etc
+		doins ../etc/wpk_root.pem
+		
+		exeinto /var/ossec/wodles/aws
+		newexe ../wodles/aws/aws_s3.py aws-s3
+
+		exeinto /var/ossec/wodles/gcloud
+		newexe ../wodles/gcloud/gcloud.py gcloud
+		doexe ../wodles/gcloud/integration.py
+		doexe ../wodles/gcloud/tools.py
+
+		exeinto /var/ossec/wodles/docker
+		newexe ../wodles/docker-listener/DockerListener.py DockerListener
+
+	elif use server; then
+		newbin init/ossec-server.sh ossec-control
+	elif use local; then
+		newbin init/ossec-local.sh ossec-control
+	fi
+
+	dobin ossec-logcollector ossec-syscheckd ossec-execd manage_agents wazuh-modulesd
+
 }
