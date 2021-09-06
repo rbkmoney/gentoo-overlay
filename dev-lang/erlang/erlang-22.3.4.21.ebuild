@@ -3,6 +3,7 @@
 
 EAPI=7
 WX_GTK_VER="3.0"
+WANT_AUTOCONF=latest
 
 inherit autotools elisp-common java-pkg-opt-2 systemd wxwidgets
 
@@ -48,19 +49,13 @@ S="${WORKDIR}/otp-OTP-${PV}"
 PATCHES=(
 	"${FILESDIR}/18.2.1-wx3.0.patch"
 	"${FILESDIR}/${PN}-add-epmd-pid-file-creation-for-openrc.patch"
-	"${FILESDIR}/${PN}-custom-autoconf.patch"
-	"${FILESDIR}/${PN}-21.3-lto.patch"
-	"${FILESDIR}/${PN}-21.3-pgo-loop.patch"
 )
 
 SITEFILE=50"${PN}"-gentoo.el
 
 src_prepare() {
 	default
-
-	./otp_build autoconf
-	find -name configure.in -execdir mv '{}' configure.ac \; || die "find failed"
-	eautoreconf
+	./otp_build update_configure --no-commit
 }
 
 src_configure() {
