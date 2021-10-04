@@ -1,7 +1,7 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=7
 
 inherit cmake-utils eutils
 
@@ -22,17 +22,17 @@ DEPEND="libraries? ( dev-libs/boost )"
 RDEPEND="${DEPEND}"
 
 src_configure() {
-    local mycmakeargs=(
-        $(cmake-utils_use_build compiler)
-        $(cmake-utils_use_build libraries)
-        $(cmake-utils_use_build examples)
-        $(cmake-utils_use_build test testing)
-    )
-    cmake-utils_src_configure
+	local mycmakeargs=(
+		$(cmake-utils_use_build compiler)
+		$(cmake-utils_use_build libraries)
+		$(cmake-utils_use_build examples)
+		$(cmake-utils_use_build test testing)
+	)
+	cmake-utils_src_configure
 }
 src_compile() {
-    cmake-utils_src_compile
+	cmake-utils_src_compile
 }
 src_install() {
-    cmake-utils_src_install
+	cmake-utils_src_install
 }
