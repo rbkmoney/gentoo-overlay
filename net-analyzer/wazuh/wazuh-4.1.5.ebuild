@@ -133,9 +133,13 @@ src_install(){
 	doexe ../active-response/*.sh
 	doexe ../active-response/*.py
 	doexe ../active-response/firewalls/*.sh
+
+	insinto /etc
+	doins ossec-init.conf
 	
 	insinto /var/ossec/etc
 	doins ossec.conf
+	doins ../etc/internal_options.conf
 	
 	into /var/ossec
 	
