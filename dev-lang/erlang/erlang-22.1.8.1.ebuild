@@ -47,7 +47,6 @@ S="${WORKDIR}/otp-OTP-${PV}"
 
 PATCHES=(
 	"${FILESDIR}/18.2.1-wx3.0.patch"
-	"${FILESDIR}/${PN}-add-epmd-pid-file-creation-for-openrc.patch"
 	"${FILESDIR}/${PN}-custom-autoconf.patch"
 	"${FILESDIR}/${PN}-21.3-lto.patch"
 	"${FILESDIR}/${PN}-21.3-pgo-loop.patch"
@@ -152,7 +151,8 @@ src_install() {
 		elisp-site-file-install "${T}/${SITEFILE}"
 	fi
 
-	newinitd "${FILESDIR}"/epmd.init epmd
+	newinitd "${FILESDIR}"/epmd.init-r2 epmd
+	newconfd "${FILESDIR}"/epmd.confd-r2 epmd
 	use systemd && systemd_dounit "${FILESDIR}"/epmd.service
 }
 

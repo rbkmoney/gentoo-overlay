@@ -48,7 +48,6 @@ S="${WORKDIR}/otp-OTP-${PV}"
 
 PATCHES=(
 	"${FILESDIR}/18.2.1-wx3.0.patch"
-	"${FILESDIR}/${PN}-add-epmd-pid-file-creation-for-openrc.patch"
 )
 
 SITEFILE=50"${PN}"-gentoo.el
@@ -147,8 +146,9 @@ src_install() {
 		elisp-site-file-install "${T}/${SITEFILE}"
 	fi
 
-	newinitd "${FILESDIR}"/epmd.init epmd
-	use systemd && systemd_dounit "${FILESDIR}"/epmd.service
+	newinitd "${FILESDIR}"/epmd.init-r2 epmd
+	newconfd "${FILESDIR}"/epmd.confd-r2 epmd
+	use systemd && systemd_newunit "${FILESDIR}"/epmd.service-r1 epmd.service
 }
 
 pkg_postinst() {
