@@ -53,7 +53,7 @@ distutils_enable_sphinx docs/sphinx dev-python/sphinx_rtd_theme
 distutils_enable_tests pytest
 
 src_prepare() {
-	epatch "${FILESDIR}/7.14-transport-flavor-compatibility.patch"
+	eapply "${FILESDIR}/7.14-transport-flavor-compatibility.patch"
 	default_src_prepare
 
 	if use test; then
