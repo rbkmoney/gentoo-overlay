@@ -1,0 +1,11 @@
++++ b/elasticsearch/transport.py 2021-08-16 16:02:19.000000000 +0300
+--- a/elasticsearch/transport.py 2022-01-25 03:16:08.424668287 +0300
+@@ -652,7 +652,7 @@
+         # Check all of the fields and headers for missing/valid values.
+         try:
+             bad_tagline = response.get("tagline", None) != "You Know, for Search"
+-            bad_build_flavor = version.get("build_flavor", None) != "default"
++            bad_build_flavor = False
+             bad_product_header = (
+                 headers.get("x-elastic-product", None) != "Elasticsearch"
+             )
