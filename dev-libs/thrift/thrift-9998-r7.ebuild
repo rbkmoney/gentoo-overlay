@@ -1,12 +1,12 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=7
 
-inherit cmake-utils eutils
+inherit cmake eutils
 
 DESCRIPTION="Apache Thrift RPC compiler and libraries (RBKmoney fork)"
-HOMEPAGE="http://github.com/rbkmoney/thrift"
+HOMEPAGE="https://github.com/rbkmoney/thrift"
 COMMIT="c219a0a7546ecd50dae85f5162dd0281d3fb765b"
 SRC_URI="https://github.com/rbkmoney/${PN}/archive/${COMMIT}.tar.gz"
 RESTRICT="mirror"
