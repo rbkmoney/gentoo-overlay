@@ -23,10 +23,10 @@ RDEPEND="${DEPEND}"
 
 src_configure() {
 	local mycmakeargs=(
-		$(cmake-utils_use_build compiler)
-		$(cmake-utils_use_build libraries)
-		$(cmake-utils_use_build examples)
-		$(cmake-utils_use_build test testing)
+		-DBUILD_COMPILER="$(usex compiler)"
+		-DBUILD_LIBRARIES="$(usex libraries)"
+		-DBUILD_EXAMPLES="$(usex examples)"
+		-DBUILD_TESTING="$(usex test)"
 	)
 	cmake-utils_src_configure
 }
