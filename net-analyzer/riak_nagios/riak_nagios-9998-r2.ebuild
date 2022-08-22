@@ -1,13 +1,13 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
 EAPI=6
 
 DESCRIPTION="Nagios Scripts for monitoring Riak"
-HOMEPAGE="https://github.com/basho-labs/riak_nagios"
-COMMIT="9cc200e8cec7d6f71f445df5a7bd195f7a772e8a"
-SRC_URI="https://github.com/basho-labs/${PN}/archive/${COMMIT}.tar.gz"
+HOMEPAGE="https://github.com/niku64/riak_nagios"
+COMMIT="5f7cc3b51790eb3012a2f3c13aa366acc157a53d"
+SRC_URI="https://github.com/niku64/${PN}/archive/${COMMIT}.tar.gz"
 S="${WORKDIR}/${PN}-${COMMIT}"
 
 LICENSE="Apache-2.0"
