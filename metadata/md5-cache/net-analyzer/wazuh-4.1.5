@@ -1,0 +1,16 @@
+BDEPEND=virtual/pkgconfig
+DEFINED_PHASES=compile configure install prepare
+DEPEND=acct-user/ossec acct-group/ossec sys-libs/db sys-process/audit dev-libs/msgpack dev-libs/cJSON net-misc/curl sys-libs/zlib dev-libs/libyaml mysql? ( virtual/mysql ) postgres? ( dev-db/postgresql:= ) dev-db/sqlite:3
+DESCRIPTION=The Open Source Security Platform
+EAPI=7
+HOMEPAGE=https://wazuh.com/
+INHERIT=systemd
+IUSE=+agent audit local +inotify hybrid server mysql postgres
+KEYWORDS=~amd64 ~x86
+LICENSE=GPL-2.0
+RDEPEND=acct-user/ossec acct-group/ossec sys-libs/db sys-process/audit dev-libs/msgpack dev-libs/cJSON net-misc/curl sys-libs/zlib dev-libs/libyaml mysql? ( virtual/mysql ) postgres? ( dev-db/postgresql:= ) dev-db/sqlite:3
+REQUIRED_USE=^^ ( agent hybrid local server ) ?? ( mysql postgres )
+SLOT=0
+SRC_URI=https://github.com/wazuh/wazuh/archive/refs/tags/v4.1.5.tar.gz -> wazuh-4.1.5.tar.gz
+_eclasses_=toolchain-funcs	fbbbc99d10168de2926e06da7169b8dc	multilib	c19072c3cd7ac5cb21de013f7e9832e0	systemd	c8b03e8df84486aa991d4396686e8942
+_md5_=16b69b4604e10764586c7f71f6988ddc

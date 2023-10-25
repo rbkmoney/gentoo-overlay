@@ -1,0 +1,13 @@
+DEFINED_PHASES=compile install unpack
+DEPEND=dev-lang/erlang >=dev-vcs/git-1.8.2.1[curl]
+DESCRIPTION=Nagios Scripts for monitoring Riak
+EAPI=6
+HOMEPAGE=https://github.com/niku64/riak_nagios
+INHERIT=git-r3
+LICENSE=Apache-2.0
+PROPERTIES=live
+RDEPEND=dev-lang/erlang
+RESTRICT=mirror
+SLOT=0
+_eclasses_=git-r3	2358a7b20091609e24bd3a83b3ac5991
+_md5_=30ed478c5cd9f6b3cbae5ff87711cd02

@@ -1,0 +1,9 @@
+DEFINED_PHASES=install postinst preinst prerm pretend
+DESCRIPTION=Suricata user
+EAPI=7
+INHERIT=acct-user
+KEYWORDS=~amd64
+RDEPEND=acct-group/suricata
+SLOT=0
+_eclasses_=user-info	9951b1a0e4f026d16c33a001fd2d5cdf	acct-user	fd6725fcc11ecffded6fe9228b8e3448
+_md5_=fda18a0489db3ead92dab8c4a6164a33

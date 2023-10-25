@@ -1,0 +1,14 @@
+DEFINED_PHASES=compile configure install prepare test unpack
+DEPEND=!app-emulation/packer-bin dev-lang/go:0=
+DESCRIPTION=Packer is a tool for creating identical machine images for multiple platforms
+EAPI=6
+HOMEPAGE=http://www.packer.io
+INHERIT=golang-single
+IUSE=debug pie test
+KEYWORDS=amd64 x86 arm
+LICENSE=MPL-2.0
+RESTRICT=mirror strip
+SLOT=0
+SRC_URI=https://github.com/hashicorp/packer/archive/v1.3.4.tar.gz -> packer-1.3.4.tar.gz
+_eclasses_=estack	c61c368a76fdf3a82fdf8dbaebea3804	versionator	d3fb3ba33acc3bbbdc4d7970227c100d	desktop	021728fdc1b03b36357dbc89489e0f0d	edos2unix	33e347e171066657f91f8b0c72ec8773	epatch	2b02655f061dfa25067b543539110259	eqawarn	c9847c43b3253a276ae2eabddedab3d7	toolchain-funcs	fbbbc99d10168de2926e06da7169b8dc	multilib	c19072c3cd7ac5cb21de013f7e9832e0	ltprune	97143780d341cc8d8f1d4c6187a36d29	preserve-libs	21162ec96c87041004a75348d97342dd	strip-linguas	ac3ee41ee2d31d8c41a77c0838320cc7	vcs-clean	d271b7bc7e6a009758d7d4ef749174e3	wrapper	4a1902f969e5718126434fc35f3a0d9c	eutils	d318efeb438bbec051fa5aaf28d0d42c	multiprocessing	30ead54fa2e2b5f9cd4e612ffc34d0fe	golang-common	a8df1fb69ac5e9ebfdfd26e5d4460fcd	golang-single	5d5a376ad018d27d64cc6aa51bb211a5
+_md5_=c3ca6031c66a140d5461fc1950b03f01

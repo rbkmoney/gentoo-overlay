@@ -1,0 +1,10 @@
+DEFINED_PHASES=install
+DEPEND=dev-libs/openssl:0 virtual/jdk:11 app-arch/unzip
+DESCRIPTION=Opendistro-security plugin for Elasticsearch
+EAPI=7
+KEYWORDS=~amd64
+LICENSE=MIT
+RDEPEND=dev-libs/openssl:0 virtual/jdk:11 ~app-misc/elasticsearch-7.10.2
+RESTRICT=network-sandbox
+SLOT=0
+_md5_=da3c905021e61cbca64822fb17bd20f4

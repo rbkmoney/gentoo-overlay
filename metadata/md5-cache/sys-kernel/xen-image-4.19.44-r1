@@ -1,0 +1,12 @@
+DEFINED_PHASES=compile configure install postinst postrm preinst prerm pretend
+DESCRIPTION=Precompiled hardened kernel image with modules
+EAPI=7
+HOMEPAGE=http://www.gentoo.org/proj/en/hardened/
+INHERIT=mount-boot
+KEYWORDS=amd64 -*
+LICENSE=GPL-2
+RESTRICT=splitdebug installsources mirror collision-detect protect-owned
+SLOT=4.19.44-r1
+SRC_URI=https://localhost/linux-4.19.44-r1-gentoo-xen.tar.xz
+_eclasses_=mount-boot	02a45c5e022c08dbc05178522b2772f2
+_md5_=ec36b24c593ea35be9567fc07b02ebd8

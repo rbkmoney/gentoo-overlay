@@ -1,0 +1,12 @@
+DEFINED_PHASES=compile install
+DEPEND=dev-lang/erlang
+DESCRIPTION=Nagios Scripts for monitoring Riak
+EAPI=6
+HOMEPAGE=https://github.com/niku64/riak_nagios
+KEYWORDS=~amd64
+LICENSE=Apache-2.0
+RDEPEND=dev-lang/erlang
+RESTRICT=mirror
+SLOT=0
+SRC_URI=https://github.com/niku64/riak_nagios/archive/5f7cc3b51790eb3012a2f3c13aa366acc157a53d.tar.gz
+_md5_=d49f8fa5a508c21d61b85c99a32eea3a

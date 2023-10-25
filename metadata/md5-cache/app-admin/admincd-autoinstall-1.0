@@ -1,0 +1,7 @@
+DEFINED_PHASES=install
+DESCRIPTION=Unattended installation support for Admin CD
+EAPI=7
+KEYWORDS=amd64 x86
+LICENSE=GPL-2
+SLOT=0
+_md5_=ec9a553bc429bcfefd6a73adef371f9a

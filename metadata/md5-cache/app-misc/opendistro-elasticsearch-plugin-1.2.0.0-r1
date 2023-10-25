@@ -1,0 +1,14 @@
+BDEPEND=>=dev-vcs/git-1.8.2.1[curl]
+DEFINED_PHASES=compile install prepare unpack
+DEPEND=dev-libs/openssl:0 virtual/jdk:11 dev-java/maven-bin app-arch/unzip
+DESCRIPTION=Open Distro for Elasticsearch Security
+EAPI=7
+HOMEPAGE=https://github.com/opendistro-for-elasticsearch/
+INHERIT=git-r3
+KEYWORDS=~amd64
+LICENSE=MIT
+PROPERTIES=live
+RDEPEND=dev-libs/openssl:0 virtual/jdk:11 ~app-misc/elasticsearch-7.2.0
+SLOT=0
+_eclasses_=git-r3	2358a7b20091609e24bd3a83b3ac5991
+_md5_=1387ee4ebf44a934d2a0aee46edb0697

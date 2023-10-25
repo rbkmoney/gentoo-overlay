@@ -1,0 +1,9 @@
+DEFINED_PHASES=install
+DESCRIPTION=Initramfs image for including in a kernel at compile
+EAPI=7
+HOMEPAGE=https://github.com/alexminder/
+KEYWORDS=amd64
+LICENSE=GPL-2
+SLOT=0
+SRC_URI=https://localhost/initramfs.cpio -> initramfs-image-2021.06.20.cpio
+_md5_=562ff6ffdef8a5e4c4d046e3d1d0b075

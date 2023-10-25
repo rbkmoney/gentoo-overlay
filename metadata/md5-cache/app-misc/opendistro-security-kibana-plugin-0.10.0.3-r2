@@ -1,0 +1,14 @@
+BDEPEND=>=dev-vcs/git-1.8.2.1[curl]
+DEFINED_PHASES=compile install prepare unpack
+DEPEND=>=net-libs/nodejs-10.16 ~www-apps/kibana-bin-6.8.1 virtual/jdk:11 dev-java/maven-bin app-arch/unzip
+DESCRIPTION=Open Distro security Kibana plugin
+EAPI=7
+HOMEPAGE=https://github.com/opendistro-for-elasticsearch/
+INHERIT=git-r3
+KEYWORDS=~amd64
+LICENSE=MIT
+PROPERTIES=live
+RDEPEND=>=net-libs/nodejs-10.16 ~www-apps/kibana-bin-6.8.1
+SLOT=0
+_eclasses_=git-r3	2358a7b20091609e24bd3a83b3ac5991
+_md5_=1c584e3624122288406e5a9f18058720

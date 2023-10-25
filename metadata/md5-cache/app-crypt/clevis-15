@@ -1,0 +1,16 @@
+BDEPEND=app-misc/jq app-text/asciidoc >=dev-util/meson-0.62.2 >=dev-util/ninja-1.8.2 dev-util/meson-format-array virtual/pkgconfig
+DEFINED_PHASES=compile configure install test
+DEPEND=tpm? ( >=app-crypt/tpm2-tools-4.0 ) >=sys-fs/luksmeta-8 || ( dev-libs/openssl:0= dev-libs/libressl:0= ) systemd? ( sys-apps/systemd ) net-misc/curl >=dev-libs/jansson-2.10 >=dev-libs/jose-8 >=sys-fs/cryptsetup-2.0.4[pwquality] dracut? ( sys-kernel/dracut net-analyzer/nmap[ncat] ) udisks? ( sys-fs/udisks:2 ) bash-completion? ( app-shells/bash-completion )
+DESCRIPTION=Clevis is a plugable framework for automated decryption
+EAPI=7
+HOMEPAGE=https://latchset.github.io/
+INHERIT=meson systemd
+IUSE=bash-completion dracut systemd tpm udisks
+KEYWORDS=~amd64 ~x86
+LICENSE=GPL-3
+RDEPEND=tpm? ( >=app-crypt/tpm2-tools-4.0 ) >=sys-fs/luksmeta-8 || ( dev-libs/openssl:0= dev-libs/libressl:0= ) systemd? ( sys-apps/systemd ) net-misc/curl >=dev-libs/jansson-2.10 >=dev-libs/jose-8 >=sys-fs/cryptsetup-2.0.4[pwquality] dracut? ( sys-kernel/dracut net-analyzer/nmap[ncat] ) udisks? ( sys-fs/udisks:2 ) bash-completion? ( app-shells/bash-completion )
+REQUIRED_USE=dracut? ( systemd )
+SLOT=0
+SRC_URI=https://github.com/latchset/clevis/releases/download/v15/clevis-15.tar.xz
+_eclasses_=multiprocessing	30ead54fa2e2b5f9cd4e612ffc34d0fe	ninja-utils	39e7a84b06eff4efd9f2e0c3d1668b98	eapi8-dosym	5ac4857ad078256d939c44f7c64197a9	toolchain-funcs	fbbbc99d10168de2926e06da7169b8dc	multilib	c19072c3cd7ac5cb21de013f7e9832e0	python-utils-r1	f6221c2f55e5e832be9919fe1711f33b	meson	af1ca7ad21fdd31fcc4fa91d8abca977	systemd	c8b03e8df84486aa991d4396686e8942
+_md5_=cba8c5ce905f8867bb98b54da36dbea1
